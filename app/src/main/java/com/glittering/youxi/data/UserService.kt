@@ -1,6 +1,5 @@
 package com.glittering.youxi.data
 
-import com.google.gson.JsonObject
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
@@ -12,4 +11,7 @@ interface UserService {
         @Body body: RequestBody
     ): Call<LoginResponse>
 
+    @GET("code")
+    fun queryCode(
+    ): Call<CodeResponse>
 }

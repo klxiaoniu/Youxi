@@ -4,6 +4,14 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        debug {
+            storeFile file('D:\\mtxiaoniu.jks')
+            storePassword 'mtxiaoniu'
+            keyAlias 'mtxiaoniu'
+            keyPassword 'mtxiaoniu'
+        }
+    }
     namespace 'com.glittering.youxi'
     compileSdk 33
 
@@ -19,8 +27,12 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
+        }
+        debug {
+            signingConfig signingConfigs.debug
         }
     }
     compileOptions {
