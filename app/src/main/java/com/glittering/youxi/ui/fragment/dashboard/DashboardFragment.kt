@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.glittering.youxi.databinding.FragmentDashboardBinding
+import com.glittering.youxi.ui.fragment.home.HomeFragment
 
 class DashboardFragment : Fragment() {
 
@@ -16,7 +17,11 @@ class DashboardFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
-
+    companion object {
+        val instance: DashboardFragment by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
+            DashboardFragment()
+        }
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

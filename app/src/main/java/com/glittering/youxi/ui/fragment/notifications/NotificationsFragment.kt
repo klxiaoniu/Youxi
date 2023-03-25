@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.glittering.youxi.ui.activity.LoginActivity
 import com.glittering.youxi.R
 import com.glittering.youxi.databinding.FragmentNotificationsBinding
+import com.glittering.youxi.ui.fragment.home.HomeFragment
 
 class NotificationsFragment : Fragment() {
 
@@ -28,7 +29,11 @@ class NotificationsFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
-
+    companion object {
+        val instance: NotificationsFragment by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
+            NotificationsFragment()
+        }
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
