@@ -79,4 +79,6 @@ dependencies {
     implementation 'com.geyifeng.immersionbar:immersionbar:3.2.2'
     implementation 'com.geyifeng.immersionbar:immersionbar-ktx:3.2.2'
 
+    implementation 'com.github.zhpanvip:viewpagerindicator:1.0.3'
+
 }

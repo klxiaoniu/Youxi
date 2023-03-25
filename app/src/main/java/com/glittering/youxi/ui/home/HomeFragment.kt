@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.glittering.youxi.ui.LoginActivity
 import com.glittering.youxi.databinding.FragmentHomeBinding
+import com.glittering.youxi.ui.IntroActivity
 
 class HomeFragment : Fragment() {
 
@@ -30,16 +31,18 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-//        val textView: TextView = binding.textHome
-//        homeViewModel.text.observe(viewLifecycleOwner) {
-//            textView.text = it
-//        }
 
         val btnLogin: Button = binding.btnLogin
+        val btnIntro: Button = binding.btnIntro
         btnLogin.setOnClickListener {
             val intent = Intent(context, LoginActivity::class.java)
             startActivity(intent)
         }
+        btnIntro.setOnClickListener {
+            val intent = Intent(context, IntroActivity::class.java)
+            startActivity(intent)
+        }
+
         return root
     }
 
