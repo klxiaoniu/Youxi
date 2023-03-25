@@ -71,4 +71,12 @@ dependencies {
 
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 
+    implementation 'com.github.DylanCaiCoding.ViewBindingKTX:viewbinding-ktx:2.1.0'
+    implementation 'com.github.DylanCaiCoding.ViewBindingKTX:viewbinding-nonreflection-ktx:2.1.0'
+    implementation 'com.github.DylanCaiCoding.ViewBindingKTX:viewbinding-base:2.1.0'
+    implementation 'com.github.DylanCaiCoding.ViewBindingKTX:viewbinding-brvah:2.1.0'
+
+    implementation 'com.geyifeng.immersionbar:immersionbar:3.2.2'
+    implementation 'com.geyifeng.immersionbar:immersionbar-ktx:3.2.2'
+
 }

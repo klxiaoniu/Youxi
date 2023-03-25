@@ -1,5 +1,6 @@
-package com.glittering.youxi
+package com.glittering.youxi.ui
 
+import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
@@ -11,6 +12,7 @@ import android.util.Base64
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.glittering.youxi.MyApplication.Companion.loggedInUser
+import com.glittering.youxi.R
 import com.glittering.youxi.data.*
 import com.glittering.youxi.databinding.ActivityLoginBinding
 import com.glittering.youxi.utils.setToken
@@ -25,15 +27,11 @@ import retrofit2.Response
 import java.io.ByteArrayOutputStream
 
 
-class LoginActivity : AppCompatActivity() {
-
-    private lateinit var binding: ActivityLoginBinding
+class LoginActivity : BaseActivity<ActivityLoginBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityLoginBinding.inflate(layoutInflater)
-        setContentView(binding.root)
         val username = binding.username
         val password = binding.password
         val ivCode = binding.ivCode
@@ -41,11 +39,22 @@ class LoginActivity : AppCompatActivity() {
 
         ivCode.setOnClickListener { getCode() }
         getCode()
-
+        if (isDarkTheme(this)) {
+            binding.close.setColorFilter(getColor(R.color.white))
+        }
+        binding.close.setOnClickListener { finish() }
         binding.login.setOnClickListener {
+            if (!binding.checkAgree.isChecked){
+                ToastShort("请先阅读并同意《用户协议》和《隐私政策》")
+                return@setOnClickListener
+            }
             val userService = ServiceCreator.create<UserService>()
 
-            val loginRequest = LoginRequest(username.text.toString(), password.text.toString(),code.text.toString())
+            val loginRequest = LoginRequest(
+                username.text.toString(),
+                password.text.toString(),
+                code.text.toString()
+            )
             val json = FormBody.create(
                 MediaType.parse("application/json; charset=utf-8"),
                 Gson().toJson(loginRequest)

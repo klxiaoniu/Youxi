@@ -4,8 +4,8 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
 
-    <string name="prompt_email">电子邮箱</string>
-    <string name="prompt_password">密码</string>
+    <string name="prompt_email">请输入账号</string>
+    <string name="prompt_password">请输入密码</string>
     <string name="action_sign_in">登录</string>
     <string name="prompt_name">姓名</string>
     <string name="prompt_code">验证码</string>
