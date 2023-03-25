@@ -1,4 +1,4 @@
-package com.glittering.youxi.ui.dashboard
+package com.glittering.youxi.ui.fragment.dashboard
 
 import android.os.Bundle
 import android.view.LayoutInflater

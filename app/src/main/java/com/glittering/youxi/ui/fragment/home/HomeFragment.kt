@@ -1,4 +1,4 @@
-package com.glittering.youxi.ui.home
+package com.glittering.youxi.ui.fragment.home
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,9 +8,9 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.glittering.youxi.ui.LoginActivity
+import com.glittering.youxi.ui.activity.LoginActivity
 import com.glittering.youxi.databinding.FragmentHomeBinding
-import com.glittering.youxi.ui.IntroActivity
+import com.glittering.youxi.ui.activity.IntroActivity
 
 class HomeFragment : Fragment() {
 

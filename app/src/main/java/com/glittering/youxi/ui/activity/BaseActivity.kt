@@ -1,6 +1,5 @@
-package com.glittering.youxi.ui
+package com.glittering.youxi.ui.activity
 
-import android.app.UiModeManager
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
@@ -10,7 +9,6 @@ import androidx.viewbinding.ViewBinding
 import com.dylanc.viewbinding.base.ActivityBinding
 import com.dylanc.viewbinding.base.ActivityBindingDelegate
 import com.gyf.immersionbar.ImmersionBar
-
 
 abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity(),
     ActivityBinding<VB> by ActivityBindingDelegate() {

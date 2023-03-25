@@ -1,4 +1,4 @@
-package com.glittering.youxi.ui.notifications
+package com.glittering.youxi.ui.fragment.notifications
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -17,7 +17,7 @@ import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
 import androidx.core.content.PermissionChecker.checkSelfPermission
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.glittering.youxi.ui.LoginActivity
+import com.glittering.youxi.ui.activity.LoginActivity
 import com.glittering.youxi.R
 import com.glittering.youxi.databinding.FragmentNotificationsBinding
 

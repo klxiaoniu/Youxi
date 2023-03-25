@@ -1,6 +1,5 @@
-package com.glittering.youxi.ui
+package com.glittering.youxi.ui.activity
 
-import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
@@ -10,8 +9,7 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Base64
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
-import com.glittering.youxi.MyApplication.Companion.loggedInUser
+import com.glittering.youxi.MyApplication
 import com.glittering.youxi.R
 import com.glittering.youxi.data.*
 import com.glittering.youxi.databinding.ActivityLoginBinding
@@ -25,7 +23,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.ByteArrayOutputStream
-
 
 class LoginActivity : BaseActivity<ActivityLoginBinding>() {
 
@@ -72,7 +69,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
                         val token = data?.token!!
                         setToken(token)
                         Log.d("token", token)
-                        loggedInUser = data
+                        MyApplication.loggedInUser = data
                         ToastShort("登录成功")
                         finish()
                     } else {
@@ -108,12 +105,11 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
     @Synchronized
     fun drawableToByte(drawable: Drawable?): String? {
         if (drawable != null) {
-            val bitmap = Bitmap
-                .createBitmap(
-                    drawable.intrinsicWidth,
-                    drawable.intrinsicHeight,
-                    if (drawable.opacity != PixelFormat.OPAQUE) Bitmap.Config.ARGB_8888 else Bitmap.Config.RGB_565
-                )
+            val bitmap = Bitmap.createBitmap(
+                drawable.intrinsicWidth,
+                drawable.intrinsicHeight,
+                if (drawable.opacity != PixelFormat.OPAQUE) Bitmap.Config.ARGB_8888 else Bitmap.Config.RGB_565
+            )
             val canvas = Canvas(bitmap)
             drawable.setBounds(
                 0, 0, drawable.intrinsicWidth,
