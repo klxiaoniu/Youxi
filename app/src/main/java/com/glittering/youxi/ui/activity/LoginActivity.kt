@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Base64
 import android.util.Log
+import androidx.lifecycle.ViewModelProvider
 import com.glittering.youxi.MyApplication
 import com.glittering.youxi.R
 import com.glittering.youxi.data.*
@@ -26,8 +27,10 @@ import java.io.ByteArrayOutputStream
 
 class LoginActivity : BaseActivity<ActivityLoginBinding>() {
 
+    lateinit var viewModel: LoginViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
 
         val username = binding.username
         val password = binding.password
@@ -35,13 +38,22 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
         val code = binding.code
 
         ivCode.setOnClickListener { getCode() }
-        getCode()
+        if (viewModel.codeImg == null) {
+            getCode()
+        } else {
+            try {
+                ivCode.setImageDrawable(byteToDrawable(viewModel.codeImg!!))
+            } catch (e: Exception) {
+                e.printStackTrace()
+                ivCode.setImageResource(R.drawable.error)
+            }
+        }
         if (isDarkTheme(this)) {
             binding.close.setColorFilter(getColor(R.color.white))
         }
         binding.close.setOnClickListener { finish() }
         binding.login.setOnClickListener {
-            if (!binding.checkAgree.isChecked){
+            if (!binding.checkAgree.isChecked) {
                 ToastShort("请先阅读并同意《用户协议》和《隐私政策》")
                 return@setOnClickListener
             }
@@ -76,15 +88,12 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
                         ToastShort(response.body()?.message.toString())
                         getCode()
                     }
-                    //binding.homeSwipe.isRefreshing = false
                 }
 
                 override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
                     t.printStackTrace()
                     ToastLong(t.toString())
                     getCode()
-//                            adapter.setOnFootViewClickListener { getData(page) }   //重新获取当前页
-//                            binding.homeSwipe.isRefreshing = false
                 }
             })
 
@@ -142,20 +151,17 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
                 try {
                     val img = byteToDrawable(response.body()?.image!!)
                     binding.ivCode.setImageDrawable(img)
+                    viewModel.codeImg = response.body()?.image!!
                 } catch (e: Exception) {
                     e.printStackTrace()
                     binding.ivCode.setImageResource(R.drawable.error)
                 }
-
-                //binding.homeSwipe.isRefreshing = false
             }
 
             override fun onFailure(call: Call<CodeResponse>, t: Throwable) {
                 t.printStackTrace()
                 ToastLong(t.toString())
                 binding.ivCode.setImageResource(R.drawable.error)
-//                            adapter.setOnFootViewClickListener { getData(page) }   //重新获取当前页
-//                            binding.homeSwipe.isRefreshing = false
             }
         })
     }
