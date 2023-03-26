@@ -1,19 +1,13 @@
 package com.glittering.youxi.ui.activity
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Canvas
-import android.graphics.PixelFormat
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Base64
 import android.util.Log
 import androidx.lifecycle.ViewModelProvider
 import com.glittering.youxi.MyApplication
 import com.glittering.youxi.R
 import com.glittering.youxi.data.*
 import com.glittering.youxi.databinding.ActivityLoginBinding
+import com.glittering.youxi.utils.DrawableUtil
 import com.glittering.youxi.utils.setToken
 import com.google.gson.Gson
 import com.xiaoniu.fund.ToastLong
@@ -23,7 +17,6 @@ import okhttp3.MediaType
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.ByteArrayOutputStream
 
 class LoginActivity : BaseActivity<ActivityLoginBinding>() {
 
@@ -42,7 +35,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
             getCode()
         } else {
             try {
-                ivCode.setImageDrawable(byteToDrawable(viewModel.codeImg!!))
+                ivCode.setImageDrawable(DrawableUtil().byteToDrawable(viewModel.codeImg!!))
             } catch (e: Exception) {
                 e.printStackTrace()
                 ivCode.setImageResource(R.drawable.error)
@@ -100,46 +93,6 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
         }
     }
 
-    @Synchronized
-    fun byteToDrawable(icon: String): Drawable? {
-        val img: ByteArray = Base64.decode(icon.toByteArray(), Base64.DEFAULT)
-        val bitmap: Bitmap
-        if (img != null) {
-            bitmap = BitmapFactory.decodeByteArray(img, 0, img.size)
-            return BitmapDrawable(bitmap)
-        }
-        return null
-    }
-
-    @Synchronized
-    fun drawableToByte(drawable: Drawable?): String? {
-        if (drawable != null) {
-            val bitmap = Bitmap.createBitmap(
-                drawable.intrinsicWidth,
-                drawable.intrinsicHeight,
-                if (drawable.opacity != PixelFormat.OPAQUE) Bitmap.Config.ARGB_8888 else Bitmap.Config.RGB_565
-            )
-            val canvas = Canvas(bitmap)
-            drawable.setBounds(
-                0, 0, drawable.intrinsicWidth,
-                drawable.intrinsicHeight
-            )
-            drawable.draw(canvas)
-            val size = bitmap.width * bitmap.height * 4
-
-// 创建一个字节数组输出流,流的大小为size
-            val baos = ByteArrayOutputStream(size)
-
-// 设置位图的压缩格式，质量为100%，并放入字节数组输出流中
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos)
-
-// 将字节数组输出流转化为字节数组byte[]
-            val imagedata: ByteArray = baos.toByteArray()
-            return Base64.encodeToString(imagedata, Base64.DEFAULT)
-        }
-        return null
-    }
-
     fun getCode() {
         binding.ivCode.setImageResource(R.drawable.loading)
         val userService = ServiceCreator.create<UserService>()
@@ -149,7 +102,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
                 response: Response<CodeResponse>
             ) {
                 try {
-                    val img = byteToDrawable(response.body()?.image!!)
+                    val img = DrawableUtil().byteToDrawable(response.body()?.image!!)
                     binding.ivCode.setImageDrawable(img)
                     viewModel.codeImg = response.body()?.image!!
                 } catch (e: Exception) {

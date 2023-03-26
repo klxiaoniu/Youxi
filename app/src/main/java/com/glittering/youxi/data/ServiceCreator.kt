@@ -1,18 +1,49 @@
 package com.glittering.youxi.data
 
+import com.glittering.youxi.utils.getToken
 import com.xiaoniu.fund.ToastLong
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.IOException
+import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
+
 object ServiceCreator {
+    //在请求头里添加token的拦截器处理
+    class TokenHeaderInterceptor : Interceptor {
+        @Throws(IOException::class)
+        override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+            val token: String = getToken()
+            return if (token == "") {
+                val originalRequest: Request = chain.request()
+                chain.proceed(originalRequest)
+            } else {
+                val originalRequest: Request = chain.request()
+                val updateRequest: Request =
+                    originalRequest.newBuilder().header("Authorization", token).build()
+                chain.proceed(updateRequest)
+            }
+        }
+    }
+    private fun getClient(): OkHttpClient.Builder {
+        val httpClientBuilder = OkHttpClient.Builder()
+        httpClientBuilder.connectTimeout(15, TimeUnit.SECONDS)
+        httpClientBuilder.addNetworkInterceptor(TokenHeaderInterceptor())
+        return httpClientBuilder
+    }
+
     const val BASE_URL = "https://7f1192d863.imdo.co/"
     private val retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
+        .client(getClient().build())
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 

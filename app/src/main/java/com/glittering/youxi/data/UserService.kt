@@ -14,4 +14,14 @@ interface UserService {
     @GET("code")
     fun queryCode(
     ): Call<CodeResponse>
+
+    @PUT("information/updating")
+    fun updating(
+        @Body body: RequestBody
+    ): Call<UpdatingResponse>
+
+    @POST("email")
+    fun queryEmailCode(
+        @Body body: RequestBody
+    ): Call<EmailResponse>
 }

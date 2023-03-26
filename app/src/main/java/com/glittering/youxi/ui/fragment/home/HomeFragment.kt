@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.glittering.youxi.ui.activity.LoginActivity
 import com.glittering.youxi.databinding.FragmentHomeBinding
 import com.glittering.youxi.ui.activity.IntroActivity
+import com.glittering.youxi.ui.activity.ProfileUpdateActivity
 
 class HomeFragment : Fragment() {
 
@@ -38,12 +39,17 @@ class HomeFragment : Fragment() {
 
         val btnLogin: Button = binding.btnLogin
         val btnIntro: Button = binding.btnIntro
+        val btnProfile: Button = binding.btnProfile
         btnLogin.setOnClickListener {
             val intent = Intent(context, LoginActivity::class.java)
             startActivity(intent)
         }
         btnIntro.setOnClickListener {
             val intent = Intent(context, IntroActivity::class.java)
+            startActivity(intent)
+        }
+        btnProfile.setOnClickListener {
+            val intent = Intent(context, ProfileUpdateActivity::class.java)
             startActivity(intent)
         }
 
