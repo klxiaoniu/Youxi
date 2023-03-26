@@ -2,12 +2,8 @@ package com.glittering.youxi
 
 import android.app.Application
 import com.glittering.youxi.data.ServiceCreator
-import com.glittering.youxi.data.ServiceCreator.await
-import com.glittering.youxi.data.User
+import com.glittering.youxi.data.LoginUser
 import com.glittering.youxi.data.UserService
-import com.glittering.youxi.utils.getToken
-import com.glittering.youxi.utils.rmToken
-import com.xiaoniu.fund.ToastLong
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -16,7 +12,7 @@ class MyApplication : Application() {
     companion object {
         lateinit var application: Application
 
-        var loggedInUser: User? = null
+        var loggedInUser: LoginUser? = null
 
         fun updateUser() {
             GlobalScope.launch(Dispatchers.Main) {

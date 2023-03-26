@@ -6,8 +6,10 @@ import android.util.Log
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
+import com.glittering.youxi.R
 import com.glittering.youxi.data.*
 import com.glittering.youxi.databinding.ActivityProfileUpdateBinding
+import com.glittering.youxi.utils.DrawableUtil
 import com.glittering.youxi.utils.URIPathHelper
 import com.google.gson.Gson
 import com.xiaoniu.fund.ToastShort
@@ -24,7 +26,10 @@ class ProfileUpdateActivity : BaseActivity<ActivityProfileUpdateBinding>() {
     lateinit var viewModel: ProfileUpdateViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        if (isDarkTheme(this)) {
+            binding.close.setColorFilter(getColor(R.color.white))
+        }
+        binding.close.setOnClickListener { finish() }
         viewModel = ViewModelProvider(this).get(ProfileUpdateViewModel::class.java)
         val pickMedia =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -40,6 +45,9 @@ class ProfileUpdateActivity : BaseActivity<ActivityProfileUpdateBinding>() {
                 }
             }
         binding.chooseIcon.setOnClickListener {
+            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        }
+        binding.cardView.setOnClickListener {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
         binding.btnSendCode.setOnClickListener {
@@ -101,5 +109,26 @@ class ProfileUpdateActivity : BaseActivity<ActivityProfileUpdateBinding>() {
                 }
             })
         }
+
+        val userService = ServiceCreator.create<UserService>()
+        userService.getPersonalInfo().enqueue(object : Callback<PersonalInfoResponse> {
+            override fun onResponse(
+                call: Call<PersonalInfoResponse>,
+                response: Response<PersonalInfoResponse>
+            ) {
+                val res = response.body()
+                if (res?.code == 200) {
+                    binding.nickname.setText(res.data.nickname)
+                    binding.name.setText(res.data.realname)
+                    binding.email.setText(res.data.email)
+                    binding.ivAvatar.setImageDrawable(DrawableUtil().byteToDrawable(res.data.avatar))
+                } else ToastShort(res?.msg.toString())
+            }
+
+            override fun onFailure(call: Call<PersonalInfoResponse>, t: Throwable) {
+                t.printStackTrace()
+                ToastShort(t.toString())
+            }
+        })
     }
 }

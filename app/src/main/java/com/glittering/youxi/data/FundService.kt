@@ -22,7 +22,7 @@ interface FundService {
     fun getFund(@Path("id") id: Long): Call<Fund>
 
     @GET("users/{id}")
-    fun getUser(@Path("id") id: Long): Call<User>
+    fun getUser(@Path("id") id: Long): Call<LoginUser>
 
     @POST("admin/setpass")
     fun setPass(

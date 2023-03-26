@@ -24,4 +24,9 @@ interface UserService {
     fun queryEmailCode(
         @Body body: RequestBody
     ): Call<EmailResponse>
+
+    @GET("information")
+    fun getPersonalInfo(
+    ): Call<PersonalInfoResponse>
+
 }
