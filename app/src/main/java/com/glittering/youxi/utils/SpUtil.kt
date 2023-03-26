@@ -18,3 +18,12 @@ fun rmToken() {
     sp.remove("token").apply()
     //loggedInUser = null
 }
+fun setFirstEnter(firstEnter: Boolean) {
+    val sp = applicationContext.getSharedPreferences("common", AppCompatActivity.MODE_PRIVATE).edit()
+    sp.putBoolean("firstEnter", firstEnter).apply()
+}
+
+fun isFirstEnter(): Boolean {
+    val sp = applicationContext.getSharedPreferences("common", AppCompatActivity.MODE_PRIVATE)
+    return sp.getBoolean("firstEnter", true)
+}
