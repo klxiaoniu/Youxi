@@ -14,7 +14,7 @@
     <fragment
         android:id="@+id/navigation_dashboard"
         android:name="com.glittering.youxi.ui.fragment.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
+        android:label="@string/title_buy"
         tools:layout="@layout/fragment_dashboard" />
 
     <fragment
@@ -22,4 +22,9 @@
         android:name="com.glittering.youxi.ui.fragment.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_notifications" />
+    <fragment
+        android:id="@+id/navigation_me"
+        android:name="com.glittering.youxi.ui.fragment.me.MeFragment"
+        android:label="@string/title_me"
+        tools:layout="@layout/fragment_me" />
 </navigation>

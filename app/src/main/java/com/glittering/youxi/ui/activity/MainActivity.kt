@@ -1,6 +1,7 @@
 package com.glittering.youxi.ui.activity
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
@@ -12,6 +13,7 @@ import com.glittering.youxi.databinding.ActivityMainBinding
 import com.glittering.youxi.ui.adapter.PagerAdapter
 import com.glittering.youxi.ui.fragment.dashboard.DashboardFragment
 import com.glittering.youxi.ui.fragment.home.HomeFragment
+import com.glittering.youxi.ui.fragment.me.MeFragment
 import com.glittering.youxi.ui.fragment.notifications.NotificationsFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -26,7 +28,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         mainViewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 //设置导航栏选中位置
-                navView.menu.getItem(position).isChecked = true
+                navView.menu.getItem(if (position > 1) position + 1 else position).isChecked = true
 //                findViewById<View>(R.id.action_search)?.visibility =
 //                    if (position == 0) View.VISIBLE else View.GONE
             }
@@ -36,6 +38,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         fragmentArr.add(HomeFragment.instance)
         fragmentArr.add(DashboardFragment.instance)
         fragmentArr.add(NotificationsFragment.instance)
+        fragmentArr.add(MeFragment.instance)
         mainViewPager.adapter = PagerAdapter(this, fragmentArr)
 
         navView.setOnItemSelectedListener {
@@ -49,7 +52,18 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 R.id.navigation_notifications -> {
                     mainViewPager.currentItem = 2
                 }
+                R.id.navigation_me -> {
+                    mainViewPager.currentItem = 3
+                }
+                R.id.navigation_sell -> {
+                    //TODO: Launch sell activity
+                }
             }
+            Log.d(
+                "onItemSelected",
+                it.itemId.toString() + " " + mainViewPager.currentItem.toString()
+            )
+
             true
         }
     }
