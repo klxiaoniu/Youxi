@@ -12,7 +12,7 @@ import com.glittering.youxi.databinding.ActivityIntroBinding
 import com.glittering.youxi.ui.fragment.IntroFragment
 import com.glittering.youxi.utils.isFirstEnter
 import com.glittering.youxi.utils.setFirstEnter
-import com.xiaoniu.fund.ToastShort
+import com.xiaoniu.fund.ToastSuccess
 import com.zhpan.indicator.IndicatorView
 import com.zhpan.indicator.enums.IndicatorSlideMode
 import com.zhpan.indicator.enums.IndicatorStyle
@@ -26,7 +26,7 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>() {
         super.onCreate(savedInstanceState)
 
         if (!isFirstEnter()) {
-            ToastShort("已经进入过了")
+            ToastSuccess("已经进入过了")
 //            finish()
         }
         viewPager = binding.pager
@@ -66,7 +66,7 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>() {
         }//TODO:进入主页？
         binding.btnEnter.setOnLongClickListener {
             setFirstEnter(true)
-            ToastShort("清除进入记录")
+            ToastSuccess("清除进入记录")
             finish()
             true
         }

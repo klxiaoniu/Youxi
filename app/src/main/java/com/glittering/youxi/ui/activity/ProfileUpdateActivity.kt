@@ -12,7 +12,8 @@ import com.glittering.youxi.databinding.ActivityProfileUpdateBinding
 import com.glittering.youxi.utils.DrawableUtil
 import com.glittering.youxi.utils.URIPathHelper
 import com.google.gson.Gson
-import com.xiaoniu.fund.ToastShort
+import com.xiaoniu.fund.ToastFail
+import com.xiaoniu.fund.ToastSuccess
 import okhttp3.FormBody
 import okhttp3.MediaType
 import okhttp3.MultipartBody
@@ -65,12 +66,12 @@ class ProfileUpdateActivity : BaseActivity<ActivityProfileUpdateBinding>() {
                     response: Response<EmailResponse>
                 ) {
                     val res = response.body()
-                    ToastShort(res?.message.toString())
+                    ToastSuccess(res?.message.toString())
                 }
 
                 override fun onFailure(call: Call<EmailResponse>, t: Throwable) {
                     t.printStackTrace()
-                    ToastShort(t.toString())
+                    ToastFail(t.toString())
                 }
             })
         }
@@ -100,12 +101,12 @@ class ProfileUpdateActivity : BaseActivity<ActivityProfileUpdateBinding>() {
                     response: Response<UpdatingResponse>
                 ) {
                     val res = response.body()
-                    ToastShort(res?.message.toString())
+                    ToastSuccess(res?.message.toString())
                 }
 
                 override fun onFailure(call: Call<UpdatingResponse>, t: Throwable) {
                     t.printStackTrace()
-                    ToastShort(t.toString())
+                    ToastFail(t.toString())
                 }
             })
         }
@@ -122,12 +123,12 @@ class ProfileUpdateActivity : BaseActivity<ActivityProfileUpdateBinding>() {
                     binding.name.setText(res.data.realname)
                     binding.email.setText(res.data.email)
                     binding.ivAvatar.setImageDrawable(DrawableUtil().byteToDrawable(res.data.avatar))
-                } else ToastShort(res?.msg.toString())
+                } else ToastSuccess(res?.msg.toString())
             }
 
             override fun onFailure(call: Call<PersonalInfoResponse>, t: Throwable) {
                 t.printStackTrace()
-                ToastShort(t.toString())
+                ToastFail(t.toString())
             }
         })
     }

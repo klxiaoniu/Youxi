@@ -10,8 +10,8 @@ import com.glittering.youxi.databinding.ActivityLoginBinding
 import com.glittering.youxi.utils.DrawableUtil
 import com.glittering.youxi.utils.setToken
 import com.google.gson.Gson
-import com.xiaoniu.fund.ToastLong
-import com.xiaoniu.fund.ToastShort
+import com.xiaoniu.fund.ToastFail
+import com.xiaoniu.fund.ToastSuccess
 import okhttp3.FormBody
 import okhttp3.MediaType
 import retrofit2.Call
@@ -47,7 +47,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
         binding.close.setOnClickListener { finish() }
         binding.login.setOnClickListener {
             if (!binding.checkAgree.isChecked) {
-                ToastShort("请先阅读并同意《用户协议》和《隐私政策》")
+                ToastSuccess("请先阅读并同意《用户协议》和《隐私政策》")
                 return@setOnClickListener
             }
             val userService = ServiceCreator.create<UserService>()
@@ -75,17 +75,17 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
                         setToken(token)
                         Log.d("token", token)
                         MyApplication.loggedInUser = data
-                        ToastShort("登录成功")
+                        ToastSuccess("登录成功")
                         finish()
                     } else {
-                        ToastShort(response.body()?.message.toString())
+                        ToastSuccess(response.body()?.message.toString())
                         getCode()
                     }
                 }
 
                 override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
                     t.printStackTrace()
-                    ToastLong(t.toString())
+                    ToastFail(t.toString())
                     getCode()
                 }
             })
@@ -113,7 +113,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
 
             override fun onFailure(call: Call<CodeResponse>, t: Throwable) {
                 t.printStackTrace()
-                ToastLong(t.toString())
+                ToastFail(t.toString())
                 binding.ivCode.setImageResource(R.drawable.error)
             }
         })

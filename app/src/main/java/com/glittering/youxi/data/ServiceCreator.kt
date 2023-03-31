@@ -1,7 +1,7 @@
 package com.glittering.youxi.data
 
 import com.glittering.youxi.utils.getToken
-import com.xiaoniu.fund.ToastLong
+import com.xiaoniu.fund.ToastFail
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -58,7 +58,7 @@ object ServiceCreator {
                 override fun onFailure(call: Call<T>, t: Throwable) {
                     //请求失败，抛出异常，手动结束当前协程
                     //it.resumeWithException(t)
-                    ToastLong(t.toString())
+                    ToastFail(t.toString())
                 }
 
                 override fun onResponse(call: Call<T>, response: Response<T>) {
@@ -68,7 +68,7 @@ object ServiceCreator {
                     } else {
                         //请求状态异常，抛出异常，手动结束当前协程
                         //it.resumeWithException(Throwable(response.toString()))
-                        ToastLong(response.toString())
+                        ToastFail(response.toString())
                     }
                 }
             })

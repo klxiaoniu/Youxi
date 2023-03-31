@@ -31,11 +31,19 @@
         app:layout_constraintEnd_toEndOf="@id/btn_login"
         app:layout_constraintTop_toBottomOf="@id/btn_intro" />
     <Button
-        android:id="@+id/btn_toast"
+        android:id="@+id/btn_toast_succ"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Toast"
+        android:text="Toast Succ"
         app:layout_constraintStart_toStartOf="@id/btn_login"
         app:layout_constraintEnd_toEndOf="@id/btn_login"
         app:layout_constraintTop_toBottomOf="@id/btn_profile" />
+    <Button
+        android:id="@+id/btn_toast_fail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Toast Fail"
+        app:layout_constraintStart_toStartOf="@id/btn_login"
+        app:layout_constraintEnd_toEndOf="@id/btn_login"
+        app:layout_constraintTop_toBottomOf="@id/btn_toast_succ" />
 </androidx.constraintlayout.widget.ConstraintLayout>

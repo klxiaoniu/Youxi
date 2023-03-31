@@ -1,16 +1,21 @@
 package com.xiaoniu.fund
 
 import android.util.Log
-import android.widget.Toast
+import com.glittering.youxi.R
+import com.hjq.toast.Toaster
 
 
-fun ToastShort(msg: CharSequence) {
-    Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
+fun ToastSuccess(msg: CharSequence) {
+    Toaster.setView(R.layout.toast_success)
+    Toaster.show(msg)
+    //Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
     Log.d("ToastShort", msg.toString())
 }
 
-fun ToastLong(msg: CharSequence) {
-    Toast.makeText(applicationContext, msg, Toast.LENGTH_LONG).show()
+fun ToastFail(msg: CharSequence) {
+    Toaster.setView(R.layout.toast_fail)
+    Toaster.show(msg)
+    //Toast.makeText(applicationContext, msg, Toast.LENGTH_LONG).show()
     Log.d("ToastLong", msg.toString())
     //throw Exception("TTTT")
 }

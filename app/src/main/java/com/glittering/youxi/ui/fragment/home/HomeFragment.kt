@@ -8,9 +8,10 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.glittering.youxi.ui.activity.LoginActivity
+import com.glittering.youxi.R
 import com.glittering.youxi.databinding.FragmentHomeBinding
 import com.glittering.youxi.ui.activity.IntroActivity
+import com.glittering.youxi.ui.activity.LoginActivity
 import com.glittering.youxi.ui.activity.ProfileUpdateActivity
 import com.hjq.toast.Toaster
 
@@ -41,7 +42,8 @@ class HomeFragment : Fragment() {
         val btnLogin: Button = binding.btnLogin
         val btnIntro: Button = binding.btnIntro
         val btnProfile: Button = binding.btnProfile
-        val btnToast: Button = binding.btnToast
+        val btnToast: Button = binding.btnToastSucc
+        val btnToastFail: Button = binding.btnToastFail
         btnLogin.setOnClickListener {
             val intent = Intent(context, LoginActivity::class.java)
             startActivity(intent)
@@ -55,7 +57,12 @@ class HomeFragment : Fragment() {
             startActivity(intent)
         }
         btnToast.setOnClickListener {
+            Toaster.setView(R.layout.toast_success)
             Toaster.show("操作成功!")
+        }
+        btnToastFail.setOnClickListener {
+            Toaster.setView(R.layout.toast_fail)
+            Toaster.show("账号或密码不正确。账号或密码不正确。账号或密码不正确。账号或密码不正确。")
         }
 
         return root

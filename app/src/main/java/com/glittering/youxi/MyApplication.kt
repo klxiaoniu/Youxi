@@ -47,7 +47,6 @@ class MyApplication : Application() {
     init {
         application = this
         Toaster.init(this)
-        Toaster.setView(R.layout.toast_success)
         //DynamicColors.applyToActivitiesIfAvailable(application)     //动态取色
     }
 
