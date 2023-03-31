@@ -3,6 +3,8 @@ package com.glittering.youxi.ui.activity
 import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.glittering.youxi.MyApplication
 import com.glittering.youxi.R
 import com.glittering.youxi.data.*
@@ -101,14 +103,22 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
                 call: Call<CodeResponse>,
                 response: Response<CodeResponse>
             ) {
-                try {
-                    val img = DrawableUtil().byteToDrawable(response.body()?.image!!)
-                    binding.ivCode.setImageDrawable(img)
-                    viewModel.codeImg = response.body()?.image!!
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    binding.ivCode.setImageResource(R.drawable.error)
-                }
+//                try {
+//                    val img = DrawableUtil().byteToDrawable(response.body()?.image!!)
+//                    binding.ivCode.setImageDrawable(img)
+//                    viewModel.codeImg = response.body()?.image!!
+//                } catch (e: Exception) {
+//                    e.printStackTrace()
+//                    binding.ivCode.setImageResource(R.drawable.error)
+//                }
+
+                val options = RequestOptions()
+                    .placeholder(R.drawable.loading)
+                    .error(R.drawable.error)
+                Glide.with(applicationContext)
+                    .load(response.body()?.image)
+                    .apply(options)
+                    .into(binding.ivCode)
             }
 
             override fun onFailure(call: Call<CodeResponse>, t: Throwable) {
