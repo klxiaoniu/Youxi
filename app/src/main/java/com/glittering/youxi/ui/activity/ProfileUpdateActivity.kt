@@ -12,8 +12,8 @@ import com.glittering.youxi.databinding.ActivityProfileUpdateBinding
 import com.glittering.youxi.utils.DrawableUtil
 import com.glittering.youxi.utils.URIPathHelper
 import com.google.gson.Gson
-import com.xiaoniu.fund.ToastFail
-import com.xiaoniu.fund.ToastSuccess
+import com.glittering.youxi.utils.ToastFail
+import com.glittering.youxi.utils.ToastSuccess
 import okhttp3.FormBody
 import okhttp3.MediaType
 import okhttp3.MultipartBody

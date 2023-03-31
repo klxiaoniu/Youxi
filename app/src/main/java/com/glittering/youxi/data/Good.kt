@@ -1,6 +1,6 @@
 package com.glittering.youxi.data
 
-class Fund(
+class Good(
     val id: Long,
     val raiser: Long,
     val title: String,

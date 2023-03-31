@@ -10,7 +10,7 @@
 //import com.xiaoniu.fund.ToastShort
 //import com.xiaoniu.fund.ui.FundDetailActivity
 //
-//class FundAdapter(var list: List<Fund>, val mode: Int) :     //mode 0:首页 1:审核 2:我的
+//class GoodAdapter(var list: List<Fund>, val mode: Int) :     //mode 0:首页 1:审核 2:我的
 //    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 //    val TYPE_FOOTVIEW: Int = 1 //item类型：footview
 //    val TYPE_ITEMVIEW: Int = 2 //item类型：itemview

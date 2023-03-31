@@ -1,7 +1,7 @@
 package com.glittering.youxi.data
 
 import com.glittering.youxi.utils.getToken
-import com.xiaoniu.fund.ToastFail
+import com.glittering.youxi.utils.ToastFail
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request

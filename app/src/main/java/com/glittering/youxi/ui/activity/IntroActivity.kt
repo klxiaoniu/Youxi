@@ -12,7 +12,7 @@ import com.glittering.youxi.databinding.ActivityIntroBinding
 import com.glittering.youxi.ui.fragment.IntroFragment
 import com.glittering.youxi.utils.isFirstEnter
 import com.glittering.youxi.utils.setFirstEnter
-import com.xiaoniu.fund.ToastSuccess
+import com.glittering.youxi.utils.ToastSuccess
 import com.zhpan.indicator.IndicatorView
 import com.zhpan.indicator.enums.IndicatorSlideMode
 import com.zhpan.indicator.enums.IndicatorStyle

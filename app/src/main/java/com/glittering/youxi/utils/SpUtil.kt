@@ -1,7 +1,6 @@
 package com.glittering.youxi.utils
 
 import androidx.appcompat.app.AppCompatActivity
-import com.xiaoniu.fund.applicationContext
 
 fun setToken(token: String) {
     val sp = applicationContext.getSharedPreferences("common", AppCompatActivity.MODE_PRIVATE).edit()

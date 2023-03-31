@@ -1,6 +1,11 @@
 package com.glittering.youxi.ui.fragment.home
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +13,9 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.content.PermissionChecker
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.glittering.youxi.R
@@ -94,6 +102,50 @@ class HomeFragment : Fragment() {
             btnPositive.setTextSize(18f)
             btnNegative.setTextSize(18f)
         }
+        binding.btnNotify.setOnClickListener {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && PermissionChecker.checkSelfPermission(
+                    requireActivity(),
+                    "android.permission.POST_NOTIFICATIONS"
+                ) != PermissionChecker.PERMISSION_GRANTED
+            ) {
+                val pms = arrayOf("android.permission.POST_NOTIFICATIONS")
+                ActivityCompat.requestPermissions(requireActivity(), pms, 1)
+            }
+            val manager =
+                requireActivity().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val channel: List<NotificationChannel> = listOf(
+                    NotificationChannel(
+                        "system", "系统通知", NotificationManager.IMPORTANCE_DEFAULT
+                    ), NotificationChannel(
+                        "chat", "聊天消息", NotificationManager.IMPORTANCE_HIGH
+                    )
+                )
+                channel.forEach { c ->
+                    manager.createNotificationChannel(c)
+                }
+            }
+
+            val intent = Intent(requireActivity(), LoginActivity::class.java)
+            val pi = PendingIntent.getActivity(requireActivity(), 0, intent,
+                PendingIntent.FLAG_IMMUTABLE
+            )
+            val notification = NotificationCompat.Builder(requireActivity(), "chat")
+                .setContentTitle("用户名")
+                .setContentText("消息具体内容")
+                .setSmallIcon(R.drawable.ic_notifications_black_24dp)   //icon
+//                .setLargeIcon(
+//                    BitmapFactory.decodeResource(     //头像
+//                        resources,
+//                        R.drawable.large_icon
+//                    )
+//                )
+                .setContentIntent(pi)
+                .setAutoCancel(true)
+                .build()
+            manager.notify(1, notification)
+        }
+
         return root
     }
 

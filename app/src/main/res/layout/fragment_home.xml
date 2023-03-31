@@ -14,44 +14,58 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
     <Button
         android:id="@+id/btn_intro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="介绍页"
-        app:layout_constraintStart_toStartOf="@id/btn_login"
         app:layout_constraintEnd_toEndOf="@id/btn_login"
+        app:layout_constraintStart_toStartOf="@id/btn_login"
         app:layout_constraintTop_toBottomOf="@id/btn_login" />
+
     <Button
         android:id="@+id/btn_profile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="信息修改"
-        app:layout_constraintStart_toStartOf="@id/btn_login"
         app:layout_constraintEnd_toEndOf="@id/btn_login"
+        app:layout_constraintStart_toStartOf="@id/btn_login"
         app:layout_constraintTop_toBottomOf="@id/btn_intro" />
+
     <Button
         android:id="@+id/btn_toast_succ"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Toast Succ"
-        app:layout_constraintStart_toStartOf="@id/btn_login"
         app:layout_constraintEnd_toEndOf="@id/btn_login"
+        app:layout_constraintStart_toStartOf="@id/btn_login"
         app:layout_constraintTop_toBottomOf="@id/btn_profile" />
+
     <Button
         android:id="@+id/btn_toast_fail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Toast Fail"
-        app:layout_constraintStart_toStartOf="@id/btn_login"
         app:layout_constraintEnd_toEndOf="@id/btn_login"
+        app:layout_constraintStart_toStartOf="@id/btn_login"
         app:layout_constraintTop_toBottomOf="@id/btn_toast_succ" />
+
     <Button
         android:id="@+id/btn_confirm_dialog"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Confirm"
-        app:layout_constraintStart_toStartOf="@id/btn_login"
         app:layout_constraintEnd_toEndOf="@id/btn_login"
+        app:layout_constraintStart_toStartOf="@id/btn_login"
         app:layout_constraintTop_toBottomOf="@id/btn_toast_fail" />
+
+    <Button
+        android:id="@+id/btn_notify"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="发送通知"
+        app:layout_constraintEnd_toEndOf="@id/btn_login"
+        app:layout_constraintStart_toStartOf="@id/btn_login"
+        app:layout_constraintTop_toBottomOf="@id/btn_confirm_dialog" />
 </androidx.constraintlayout.widget.ConstraintLayout>

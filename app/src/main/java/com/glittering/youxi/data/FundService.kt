@@ -7,19 +7,19 @@ import retrofit2.http.*
 interface FundService {
 
     @GET("funds")
-    fun getFunds(@Query("page") page: Int): Call<List<Fund>>
+    fun getFunds(@Query("page") page: Int): Call<List<Good>>
 
     @GET("fundstocheck")
-    fun getFundsToCheck(@Query("token") token: String): Call<List<Fund>>
+    fun getFundsToCheck(@Query("token") token: String): Call<List<Good>>
 
     @GET("onefunds")
-    fun getOneFunds(@Query("id") id: Long): Call<List<Fund>>
+    fun getOneFunds(@Query("id") id: Long): Call<List<Good>>
 
     @GET("searchfunds")
-    fun searchFunds(@Query("key") key: String): Call<List<Fund>>
+    fun searchFunds(@Query("key") key: String): Call<List<Good>>
 
     @GET("funds/{id}")
-    fun getFund(@Path("id") id: Long): Call<Fund>
+    fun getFund(@Path("id") id: Long): Call<Good>
 
     @GET("users/{id}")
     fun getUser(@Path("id") id: Long): Call<LoginUser>

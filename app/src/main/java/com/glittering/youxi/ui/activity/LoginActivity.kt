@@ -10,8 +10,8 @@ import com.glittering.youxi.databinding.ActivityLoginBinding
 import com.glittering.youxi.utils.DrawableUtil
 import com.glittering.youxi.utils.setToken
 import com.google.gson.Gson
-import com.xiaoniu.fund.ToastFail
-import com.xiaoniu.fund.ToastSuccess
+import com.glittering.youxi.utils.ToastFail
+import com.glittering.youxi.utils.ToastSuccess
 import okhttp3.FormBody
 import okhttp3.MediaType
 import retrofit2.Call
