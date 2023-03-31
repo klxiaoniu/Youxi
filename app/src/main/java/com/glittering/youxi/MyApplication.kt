@@ -4,6 +4,7 @@ import android.app.Application
 import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.data.LoginUser
 import com.glittering.youxi.data.UserService
+import com.hjq.toast.Toaster
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -45,6 +46,8 @@ class MyApplication : Application() {
 
     init {
         application = this
+        Toaster.init(this)
+        Toaster.setView(R.layout.toast_success)
         //DynamicColors.applyToActivitiesIfAvailable(application)     //动态取色
     }
 

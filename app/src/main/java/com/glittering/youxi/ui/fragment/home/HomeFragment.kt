@@ -12,6 +12,7 @@ import com.glittering.youxi.ui.activity.LoginActivity
 import com.glittering.youxi.databinding.FragmentHomeBinding
 import com.glittering.youxi.ui.activity.IntroActivity
 import com.glittering.youxi.ui.activity.ProfileUpdateActivity
+import com.hjq.toast.Toaster
 
 class HomeFragment : Fragment() {
 
@@ -40,6 +41,7 @@ class HomeFragment : Fragment() {
         val btnLogin: Button = binding.btnLogin
         val btnIntro: Button = binding.btnIntro
         val btnProfile: Button = binding.btnProfile
+        val btnToast: Button = binding.btnToast
         btnLogin.setOnClickListener {
             val intent = Intent(context, LoginActivity::class.java)
             startActivity(intent)
@@ -51,6 +53,9 @@ class HomeFragment : Fragment() {
         btnProfile.setOnClickListener {
             val intent = Intent(context, ProfileUpdateActivity::class.java)
             startActivity(intent)
+        }
+        btnToast.setOnClickListener {
+            Toaster.show("操作成功!")
         }
 
         return root
