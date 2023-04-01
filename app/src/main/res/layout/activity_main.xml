@@ -21,7 +21,7 @@
         android:id="@+id/mainViewPager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:paddingTop="10dp"
+        android:paddingTop="20dp"
         app:layout_constraintBottom_toTopOf="@+id/nav_view"
         app:layout_constraintTop_toTopOf="parent" />
 

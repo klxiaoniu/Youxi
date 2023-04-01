@@ -33,6 +33,7 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity(),
             .transparentBar()
             .statusBarDarkFont(!isDarkTheme(this))   //状态栏字体是深色，不写默认为亮色
             .navigationBarDarkIcon(true)
+            .fitsSystemWindows(true)
             .init()
 
     }
