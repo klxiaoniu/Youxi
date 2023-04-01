@@ -1,30 +1,32 @@
 package com.glittering.youxi.ui.fragment.home
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.content.Context
 import android.content.Intent
-import android.os.Build
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
-import androidx.core.app.ActivityCompat
-import androidx.core.app.NotificationCompat
-import androidx.core.content.PermissionChecker
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.glittering.youxi.R
+import com.glittering.youxi.data.BannerBean
+import com.glittering.youxi.data.BannerResponse
+import com.glittering.youxi.data.MainpageService
+import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.databinding.FragmentHomeBinding
-import com.glittering.youxi.ui.activity.IntroActivity
-import com.glittering.youxi.ui.activity.LoginActivity
-import com.glittering.youxi.ui.activity.ProfileUpdateActivity
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.hjq.toast.Toaster
+import com.glittering.youxi.utils.ToastFail
+import com.zhpan.bannerview.BannerViewPager
+import com.zhpan.bannerview.BaseBannerAdapter
+import com.zhpan.bannerview.BaseViewHolder
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class HomeFragment : Fragment() {
 
@@ -33,6 +35,7 @@ class HomeFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+    private lateinit var mViewPager: BannerViewPager<BannerBean>
 
     companion object {
         val instance: HomeFragment by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
@@ -50,107 +53,82 @@ class HomeFragment : Fragment() {
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
-
-
-        val btnLogin: Button = binding.btnLogin
-        val btnIntro: Button = binding.btnIntro
-        val btnProfile: Button = binding.btnProfile
-        val btnToast: Button = binding.btnToastSucc
-        val btnToastFail: Button = binding.btnToastFail
-        btnLogin.setOnClickListener {
-            val intent = Intent(context, LoginActivity::class.java)
-            startActivity(intent)
-        }
-        btnIntro.setOnClickListener {
-            val intent = Intent(context, IntroActivity::class.java)
-            startActivity(intent)
-        }
-        btnProfile.setOnClickListener {
-            val intent = Intent(context, ProfileUpdateActivity::class.java)
-            startActivity(intent)
-        }
-        btnToast.setOnClickListener {
-            Toaster.setView(R.layout.toast_success)
-            Toaster.show("操作成功!")
-        }
-        btnToastFail.setOnClickListener {
-            Toaster.setView(R.layout.toast_fail)
-            Toaster.show("账号或密码不正确。账号或密码不正确。账号或密码不正确。账号或密码不正确。")
-        }
-        binding.btnConfirmDialog.setOnClickListener {
-            val view = layoutInflater.inflate(R.layout.dialog_view, null)
-            view.findViewById<TextView>(R.id.message)
-                .text = "确定操作？"
-            val dialog = MaterialAlertDialogBuilder(requireActivity())
-                .setTitle("提示")
-                .setView(view)
-                .setPositiveButton("确定") { dialog, which ->
-                    // Respond to positive button press
-                }
-                .setNegativeButton("取消") { dialog, which ->
-                    // Respond to negative button press
-                }
-                .show()
-            val btnPositive = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-            val btnNegative = dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-            btnPositive.setBackgroundColor(resources.getColor(R.color.primary_yellow, null))
-            btnPositive.setTextColor(resources.getColor(R.color.black, null))
-            btnNegative.setBackgroundColor(resources.getColor(R.color.primary_yellow_2, null))
-            btnNegative.setTextColor(resources.getColor(R.color.black, null))
-            btnPositive.setPadding(80, 50, 80, 50)
-            btnNegative.setPadding(80, 50, 80, 50)
-            btnPositive.setTextSize(18f)
-            btnNegative.setTextSize(18f)
-        }
-        binding.btnNotify.setOnClickListener {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && PermissionChecker.checkSelfPermission(
-                    requireActivity(),
-                    "android.permission.POST_NOTIFICATIONS"
-                ) != PermissionChecker.PERMISSION_GRANTED
-            ) {
-                val pms = arrayOf("android.permission.POST_NOTIFICATIONS")
-                ActivityCompat.requestPermissions(requireActivity(), pms, 1)
-            }
-            val manager =
-                requireActivity().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val channel: List<NotificationChannel> = listOf(
-                    NotificationChannel(
-                        "system", "系统通知", NotificationManager.IMPORTANCE_DEFAULT
-                    ), NotificationChannel(
-                        "chat", "聊天消息", NotificationManager.IMPORTANCE_HIGH
-                    )
-                )
-                channel.forEach { c ->
-                    manager.createNotificationChannel(c)
-                }
-            }
-
-            val intent = Intent(requireActivity(), LoginActivity::class.java)
-            val pi = PendingIntent.getActivity(requireActivity(), 0, intent,
-                PendingIntent.FLAG_IMMUTABLE
-            )
-            val notification = NotificationCompat.Builder(requireActivity(), "chat")
-                .setContentTitle("用户名")
-                .setContentText("消息具体内容")
-                .setSmallIcon(R.drawable.ic_notifications_black_24dp)   //icon
-//                .setLargeIcon(
-//                    BitmapFactory.decodeResource(     //头像
-//                        resources,
-//                        R.drawable.large_icon
-//                    )
-//                )
-                .setContentIntent(pi)
-                .setAutoCancel(true)
-                .build()
-            manager.notify(1, notification)
-        }
+        setupViewPager()
 
         return root
+    }
+
+    private fun setupViewPager() {
+        mViewPager = binding.bannerView as BannerViewPager<BannerBean>
+        mViewPager.apply {
+            adapter = SimpleAdapter()
+            registerLifecycleObserver(lifecycle)
+        }.create()
+
+        val mainpageService = ServiceCreator.create<MainpageService>()
+
+        mainpageService.getBanner().enqueue(object : Callback<BannerResponse> {
+            override fun onResponse(
+                call: Call<BannerResponse>,
+                response: Response<BannerResponse>
+            ) {
+                Log.d("banner", response.body().toString())
+                val code = response.body()?.code
+                if (code == 200) {
+                    val data = response.body()?.data
+                    mViewPager.refreshData(data)
+                } else {
+                    ToastFail(response.body()?.message.toString())
+                }
+            }
+
+            override fun onFailure(call: Call<BannerResponse>, t: Throwable) {
+                t.printStackTrace()
+                ToastFail(t.toString())
+            }
+        })
+
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
+
+    inner class SimpleAdapter : BaseBannerAdapter<BannerBean>() {
+
+        override fun bindData(
+            holder: BaseViewHolder<BannerBean>,
+            data: BannerBean?,
+            position: Int,
+            pageSize: Int
+        ) {
+            //holder.setImageResource(R.id.banner_image, data!!.order_picture)
+            val layout = holder.findViewById<View>(R.id.banner_layout)
+            val imageView = holder.findViewById<ImageView>(R.id.banner_image)
+            val textView = holder.findViewById<TextView>(R.id.banner_text)
+            val options = RequestOptions()
+                //.placeholder(R.drawable.loading)
+                .error(R.drawable.error)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+            Glide.with(this@HomeFragment)
+                .load(data!!.order_picture)
+                .apply(options)
+                .into(imageView)
+            textView.text = data.order_title
+            if (data.order_address != "") {
+                layout.setOnClickListener {
+                    val uri = Uri.parse(data.order_address)
+                    val intent = Intent(Intent.ACTION_VIEW, uri)
+                    startActivity(intent)
+                }
+            }
+        }
+
+        override fun getLayoutId(viewType: Int): Int {
+            return R.layout.item_banner
+        }
+    }
+
 }

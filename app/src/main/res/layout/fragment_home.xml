@@ -6,66 +6,212 @@
     android:layout_height="match_parent"
     tools:context=".ui.fragment.home.HomeFragment">
 
-    <Button
-        android:id="@+id/btn_login"
+    <TextView
+        android:id="@+id/head"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="登录"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="40dp"
+        android:fontFamily="@font/youshe"
+        android:includeFontPadding="false"
+        android:text="@string/app_name"
+        android:textSize="36sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/btn_intro"
+    <TextView
+        android:id="@+id/intro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="介绍页"
-        app:layout_constraintEnd_toEndOf="@id/btn_login"
-        app:layout_constraintStart_toStartOf="@id/btn_login"
-        app:layout_constraintTop_toBottomOf="@id/btn_login" />
+        android:layout_marginStart="10dp"
+        android:text="交易游戏账号，来游兮"
+        app:layout_constraintBottom_toBottomOf="@id/head"
+        app:layout_constraintStart_toEndOf="@id/head"
+        app:layout_constraintTop_toTopOf="@id/head" />
 
-    <Button
-        android:id="@+id/btn_profile"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/choice"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="信息修改"
-        app:layout_constraintEnd_toEndOf="@id/btn_login"
-        app:layout_constraintStart_toStartOf="@id/btn_login"
-        app:layout_constraintTop_toBottomOf="@id/btn_intro" />
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="15dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/head">
 
-    <Button
-        android:id="@+id/btn_toast_succ"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Toast Succ"
-        app:layout_constraintEnd_toEndOf="@id/btn_login"
-        app:layout_constraintStart_toStartOf="@id/btn_login"
-        app:layout_constraintTop_toBottomOf="@id/btn_profile" />
+        <com.glittering.youxi.ui.IconTextItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:img="@drawable/ic_default_avatar"
+            app:title="租账号" />
 
-    <Button
-        android:id="@+id/btn_toast_fail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Toast Fail"
-        app:layout_constraintEnd_toEndOf="@id/btn_login"
-        app:layout_constraintStart_toStartOf="@id/btn_login"
-        app:layout_constraintTop_toBottomOf="@id/btn_toast_succ" />
+        <com.glittering.youxi.ui.IconTextItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:img="@drawable/ic_default_avatar"
+            app:title="找代练" />
 
-    <Button
-        android:id="@+id/btn_confirm_dialog"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Confirm"
-        app:layout_constraintEnd_toEndOf="@id/btn_login"
-        app:layout_constraintStart_toStartOf="@id/btn_login"
-        app:layout_constraintTop_toBottomOf="@id/btn_toast_fail" />
+        <com.glittering.youxi.ui.IconTextItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:img="@drawable/ic_default_avatar"
+            app:title="账号回收" />
 
-    <Button
-        android:id="@+id/btn_notify"
-        android:layout_width="wrap_content"
+        <com.glittering.youxi.ui.IconTextItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:img="@drawable/ic_default_avatar"
+            app:title="账号找回" />
+
+    </LinearLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="发送通知"
-        app:layout_constraintEnd_toEndOf="@id/btn_login"
-        app:layout_constraintStart_toStartOf="@id/btn_login"
-        app:layout_constraintTop_toBottomOf="@id/btn_confirm_dialog" />
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        app:cardCornerRadius="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/choice">
+
+        <com.zhpan.bannerview.BannerViewPager
+            android:id="@+id/banner_view"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:bvp_indicator_gravity="end" />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/shape_topradius"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cardView">
+
+        <TextView
+            android:id="@+id/title_jingpin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:text="精品游戏"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/title_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:text="更多"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="@id/title_jingpin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/games1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="15dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title_jingpin">
+
+            <com.glittering.youxi.ui.IconTextItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:cornerRound="false"
+                app:img="@drawable/ic_default_avatar"
+                app:title="租账号" />
+
+            <com.glittering.youxi.ui.IconTextItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:cornerRound="false"
+                app:img="@drawable/ic_default_avatar"
+                app:title="找代练" />
+
+            <com.glittering.youxi.ui.IconTextItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:cornerRound="false"
+                app:img="@drawable/ic_default_avatar"
+                app:title="账号回收" />
+
+            <com.glittering.youxi.ui.IconTextItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:cornerRound="false"
+                app:img="@drawable/ic_default_avatar"
+                app:title="账号找回" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/games2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="15dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/games1">
+
+            <com.glittering.youxi.ui.IconTextItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:cornerRound="false"
+                app:img="@drawable/ic_default_avatar"
+                app:title="租账号" />
+
+            <com.glittering.youxi.ui.IconTextItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:cornerRound="false"
+                app:img="@drawable/ic_default_avatar"
+                app:title="找代练" />
+
+            <com.glittering.youxi.ui.IconTextItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:cornerRound="false"
+                app:img="@drawable/ic_default_avatar"
+                app:title="账号回收" />
+
+            <com.glittering.youxi.ui.IconTextItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:cornerRound="false"
+                app:img="@drawable/ic_default_avatar"
+                app:title="账号找回" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

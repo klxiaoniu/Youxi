@@ -22,7 +22,7 @@
             android:id="@+id/icontext_iv"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:scaleType="fitCenter" />
+            android:scaleType="centerInside" />
     </androidx.cardview.widget.CardView>
 
     <TextView

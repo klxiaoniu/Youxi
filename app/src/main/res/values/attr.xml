@@ -3,5 +3,6 @@
     <declare-styleable name="IconTextItem">
         <attr name="title" format="string" />
         <attr name="img" format="reference" />
+        <attr name="cornerRound" format="boolean" />
     </declare-styleable>
 </resources>
