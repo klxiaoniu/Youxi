@@ -2,12 +2,26 @@ package com.glittering.youxi.ui.fragment.me
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.glittering.youxi.R
+import com.glittering.youxi.data.PersonalInfoResponse
+import com.glittering.youxi.data.ServiceCreator
+import com.glittering.youxi.data.UserService
 import com.glittering.youxi.databinding.FragmentMeBinding
 import com.glittering.youxi.ui.activity.LoginActivity
+import com.glittering.youxi.utils.ToastFail
+import com.glittering.youxi.utils.ToastSuccess
+import com.glittering.youxi.utils.applicationContext
+import com.glittering.youxi.utils.getToken
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class MeFragment : Fragment() {
     private var _binding: FragmentMeBinding? = null
@@ -27,11 +41,51 @@ class MeFragment : Fragment() {
         _binding = FragmentMeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        binding.cardView.setOnClickListener {
+        binding.userinfo.setOnClickListener {
             val intent = Intent(context, LoginActivity::class.java)
             startActivity(intent)
         }
         return root
+    }
+
+    fun updateUserInfo() {
+        if (getToken() != "") {
+            val userService = ServiceCreator.create<UserService>()
+            userService.getPersonalInfo().enqueue(object : Callback<PersonalInfoResponse> {
+                override fun onResponse(
+                    call: Call<PersonalInfoResponse>,
+                    response: Response<PersonalInfoResponse>
+                ) {
+                    val res = response.body()
+                    Log.d("MeFragment", res.toString())
+                    if (res?.code == 200) {
+                        val userInfo = res.data[0]
+                        binding.tvNickname.setText(userInfo.name)
+                        //binding.ivAvatar.setImageDrawable(DrawableUtil().byteToDrawable(res.data.avatar))
+                        val options = RequestOptions()
+                            .placeholder(R.drawable.loading)
+                            .error(R.drawable.error)
+                        Glide.with(applicationContext)
+                            .load(userInfo.photo)
+                            .apply(options)
+                            .into(binding.ivAvatar)
+
+                        binding.userinfo.setOnClickListener {
+//                            val intent = Intent(context, LoginActivity::class.java)
+//                            startActivity(intent)
+                            //TODO:跳转到个人页面
+                            ToastSuccess("跳转到个人页面")
+                        }
+
+                    } else ToastFail(res?.message.toString())
+                }
+
+                override fun onFailure(call: Call<PersonalInfoResponse>, t: Throwable) {
+                    t.printStackTrace()
+                    ToastFail(t.toString())
+                }
+            })
+        }
     }
 
 
