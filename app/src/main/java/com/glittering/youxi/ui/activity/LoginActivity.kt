@@ -43,9 +43,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
                 ivCode.setImageResource(R.drawable.error)
             }
         }
-        if (isDarkTheme(this)) {
-            binding.close.setColorFilter(getColor(R.color.white))
-        }
+        reverseColorIfDark(listOf(binding.close))
         binding.close.setOnClickListener { finish() }
         binding.login.setOnClickListener {
             if (!binding.checkAgree.isChecked) {

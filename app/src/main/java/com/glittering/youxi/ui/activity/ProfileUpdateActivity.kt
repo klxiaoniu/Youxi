@@ -29,10 +29,8 @@ class ProfileUpdateActivity : BaseActivity<ActivityProfileUpdateBinding>() {
     lateinit var userInfo: PersonalInfo
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (isDarkTheme(this)) {
-            binding.close.setColorFilter(getColor(R.color.white))
-        }
-        binding.close.setOnClickListener { finish() }
+        reverseColorIfDark(listOf(binding.back))
+        binding.back.setOnClickListener { finish() }
         viewModel = ViewModelProvider(this).get(ProfileUpdateViewModel::class.java)
         val pickMedia =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
