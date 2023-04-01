@@ -79,7 +79,7 @@ dependencies {
     implementation 'com.geyifeng.immersionbar:immersionbar:3.2.2'
     implementation 'com.geyifeng.immersionbar:immersionbar-ktx:3.2.2'
 
-    implementation 'com.github.zhpanvip:viewpagerindicator:1.0.3'
+    implementation 'com.github.zhpanvip:BannerViewPager:3.5.11'
 
     implementation 'com.github.getActivity:Toaster:12.0'
 
