@@ -6,10 +6,11 @@ import android.util.Log
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.glittering.youxi.R
 import com.glittering.youxi.data.*
 import com.glittering.youxi.databinding.ActivityProfileUpdateBinding
-import com.glittering.youxi.utils.DrawableUtil
 import com.glittering.youxi.utils.URIPathHelper
 import com.google.gson.Gson
 import com.glittering.youxi.utils.ToastFail
@@ -25,6 +26,7 @@ import java.io.File
 
 class ProfileUpdateActivity : BaseActivity<ActivityProfileUpdateBinding>() {
     lateinit var viewModel: ProfileUpdateViewModel
+    lateinit var userInfo: PersonalInfo
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (isDarkTheme(this)) {
@@ -39,6 +41,7 @@ class ProfileUpdateActivity : BaseActivity<ActivityProfileUpdateBinding>() {
                     val photoBmp = MediaStore.Images.Media.getBitmap(contentResolver, uri)
                     viewModel.image =
                         File(URIPathHelper().getPath(this, uri))
+                    binding.ivAvatar.setImageBitmap(photoBmp)
                     Log.d("PhotoPicker", "image: " + viewModel.image)
                 } else {
                     Log.d("PhotoPicker", "No media selected")
@@ -92,7 +95,9 @@ class ProfileUpdateActivity : BaseActivity<ActivityProfileUpdateBinding>() {
                 )
                 .addFormDataPart("name", binding.nickname.text.toString())
                 .addFormDataPart("real_name", binding.name.text.toString())
-                .addFormDataPart("email", binding.email.text.toString())
+                .addFormDataPart(
+                    "email",
+                    binding.email.text.toString().let { if (it == userInfo.email) "" else it })
                 .addFormDataPart("ecode", binding.ecode.text.toString())
                 .build()
             userService.updating(requestBody).enqueue(object : Callback<UpdatingResponse> {
@@ -101,7 +106,14 @@ class ProfileUpdateActivity : BaseActivity<ActivityProfileUpdateBinding>() {
                     response: Response<UpdatingResponse>
                 ) {
                     val res = response.body()
-                    ToastSuccess(res?.message.toString())
+                    if (res != null) {
+                        if (res.code == 200) {
+                            ToastSuccess(res.message)
+                            finish()
+                        } else ToastFail(res.message)
+                    } else {
+                        ToastFail(getString(R.string.toast_response_error))
+                    }
                 }
 
                 override fun onFailure(call: Call<UpdatingResponse>, t: Throwable) {
@@ -119,11 +131,19 @@ class ProfileUpdateActivity : BaseActivity<ActivityProfileUpdateBinding>() {
             ) {
                 val res = response.body()
                 if (res?.code == 200) {
-                    binding.nickname.setText(res.data.nickname)
-                    binding.name.setText(res.data.realname)
-                    binding.email.setText(res.data.email)
-                    binding.ivAvatar.setImageDrawable(DrawableUtil().byteToDrawable(res.data.avatar))
-                } else ToastSuccess(res?.msg.toString())
+                    userInfo = res.data[0]
+                    binding.nickname.setText(userInfo.name)
+                    binding.name.setText(userInfo.real_name)
+                    binding.email.setText(userInfo.email)
+                    //binding.ivAvatar.setImageDrawable(DrawableUtil().byteToDrawable(res.data.avatar))
+                    val options = RequestOptions()
+                        .placeholder(R.drawable.loading)
+                        .error(R.drawable.error)
+                    Glide.with(applicationContext)
+                        .load(userInfo.photo)
+                        .apply(options)
+                        .into(binding.ivAvatar)
+                } else ToastFail(res?.msg.toString())
             }
 
             override fun onFailure(call: Call<PersonalInfoResponse>, t: Throwable) {
