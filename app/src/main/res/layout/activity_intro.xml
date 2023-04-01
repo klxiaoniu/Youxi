@@ -6,23 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".ui.activity.IntroActivity">
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/pager"
+    <com.zhpan.bannerview.BannerViewPager
+        android:id="@+id/banner_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.zhpan.indicator.IndicatorView
-        android:id="@+id/indicator_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="50dp"
+        app:bvp_auto_play="false"
+        app:bvp_can_loop="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.85" />
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <Button
         android:id="@+id/btn_enter"
@@ -30,8 +25,7 @@
         android:layout_height="wrap_content"
         android:text="进入"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/indicator_view"
+        app:layout_constraintBottom_toBottomOf="@id/banner_view"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/indicator_view" />
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

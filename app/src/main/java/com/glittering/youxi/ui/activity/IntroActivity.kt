@@ -1,27 +1,25 @@
 package com.glittering.youxi.ui.activity
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
-import androidx.fragment.app.Fragment
-import androidx.viewpager2.adapter.FragmentStateAdapter
+import android.widget.ImageView
 import androidx.viewpager2.widget.ViewPager2
 import com.glittering.youxi.R
 import com.glittering.youxi.databinding.ActivityIntroBinding
-import com.glittering.youxi.ui.fragment.IntroFragment
+import com.glittering.youxi.utils.ToastSuccess
 import com.glittering.youxi.utils.isFirstEnter
 import com.glittering.youxi.utils.setFirstEnter
-import com.glittering.youxi.utils.ToastSuccess
-import com.zhpan.indicator.IndicatorView
+import com.zhpan.bannerview.BannerViewPager
+import com.zhpan.bannerview.BaseBannerAdapter
+import com.zhpan.bannerview.BaseViewHolder
 import com.zhpan.indicator.enums.IndicatorSlideMode
 import com.zhpan.indicator.enums.IndicatorStyle
 
-private const val NUM_PAGES = 3
 
 class IntroActivity : BaseActivity<ActivityIntroBinding>() {
-    private lateinit var viewPager: ViewPager2
-
+    private lateinit var mViewPager: BannerViewPager<Int>
+    private var size: Int = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -29,36 +27,8 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>() {
             ToastSuccess("已经进入过了")
 //            finish()
         }
-        viewPager = binding.pager
-        val pagerAdapter = ScreenSlidePagerAdapter(this)
-        pagerAdapter.createFragment(0)
-        pagerAdapter.createFragment(1)
-        pagerAdapter.createFragment(2)
-        viewPager.adapter = pagerAdapter
 
-        val indicatorView = findViewById<IndicatorView>(R.id.indicator_view)
-        indicatorView
-            .setSlideMode(IndicatorSlideMode.WORM)
-            .setIndicatorStyle(IndicatorStyle.CIRCLE)
-            .setSliderColor(getColor(R.color.dark), getColor(R.color.black))
-            .setupWithViewPager(viewPager)
-
-        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                Log.d("pos", position.toString())
-                if (position == NUM_PAGES - 1) {
-                    findViewById<IndicatorView>(R.id.indicator_view).visibility =
-                        View.GONE
-                    findViewById<Button>(R.id.btn_enter).visibility =
-                        View.VISIBLE
-                } else {
-                    findViewById<IndicatorView>(R.id.indicator_view).visibility =
-                        View.VISIBLE
-                    findViewById<Button>(R.id.btn_enter).visibility =
-                        View.GONE
-                }
-            }
-        })
+        setupViewPager()
 
         binding.btnEnter.setOnClickListener {
             setFirstEnter(false)
@@ -70,10 +40,56 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>() {
             finish()
             true
         }
+
+
     }
 
-    private inner class ScreenSlidePagerAdapter(fa: IntroActivity) : FragmentStateAdapter(fa) {
-        override fun getItemCount(): Int = NUM_PAGES
-        override fun createFragment(position: Int): Fragment = IntroFragment(position)
+    private fun setupViewPager() {
+        mViewPager = binding.bannerView as BannerViewPager<Int>
+        val data = listOf(
+            R.drawable.close,
+            R.drawable.error,
+            R.drawable.loading,
+            R.drawable.ic_success   //TODO:这里是测试数据，需要替换
+        )
+        size = data.size
+        mViewPager.apply {
+            adapter = SimpleAdapter()
+        }.create(data)
+        mViewPager.setIndicatorSlideMode(IndicatorSlideMode.WORM)
+            .setIndicatorStyle(IndicatorStyle.CIRCLE)
+            .setIndicatorSliderColor(getColor(R.color.dark), getColor(R.color.black))
+        mViewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                if (position == size - 1) {
+                    mViewPager.setIndicatorVisibility(View.GONE)    //不可用
+                    findViewById<Button>(R.id.btn_enter).visibility =
+                        View.VISIBLE
+                } else {
+                    mViewPager.setIndicatorVisibility(View.VISIBLE)
+                    findViewById<Button>(R.id.btn_enter).visibility =
+                        View.GONE
+                }
+            }
+        })
+      }
+
+    inner class SimpleAdapter : BaseBannerAdapter<Int>() {
+
+        override fun bindData(
+            holder: BaseViewHolder<Int>,
+            data: Int?,
+            position: Int,
+            pageSize: Int
+        ) {
+            val imageView = holder.findViewById<ImageView>(R.id.imageView)
+            if (data != null) {
+                imageView.setImageResource(data)
+            }
+        }
+
+        override fun getLayoutId(viewType: Int): Int {
+            return R.layout.item_intro
+        }
     }
 }
