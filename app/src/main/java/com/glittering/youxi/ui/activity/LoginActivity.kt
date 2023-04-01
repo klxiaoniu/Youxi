@@ -49,7 +49,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
         binding.close.setOnClickListener { finish() }
         binding.login.setOnClickListener {
             if (!binding.checkAgree.isChecked) {
-                ToastSuccess("请先阅读并同意《用户协议》和《隐私政策》")
+                ToastFail("请先阅读并同意《用户协议》和《隐私政策》")
                 return@setOnClickListener
             }
             val userService = ServiceCreator.create<UserService>()
