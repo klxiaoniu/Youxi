@@ -4,16 +4,16 @@ import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.glittering.youxi.MyApplication
 import com.glittering.youxi.R
 import com.glittering.youxi.data.*
 import com.glittering.youxi.databinding.ActivityLoginBinding
-import com.glittering.youxi.utils.DrawableUtil
-import com.glittering.youxi.utils.setToken
-import com.google.gson.Gson
 import com.glittering.youxi.utils.ToastFail
 import com.glittering.youxi.utils.ToastSuccess
+import com.glittering.youxi.utils.setToken
+import com.google.gson.Gson
 import okhttp3.FormBody
 import okhttp3.MediaType
 import retrofit2.Call
@@ -37,7 +37,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
             getCode()
         } else {
             try {
-                ivCode.setImageDrawable(DrawableUtil().byteToDrawable(viewModel.codeImg!!))
+                ivCode.setImageDrawable(viewModel.codeImg!!)
             } catch (e: Exception) {
                 e.printStackTrace()
                 ivCode.setImageResource(R.drawable.error)
@@ -80,7 +80,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
                         ToastSuccess("登录成功")
                         finish()
                     } else {
-                        ToastSuccess(response.body()?.message.toString())
+                        ToastFail(response.body()?.message.toString())
                         getCode()
                     }
                 }
@@ -114,11 +114,15 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
 
                 val options = RequestOptions()
                     .placeholder(R.drawable.loading)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
                     .error(R.drawable.error)
                 Glide.with(applicationContext)
                     .load(response.body()?.image)
                     .apply(options)
                     .into(binding.ivCode)
+                //save to viewmodel
+                viewModel.codeImg = binding.ivCode.drawable
             }
 
             override fun onFailure(call: Call<CodeResponse>, t: Throwable) {
