@@ -16,6 +16,7 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity(),
     ActivityBinding<VB> by ActivityBindingDelegate() {
 
     private var mLoading: AlertDialog? = null
+    open val fitSystemWindows = true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentViewWithBinding()
@@ -35,7 +36,7 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity(),
             .transparentBar()
             .statusBarDarkFont(!isDarkTheme(this))   //状态栏字体是深色，不写默认为亮色
             .navigationBarDarkIcon(true)
-            .fitsSystemWindows(true)
+            .fitsSystemWindows(fitSystemWindows)
             .init()
 
     }
