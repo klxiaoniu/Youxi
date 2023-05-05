@@ -30,7 +30,17 @@ public class IconTextItem extends ConstraintLayout {
         String title = typedArray.getString(R.styleable.IconTextItem_title);
         int id = typedArray.getResourceId(R.styleable.IconTextItem_img, R.drawable.ic_default_avatar);
         boolean round = typedArray.getBoolean(R.styleable.IconTextItem_cornerRound, true);
+        int wh = typedArray.getDimensionPixelSize(R.styleable.IconTextItem_widthHeight, -1);
+        System.out.println("wh = " + wh);
         typedArray.recycle();
+        //if (wh == 40) wh = (int) (getResources().getDisplayMetrics().density * 50);
+        if (wh != -1) {
+            iv.getLayoutParams().width = wh;
+            iv.getLayoutParams().height = wh;
+            cv.getLayoutParams().width = wh;
+            cv.getLayoutParams().height = wh;
+            cv.setRadius((float) (wh / 2.0));   //圆角值
+        }
         iv.setImageResource(id);
         tv.setText(title);
         if (!round) cv.setRadius(20);   //圆角值

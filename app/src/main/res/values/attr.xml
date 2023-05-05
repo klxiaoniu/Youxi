@@ -4,5 +4,6 @@
         <attr name="title" format="string" />
         <attr name="img" format="reference" />
         <attr name="cornerRound" format="boolean" />
+        <attr name="widthHeight" format="dimension" />
     </declare-styleable>
 </resources>

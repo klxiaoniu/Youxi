@@ -37,7 +37,8 @@
         app:img="@drawable/ic_home_kefu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:title="客服" />
+        app:title="客服"
+        app:widthHeight="28dp"/>
 
     <LinearLayout
         android:id="@+id/choice"
@@ -56,28 +57,32 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             app:img="@drawable/ic_home_zzh"
-            app:title="租账号" />
+            app:title="租账号"
+            app:widthHeight="50dp"/>
 
         <com.glittering.youxi.ui.IconTextItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             app:img="@drawable/ic_home_zdl"
-            app:title="找代练" />
+            app:title="找代练"
+            app:widthHeight="50dp"/>
 
         <com.glittering.youxi.ui.IconTextItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             app:img="@drawable/ic_home_zhhs"
-            app:title="账号回收" />
+            app:title="账号回收"
+            app:widthHeight="50dp"/>
 
         <com.glittering.youxi.ui.IconTextItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             app:img="@drawable/ic_home_zhzh"
-            app:title="账号找回" />
+            app:title="账号找回"
+            app:widthHeight="50dp"/>
 
     </LinearLayout>
 
