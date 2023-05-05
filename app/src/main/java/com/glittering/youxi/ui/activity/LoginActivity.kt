@@ -8,7 +8,11 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.glittering.youxi.MyApplication
 import com.glittering.youxi.R
-import com.glittering.youxi.data.*
+import com.glittering.youxi.data.CodeResponse
+import com.glittering.youxi.data.LoginRequest
+import com.glittering.youxi.data.LoginResponse
+import com.glittering.youxi.data.ServiceCreator
+import com.glittering.youxi.data.UserService
 import com.glittering.youxi.databinding.ActivityLoginBinding
 import com.glittering.youxi.utils.ToastFail
 import com.glittering.youxi.utils.ToastSuccess
@@ -19,6 +23,7 @@ import okhttp3.MediaType
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.security.MessageDigest
 
 class LoginActivity : BaseActivity<ActivityLoginBinding>() {
 
@@ -51,10 +56,9 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
                 return@setOnClickListener
             }
             val userService = ServiceCreator.create<UserService>()
-
             val loginRequest = LoginRequest(
                 username.text.toString(),
-                password.text.toString(),
+                toHexStr(MessageDigest.getInstance("SHA256").digest(password.text.toString().toByteArray())),
                 code.text.toString()
             )
             val json = FormBody.create(
@@ -130,4 +134,16 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
             }
         })
     }
+
+    fun toHexStr(byteArray: ByteArray) =
+        with(StringBuilder()) {
+            byteArray.forEach {
+                val hex = it.toInt() and (0xFF)
+                val hexStr = Integer.toHexString(hex)
+                if (hexStr.length == 1) append("0").append(hexStr)
+                else append(hexStr)
+            }
+            toString()
+        }
+
 }
