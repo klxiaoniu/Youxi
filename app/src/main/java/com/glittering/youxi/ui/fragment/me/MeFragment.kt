@@ -48,7 +48,12 @@ class MeFragment : Fragment() {
         return root
     }
 
-    fun updateUserInfo() {
+    override fun onResume() {
+        super.onResume()
+        updateUserInfo()
+    }
+
+    private fun updateUserInfo() {
         if (getToken() != "") {
             val userService = ServiceCreator.create<UserService>()
             userService.getPersonalInfo().enqueue(object : Callback<PersonalInfoResponse> {
