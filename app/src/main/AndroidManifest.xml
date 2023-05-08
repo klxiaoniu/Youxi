@@ -20,7 +20,7 @@
         <activity
             android:name=".ui.activity.ChatActivity"
             android:exported="false"
-            android:windowSoftInputMode="stateVisible|adjustPan"/>
+            android:windowSoftInputMode="stateVisible|adjustPan" />
         <activity
             android:name=".ui.activity.OrderDetailActivity"
             android:exported="false" />
@@ -39,7 +39,8 @@
         <activity
             android:name=".ui.activity.MainActivity"
             android:exported="true"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:windowSoftInputMode="adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

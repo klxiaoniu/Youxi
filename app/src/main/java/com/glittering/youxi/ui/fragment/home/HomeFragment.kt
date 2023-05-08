@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.URLUtil
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -20,6 +21,7 @@ import com.glittering.youxi.data.BannerResponse
 import com.glittering.youxi.data.MainpageService
 import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.databinding.FragmentHomeBinding
+import com.glittering.youxi.ui.activity.OrderDetailActivity
 import com.glittering.youxi.utils.ToastFail
 import com.zhpan.bannerview.BannerViewPager
 import com.zhpan.bannerview.BaseBannerAdapter
@@ -119,9 +121,15 @@ class HomeFragment : Fragment() {
             textView.text = data.order_title
             if (data.order_address != "") {
                 layout.setOnClickListener {
-                    val uri = Uri.parse(data.order_address)
-                    val intent = Intent(Intent.ACTION_VIEW, uri)
-                    startActivity(intent)
+                    if (URLUtil.isValidUrl(data.order_address)) {
+                        val uri = Uri.parse(data.order_address)
+                        val intent = Intent(Intent.ACTION_VIEW, uri)
+                        startActivity(intent)
+                    } else {
+                        val intent = Intent(requireContext(), OrderDetailActivity::class.java)
+                        intent.putExtra("order_id", data.order_address)
+                        startActivity(intent)
+                    }
                 }
             }
         }

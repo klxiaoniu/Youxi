@@ -8,6 +8,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="dark">#BFBFBF</color>
+    <color name="dark_2">#767676</color>
+    <color name="red">#FF0000</color>
+    <color name="bottom_dialog_dark">#E9EAEE</color>
     <color name="highlight_blue">#007BFF</color>
     <color name="primary_yellow">#FFF200</color>
     <color name="primary_yellow_2">#FFFA9D</color>

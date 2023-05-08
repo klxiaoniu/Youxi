@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/btn_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="登录" />
+
+    <Button
+        android:id="@+id/btn_intro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="介绍页" />
+
+    <Button
+        android:id="@+id/btn_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="信息修改" />
+
+    <Button
+        android:id="@+id/btn_toast_succ"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Toast Succ" />
+
+    <Button
+        android:id="@+id/btn_toast_fail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Toast Fail" />
+
+    <Button
+        android:id="@+id/btn_confirm_dialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Confirm" />
+
+    <Button
+        android:id="@+id/btn_notify"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="发送通知" />
+
+    <Button
+        android:id="@+id/writeToken"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="写入token" />
+
+    <Button
+        android:id="@+id/orderDetail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="商品详情页" />
+
+    <Button
+        android:id="@+id/btn_chat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="聊天" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/admin"
+        android:text="管理员入口" />
+</LinearLayout>

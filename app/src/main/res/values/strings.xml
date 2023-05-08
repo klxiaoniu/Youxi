@@ -13,6 +13,6 @@
     <string name="prompt_code">验证码</string>
     <string name="prompt_phone">手机(+86)</string>
     <string name="action_register">注册</string>
-    <string name="toast_response_error">返回数据异常</string>
+    <string name="toast_response_error">网络或服务器异常</string>
 
 </resources>

@@ -50,7 +50,7 @@ public class IconTextItem extends ConstraintLayout {
         View view = View.inflate(context, R.layout.item_icon_text, this);
         iv = view.findViewById(R.id.icontext_iv);
         tv = view.findViewById(R.id.icontext_tv);
-        cv = view.findViewById(R.id.cardView);
+        cv = view.findViewById(R.id.cardView_wx);
     }
 
 }
