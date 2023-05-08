@@ -1,5 +1,6 @@
 package com.glittering.youxi.ui.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableStringBuilder
@@ -48,6 +49,7 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
                 response: Response<OrderInfoResponse>
             ) {
                 if (response.body() != null) {
+                    println(response.body().toString())
                     if (response.body()!!.code == 200) {
                         order = response.body()!!.data[0]
                         val option = RequestOptions()
@@ -103,6 +105,11 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
                 BottomPayDialog(this, order!!.order_price).show()
             }
 //            BottomPayDialog(this,123.456).show()
+        }
+        binding.btnChat.setOnClickListener {
+            val intent = Intent(this, ChatActivity::class.java)
+            intent.putExtra("chat_id", order?.seller_id?.toLong())
+            startActivity(intent)
         }
     }
 

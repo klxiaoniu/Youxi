@@ -126,7 +126,7 @@ class DebugActivity : BaseActivity<ActivityDebugBinding>() {
         }
         binding.orderDetail.setOnClickListener {
             val intent = Intent(this, OrderDetailActivity::class.java)
-            intent.putExtra("order_id", 1)
+            intent.putExtra("order_id", 4)
             startActivity(intent)
         }
         binding.btnChat.setOnClickListener {
