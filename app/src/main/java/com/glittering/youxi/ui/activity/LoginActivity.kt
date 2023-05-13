@@ -15,6 +15,7 @@ import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.data.UserService
 import com.glittering.youxi.databinding.ActivityLoginBinding
 import com.glittering.youxi.utils.ToastFail
+import com.glittering.youxi.utils.ToastInfo
 import com.glittering.youxi.utils.ToastSuccess
 import com.glittering.youxi.utils.setToken
 import com.google.gson.Gson
@@ -58,7 +59,10 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
             val userService = ServiceCreator.create<UserService>()
             val loginRequest = LoginRequest(
                 username.text.toString(),
-                toHexStr(MessageDigest.getInstance("SHA256").digest(password.text.toString().toByteArray())),
+                toHexStr(
+                    MessageDigest.getInstance("SHA256")
+                        .digest(password.text.toString().toByteArray())
+                ),
                 code.text.toString()
             )
             val json = FormBody.create(
@@ -94,6 +98,27 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
                 }
             })
 
+        }
+        binding.toRegister.setOnClickListener {
+            when (binding.register.visibility) {
+                android.view.View.VISIBLE -> {
+                    binding.register.visibility = android.view.View.INVISIBLE
+                    binding.login.visibility = android.view.View.VISIBLE
+                    binding.toRegister.text = "注册"
+                }
+
+                android.view.View.INVISIBLE -> {
+                    binding.register.visibility = android.view.View.VISIBLE
+                    binding.login.visibility = android.view.View.INVISIBLE
+                    binding.toRegister.text = "登录"
+                }
+            }
+        }
+        binding.register.setOnClickListener {
+            // TODO: 注册逻辑
+        }
+        binding.phoneLogin.setOnClickListener {
+            ToastInfo("敬请期待！")
         }
     }
 

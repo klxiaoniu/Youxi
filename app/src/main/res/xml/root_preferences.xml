@@ -1,0 +1,34 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="账号相关">
+
+        <Preference
+            app:key="verify"
+            app:title="实名认证" />
+        <Preference
+            app:key="password"
+            app:title="修改密码" />
+        <Preference
+            app:key="logout"
+            app:title="退出登录" />
+        <Preference
+            app:key="delete"
+            app:title="注销账号" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="系统设置">
+<!--        <ListPreference-->
+<!--            app:defaultValue="跟随系统"-->
+<!--            app:entries="@array/skin_entries"-->
+<!--            app:entryValues="@array/reply_values"-->
+<!--            app:key="skin"-->
+<!--            app:title="主题设置"-->
+<!--            app:useSimpleSummaryProvider="true" />-->
+        <Preference
+            app:key="about"
+            app:title="关于" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

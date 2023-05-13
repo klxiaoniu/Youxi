@@ -68,6 +68,6 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/admin"
-        android:text="管理员入口" />
+        android:id="@+id/setting"
+        android:text="设置" />
 </LinearLayout>

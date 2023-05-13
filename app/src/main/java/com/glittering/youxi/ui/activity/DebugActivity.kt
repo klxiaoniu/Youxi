@@ -134,8 +134,9 @@ class DebugActivity : BaseActivity<ActivityDebugBinding>() {
             intent.putExtra("chat_id",0L)
             startActivity(intent)
         }
-        binding.admin.setOnClickListener {
-
+        binding.setting.setOnClickListener {
+            val intent = Intent(this, SettingActivity::class.java)
+            startActivity(intent)
         }
     }
 }

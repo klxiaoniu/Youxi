@@ -86,7 +86,7 @@ class HomeFragment : Fragment() {
 
             override fun onFailure(call: Call<BannerResponse>, t: Throwable) {
                 t.printStackTrace()
-                ToastFail(t.toString())
+                ToastFail(getString(R.string.toast_response_error))
             }
         })
 

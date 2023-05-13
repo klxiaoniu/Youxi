@@ -1,6 +1,6 @@
 package com.glittering.youxi.data
 
-class LoginUser(
+data class LoginUser(
     var id: Long,
     var type: String,
     var token: String,

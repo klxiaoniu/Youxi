@@ -135,6 +135,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layout_code" />
 
+    <Button
+        android:id="@+id/register"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height_big"
+        android:layout_gravity="start"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="64dp"
+        android:text="注册"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layout_code" />
+
     <CheckBox
         android:id="@+id/check_agree"
         style="@style/Widget.AppCompat.CompoundButton.RadioButton"
@@ -151,11 +163,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="《用户协议》"
-        android:textSize="13sp"
         android:textColor="@color/highlight_blue"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="@+id/check_agree"
         app:layout_constraintStart_toEndOf="@id/check_agree"
-        app:layout_constraintTop_toTopOf="@id/check_agree"
-        app:layout_constraintBottom_toBottomOf="@+id/check_agree"/>
+        app:layout_constraintTop_toTopOf="@id/check_agree" />
 
     <TextView
         android:id="@+id/and"
@@ -163,20 +175,20 @@
         android:layout_height="wrap_content"
         android:text="和"
         android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="@+id/check_agree"
         app:layout_constraintStart_toEndOf="@id/agreement"
-        app:layout_constraintTop_toTopOf="@id/check_agree"
-        app:layout_constraintBottom_toBottomOf="@+id/check_agree"/>
+        app:layout_constraintTop_toTopOf="@id/check_agree" />
 
     <TextView
         android:id="@+id/privacy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="《隐私政策》"
-        android:textSize="13sp"
         android:textColor="@color/highlight_blue"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="@+id/check_agree"
         app:layout_constraintStart_toEndOf="@id/and"
-        app:layout_constraintTop_toTopOf="@id/check_agree"
-        app:layout_constraintBottom_toBottomOf="@+id/check_agree"/>
+        app:layout_constraintTop_toTopOf="@id/check_agree" />
 
     <TextView
         android:id="@+id/phone_login"
@@ -188,6 +200,15 @@
         app:layout_constraintTop_toBottomOf="@+id/check_agree" />
 
     <TextView
+        android:id="@+id/to_register"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="注册"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/check_agree" />
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -196,20 +217,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/phone_login" />
-
-    <Button
-        android:id="@+id/register"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="64dp"
-        android:text="@string/action_register"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login"
-        app:layout_constraintVertical_bias="0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

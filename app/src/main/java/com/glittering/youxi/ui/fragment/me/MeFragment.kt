@@ -14,6 +14,7 @@ import com.glittering.youxi.data.PersonalInfoResponse
 import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.data.UserService
 import com.glittering.youxi.databinding.FragmentMeBinding
+import com.glittering.youxi.ui.activity.DebugActivity
 import com.glittering.youxi.ui.activity.LoginActivity
 import com.glittering.youxi.utils.ToastFail
 import com.glittering.youxi.utils.ToastSuccess
@@ -45,6 +46,11 @@ class MeFragment : Fragment() {
             val intent = Intent(context, LoginActivity::class.java)
             startActivity(intent)
         }
+        binding.icScan.setOnLongClickListener {
+            val intent = Intent(context, DebugActivity::class.java)
+            startActivity(intent)
+            true
+        }
         return root
     }
 
@@ -65,7 +71,7 @@ class MeFragment : Fragment() {
                     Log.d("MeFragment", res.toString())
                     if (res?.code == 200) {
                         val userInfo = res.data[0]
-                        binding.tvNickname.setText(userInfo.name)
+                        binding.tvNickname.text = userInfo.name
                         //binding.ivAvatar.setImageDrawable(DrawableUtil().byteToDrawable(res.data.avatar))
                         val options = RequestOptions()
                             .placeholder(R.drawable.loading)
@@ -87,7 +93,7 @@ class MeFragment : Fragment() {
 
                 override fun onFailure(call: Call<PersonalInfoResponse>, t: Throwable) {
                     t.printStackTrace()
-                    ToastFail(t.toString())
+                    ToastFail(getString(R.string.toast_response_error))
                 }
             })
         }

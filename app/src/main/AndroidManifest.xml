@@ -18,6 +18,15 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="33">
         <activity
+            android:name=".ui.activity.NewOrderActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activity.MyOrderActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activity.SettingActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.activity.ChatActivity"
             android:exported="false"
             android:windowSoftInputMode="stateVisible|adjustPan" />

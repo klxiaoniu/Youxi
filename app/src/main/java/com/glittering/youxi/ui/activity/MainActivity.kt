@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
+import com.glittering.youxi.MyApplication
 import com.glittering.youxi.R
 import com.glittering.youxi.databinding.ActivityMainBinding
 import com.glittering.youxi.ui.adapter.PagerAdapter
@@ -13,7 +14,7 @@ import com.glittering.youxi.ui.fragment.me.MeFragment
 import com.glittering.youxi.ui.fragment.notifications.NotificationsFragment
 import com.glittering.youxi.utils.BottomNavigationViewUtil
 import com.glittering.youxi.utils.TabItem
-import com.glittering.youxi.utils.ToastSuccess
+import com.glittering.youxi.utils.ToastInfo
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : BaseActivity<ActivityMainBinding>() {
@@ -56,10 +57,15 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 fragmentArr,
                 tabItems
             ).addOnlyOperateClick {
-                //TODO: Launch sell activity
-                ToastSuccess("Debug")
-                val intent = Intent(this, DebugActivity::class.java)
-                startActivity(intent)
+//                if (MyApplication.loggedInUser == null) {
+                if (false) {
+                    ToastInfo("请先登录")
+                    val intent = Intent(this, LoginActivity::class.java)
+                    startActivity(intent)
+                } else {
+                    val intent = Intent(this, NewOrderActivity::class.java)
+                    startActivity(intent)
+                }
             }
 
 //        binding.navView.postDelayed({

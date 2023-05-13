@@ -14,4 +14,13 @@ interface OrderService {
         @Body body: RequestBody
     ): Call<OrderBiddingResponse>
 
+    @POST("neworder")
+    fun newOrder(
+        @Body body: RequestBody
+    ): Call<NewOrderResponse>
+
+    @PUT("order/updating")
+    fun updateOrder(
+        @Body body: RequestBody
+    ): Call<UpdateOrderResponse>
 }
