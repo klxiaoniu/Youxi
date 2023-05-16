@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.glittering.youxi.R
 import com.glittering.youxi.data.PersonalInfoResponse
@@ -76,6 +77,8 @@ class MeFragment : Fragment() {
                         val options = RequestOptions()
                             .placeholder(R.drawable.loading)
                             .error(R.drawable.error)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .skipMemoryCache(true)
                         Glide.with(applicationContext)
                             .load(userInfo.photo)
                             .apply(options)

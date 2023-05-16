@@ -7,9 +7,16 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.glittering.youxi.R
-import com.glittering.youxi.data.*
+import com.glittering.youxi.data.EmailRequest
+import com.glittering.youxi.data.EmailResponse
+import com.glittering.youxi.data.PersonalInfo
+import com.glittering.youxi.data.PersonalInfoResponse
+import com.glittering.youxi.data.ServiceCreator
+import com.glittering.youxi.data.UpdatingResponse
+import com.glittering.youxi.data.UserService
 import com.glittering.youxi.databinding.ActivityProfileUpdateBinding
 import com.glittering.youxi.utils.ToastFail
 import com.glittering.youxi.utils.ToastSuccess
@@ -137,6 +144,8 @@ class ProfileUpdateActivity : BaseActivity<ActivityProfileUpdateBinding>() {
                     val options = RequestOptions()
                         .placeholder(R.drawable.loading)
                         .error(R.drawable.error)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true)
                     Glide.with(applicationContext)
                         .load(userInfo.photo)
                         .apply(options)
