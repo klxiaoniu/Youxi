@@ -1,6 +1,5 @@
 package com.glittering.youxi.ui.activity
 
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -18,12 +17,14 @@ import com.glittering.youxi.data.UpdateOrderResponse
 import com.glittering.youxi.databinding.ActivityNewOrderBinding
 import com.glittering.youxi.utils.ToastFail
 import com.glittering.youxi.utils.ToastSuccess
+import com.glittering.youxi.utils.URIPathHelper
 import com.gyf.immersionbar.ktx.fitsTitleBar
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Response
+import java.io.File
 
 class NewOrderActivity : BaseActivity<ActivityNewOrderBinding>() {
     override val fitSystemWindows: Boolean
@@ -55,7 +56,8 @@ class NewOrderActivity : BaseActivity<ActivityNewOrderBinding>() {
                                 val option = RequestOptions()
                                     .placeholder(R.drawable.error)
                                     .error(R.drawable.error)
-                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                    .skipMemoryCache(true)
                                 Glide.with(applicationContext)
                                     .load(order.order_picture)
                                     .apply(option)
@@ -73,15 +75,16 @@ class NewOrderActivity : BaseActivity<ActivityNewOrderBinding>() {
                     }
                 })
             binding.btnPublish.text = "保存"
+            binding.toolbar.title = "修改账号资料"
         }
 
-        var photoBmp: Bitmap? = null
+        var photoBmp: File? = null
         val pickMedia =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
                 if (uri != null) {
                     Log.d("PhotoPicker", "Selected URI: $uri")
-                    photoBmp = MediaStore.Images.Media.getBitmap(contentResolver, uri)
-                    binding.ivAdd.setImageBitmap(photoBmp)
+                    binding.ivAdd.setImageBitmap(MediaStore.Images.Media.getBitmap(contentResolver, uri))
+                    photoBmp = File(URIPathHelper().getPath(this, uri))
                 } else {
                     Log.d("PhotoPicker", "No media selected")
                     //ToastShort("未选择图片")
@@ -92,7 +95,7 @@ class NewOrderActivity : BaseActivity<ActivityNewOrderBinding>() {
         }
 
         binding.btnPublish.setOnClickListener {
-            if (orderId != -1) {
+            if (orderId == -1) {
                 //新建
                 if (photoBmp == null) {
                     ToastFail("请添加图片")
@@ -104,10 +107,10 @@ class NewOrderActivity : BaseActivity<ActivityNewOrderBinding>() {
                     .setType(MultipartBody.FORM)
                     .addFormDataPart(
                         "picture",
-                        "photoBmp",
+                        photoBmp!!.name,
                         RequestBody.create(
                             MediaType.parse("image/*"),
-                            photoBmp.toString()
+                            photoBmp!!
                         )
                     )
                     .addFormDataPart("title", binding.etTitle.text.toString())
@@ -159,10 +162,10 @@ class NewOrderActivity : BaseActivity<ActivityNewOrderBinding>() {
                     .setType(MultipartBody.FORM)
                     .addFormDataPart(
                         "picture",
-                        "photoBmp",
+                        photoBmp!!.name,
                         RequestBody.create(
                             MediaType.parse("image/*"),
-                            photoBmp.toString()
+                            photoBmp!!
                         )
                     )
                     .addFormDataPart("title", binding.etTitle.text.toString())
