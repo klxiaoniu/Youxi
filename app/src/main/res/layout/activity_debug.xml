@@ -66,8 +66,14 @@
         android:text="聊天" />
 
     <Button
+        android:id="@+id/setting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/setting"
         android:text="设置" />
+
+    <Button
+        android:id="@+id/verify"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="审核" />
 </LinearLayout>

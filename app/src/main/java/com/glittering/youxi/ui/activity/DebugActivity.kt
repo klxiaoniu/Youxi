@@ -9,12 +9,12 @@ import android.os.Build
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.content.PermissionChecker
 import com.glittering.youxi.R
 import com.glittering.youxi.databinding.ActivityDebugBinding
+import com.glittering.youxi.utils.DialogUtil
 import com.glittering.youxi.utils.setToken
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hjq.toast.Toaster
@@ -63,16 +63,7 @@ class DebugActivity : BaseActivity<ActivityDebugBinding>() {
                     // Respond to negative button press
                 }
                 .show()
-            val btnPositive = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-            val btnNegative = dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-            btnPositive.setBackgroundColor(resources.getColor(R.color.primary_yellow, null))
-            btnPositive.setTextColor(resources.getColor(R.color.black, null))
-            btnNegative.setBackgroundColor(resources.getColor(R.color.primary_yellow_2, null))
-            btnNegative.setTextColor(resources.getColor(R.color.black, null))
-            btnPositive.setPadding(80, 50, 80, 50)
-            btnNegative.setPadding(80, 50, 80, 50)
-            btnPositive.setTextSize(18f)
-            btnNegative.setTextSize(18f)
+            DialogUtil.stylize(dialog)
         }
         binding.btnNotify.setOnClickListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && PermissionChecker.checkSelfPermission(
@@ -122,7 +113,7 @@ class DebugActivity : BaseActivity<ActivityDebugBinding>() {
 //val view = layoutInflater.inflate(EditText, null)
 //    MaterialAlertDialogBuilder(this)
 //        .setView()
-            setToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhc2Rhc2QiLCJ1aWQiOjEsImFjY2VzcyI6ImFkbWluIiwiZXhwIjoxNjgwMzQ2NDA4fQ.iZORCMPQKO3AgVRT4fCoTJc9uC304FsujwUKnqpIQtk")
+            setToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhc2Rhc2QiLCJ1aWQiOjEsImFjY2VzcyI6ImFkbWluIn0.2JvH_dyg1_3dFjfz4vUpWMl-vpImrgH9yxXSPciidi4")
         }
         binding.orderDetail.setOnClickListener {
             val intent = Intent(this, OrderDetailActivity::class.java)
@@ -136,6 +127,10 @@ class DebugActivity : BaseActivity<ActivityDebugBinding>() {
         }
         binding.setting.setOnClickListener {
             val intent = Intent(this, SettingActivity::class.java)
+            startActivity(intent)
+        }
+        binding.verify.setOnClickListener {
+            val intent = Intent(this, VerifyActivity::class.java)
             startActivity(intent)
         }
     }

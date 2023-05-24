@@ -23,4 +23,14 @@ interface OrderService {
     fun updateOrder(
         @Body body: RequestBody
     ): Call<UpdateOrderResponse>
+
+    @GET("order/view/verifying")
+    fun getVerifyingOrder(
+        @Body body: RequestBody
+    ): Call<VerifyingOrderResponse>
+
+    @PUT("order/verifying")
+    fun verify(
+        @Body body: RequestBody
+    ): Call<VerifyResponse>
 }
