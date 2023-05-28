@@ -17,6 +17,7 @@ import com.glittering.youxi.data.UserService
 import com.glittering.youxi.databinding.FragmentMeBinding
 import com.glittering.youxi.ui.activity.DebugActivity
 import com.glittering.youxi.ui.activity.LoginActivity
+import com.glittering.youxi.ui.activity.SettingActivity
 import com.glittering.youxi.utils.DarkUtil.Companion.reverseColorIfDark
 import com.glittering.youxi.utils.ToastFail
 import com.glittering.youxi.utils.ToastSuccess
@@ -44,15 +45,19 @@ class MeFragment : Fragment() {
         _binding = FragmentMeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        reverseColorIfDark(listOf(binding.icScan))
+        reverseColorIfDark(listOf(binding.icSetting))
         binding.userinfo.setOnClickListener {
             val intent = Intent(context, LoginActivity::class.java)
             startActivity(intent)
         }
-        binding.icScan.setOnLongClickListener {
+        binding.icSetting.setOnLongClickListener {
             val intent = Intent(context, DebugActivity::class.java)
             startActivity(intent)
             true
+        }
+        binding.icSetting.setOnClickListener {
+            val intent = Intent(context, SettingActivity::class.java)
+            startActivity(intent)
         }
         return root
     }
