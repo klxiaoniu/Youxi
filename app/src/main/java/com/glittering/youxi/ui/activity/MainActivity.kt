@@ -3,6 +3,7 @@ package com.glittering.youxi.ui.activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.glittering.youxi.R
@@ -21,6 +22,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 class MainActivity : BaseActivity<ActivityMainBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
 
         val navView: BottomNavigationView = binding.navView

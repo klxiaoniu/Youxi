@@ -38,4 +38,9 @@
         <item name="android:windowExitAnimation">@anim/anim_slide_out_bottom</item>
     </style>
 
+    <style name="SplashTheme" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/primary_yellow</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher</item>
+        <item name="postSplashScreenTheme">@style/Theme.游兮</item>
+    </style>
 </resources>
