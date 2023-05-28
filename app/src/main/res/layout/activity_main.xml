@@ -14,10 +14,29 @@
         android:layout_marginEnd="0dp"
         android:background="?android:attr/windowBackground"
         app:itemHorizontalTranslationEnabled="false"
+        app:itemTextColor="@null"
+        app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:menu="@menu/bottom_nav_menu" />
     <!--默认style会形成大圆角-->
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:backgroundTint="@color/main_fab_bg"
+        android:src="@drawable/ic_wantsell"
+        android:theme="@style/Theme.MaterialComponents.DayNight"
+        app:borderWidth="0dp"
+        app:elevation="9dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:rippleColor="@color/primary_yellow_3" />
+    <!--更改theme使之圆形-->
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/mainViewPager"
