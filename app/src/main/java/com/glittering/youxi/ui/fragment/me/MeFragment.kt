@@ -98,7 +98,7 @@ class MeFragment : Fragment() {
 
                 override fun onFailure(call: Call<PersonalInfoResponse>, t: Throwable) {
                     t.printStackTrace()
-                    ToastFail(getString(R.string.toast_response_error))
+                    ToastFail(applicationContext.getString(R.string.toast_response_error))
                 }
             })
         }

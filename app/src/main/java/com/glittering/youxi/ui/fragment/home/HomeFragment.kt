@@ -23,6 +23,7 @@ import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.databinding.FragmentHomeBinding
 import com.glittering.youxi.ui.activity.OrderDetailActivity
 import com.glittering.youxi.utils.ToastFail
+import com.glittering.youxi.utils.applicationContext
 import com.zhpan.bannerview.BannerViewPager
 import com.zhpan.bannerview.BaseBannerAdapter
 import com.zhpan.bannerview.BaseViewHolder
@@ -86,7 +87,7 @@ class HomeFragment : Fragment() {
 
             override fun onFailure(call: Call<BannerResponse>, t: Throwable) {
                 t.printStackTrace()
-                ToastFail(getString(R.string.toast_response_error))
+                ToastFail(applicationContext.getString(R.string.toast_response_error))
             }
         })
 

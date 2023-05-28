@@ -59,7 +59,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
         if (!isFollowSystem(this)) AppCompatDelegate.setDefaultNightMode(
             if (isForceDark(this)) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
-        )   //TODO: fix crash
+        )
 
         addMaskIfDark(binding.navView)
 
