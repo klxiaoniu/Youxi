@@ -12,6 +12,7 @@ import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.glittering.youxi.R;
+import com.glittering.youxi.utils.DarkUtil;
 
 public class IconTextItem extends ConstraintLayout {
     private ImageView iv;
@@ -44,6 +45,7 @@ public class IconTextItem extends ConstraintLayout {
         iv.setImageResource(id);
         tv.setText(title);
         if (!round) cv.setRadius(20);   //圆角值
+        DarkUtil.Companion.addMaskIfDark(cv);
     }
 
     private void init(Context context) {

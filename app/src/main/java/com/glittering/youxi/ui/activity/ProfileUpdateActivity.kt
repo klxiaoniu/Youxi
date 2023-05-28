@@ -18,6 +18,7 @@ import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.data.UpdatingResponse
 import com.glittering.youxi.data.UserService
 import com.glittering.youxi.databinding.ActivityProfileUpdateBinding
+import com.glittering.youxi.utils.DarkUtil.Companion.reverseColorIfDark
 import com.glittering.youxi.utils.ToastFail
 import com.glittering.youxi.utils.ToastSuccess
 import com.glittering.youxi.utils.URIPathHelper

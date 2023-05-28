@@ -18,17 +18,16 @@
     </PreferenceCategory>
 
     <PreferenceCategory app:title="系统设置">
-<!--        <ListPreference-->
-<!--            app:defaultValue="跟随系统"-->
-<!--            app:entries="@array/skin_entries"-->
-<!--            app:entryValues="@array/reply_values"-->
-<!--            app:key="skin"-->
-<!--            app:title="主题设置"-->
-<!--            app:useSimpleSummaryProvider="true" />-->
+        <ListPreference
+            app:defaultValue="0"
+            app:entries="@array/skin_entries"
+            app:entryValues="@array/skin_values"
+            app:key="skin"
+            app:title="主题设置"
+            app:useSimpleSummaryProvider="true" />
         <Preference
             app:key="about"
             app:title="关于" />
-
     </PreferenceCategory>
 
 </PreferenceScreen>

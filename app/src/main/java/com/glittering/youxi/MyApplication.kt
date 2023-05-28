@@ -1,8 +1,6 @@
 package com.glittering.youxi
 
 import android.app.Application
-import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
-import androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode
 import com.glittering.youxi.data.LoginUser
 import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.data.UserService
@@ -49,7 +47,7 @@ class MyApplication : Application() {
     init {
         application = this
         Toaster.init(this)
-        setDefaultNightMode(MODE_NIGHT_NO)  //暂未适配深色模式，不允许开启
+        //setDefaultNightMode(MODE_NIGHT_NO)  //暂未适配深色模式，不允许开启
         //DynamicColors.applyToActivitiesIfAvailable(application)     //动态取色
     }
 

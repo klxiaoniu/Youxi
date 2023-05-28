@@ -17,6 +17,7 @@ import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.databinding.ActivityOrderDetailBinding
 import com.glittering.youxi.ui.dialog.BottomBiddingDialog
 import com.glittering.youxi.ui.dialog.BottomPayDialog
+import com.glittering.youxi.utils.DarkUtil.Companion.reverseColorIfDark
 import com.glittering.youxi.utils.ToastFail
 import com.glittering.youxi.utils.ToastInfo
 import retrofit2.Call
