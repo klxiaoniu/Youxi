@@ -8,7 +8,8 @@ import com.gyf.immersionbar.ktx.fitsTitleBar
 class ChatActivity : BaseActivity<ActivityChatBinding>() {
     override val fitSystemWindows: Boolean
         get() = false
-
+    override val keyboardEnable: Boolean
+        get() = true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

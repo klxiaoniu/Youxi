@@ -31,8 +31,7 @@
             android:exported="false" />
         <activity
             android:name=".ui.activity.ChatActivity"
-            android:exported="false"
-            android:windowSoftInputMode="stateVisible|adjustPan" />
+            android:exported="false" />
         <activity
             android:name=".ui.activity.OrderDetailActivity"
             android:exported="false" />
