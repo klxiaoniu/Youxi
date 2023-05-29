@@ -2,7 +2,6 @@ package com.glittering.youxi.ui.fragment.me
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -76,14 +75,13 @@ class MeFragment : Fragment() {
                     response: Response<PersonalInfoResponse>
                 ) {
                     val res = response.body()
-                    Log.d("MeFragment", res.toString())
                     if (res?.code == 200) {
                         val userInfo = res.data[0]
                         binding.tvNickname.text = userInfo.name
-                        //binding.ivAvatar.setImageDrawable(DrawableUtil().byteToDrawable(res.data.avatar))
+                        binding.tvSignature.text = "欢迎来到游兮"
                         val options = RequestOptions()
                             .placeholder(R.drawable.loading)
-                            .error(R.drawable.error)
+                            .error(R.drawable.ic_default_avatar)
                             .diskCacheStrategy(DiskCacheStrategy.NONE)
                             .skipMemoryCache(true)
                         Glide.with(applicationContext)
@@ -106,6 +104,10 @@ class MeFragment : Fragment() {
                     ToastFail(applicationContext.getString(R.string.toast_response_error))
                 }
             })
+        } else {
+            binding.ivAvatar.setImageResource(R.drawable.ic_default_avatar)
+            binding.tvNickname.text = "请登录"
+            binding.tvSignature.text = "享受更多功能"
         }
     }
 

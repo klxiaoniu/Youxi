@@ -25,7 +25,9 @@
             android:drawableStart="@drawable/ic_search"
             android:drawablePadding="10dp"
             android:hint="输入关键词进行搜索"
-            android:inputType="textPersonName"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:maxLines="1"
             android:textSize="15sp" />
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>
