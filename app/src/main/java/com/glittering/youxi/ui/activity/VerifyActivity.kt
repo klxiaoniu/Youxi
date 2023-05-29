@@ -50,13 +50,7 @@ class VerifyActivity : BaseActivity<ActivityVerifyBinding>() {
     private fun getData(page: Int) {
         val orderService = ServiceCreator.create<OrderService>()
 
-        data class BodyData(val page: Int)
-
-        val body = FormBody.create(
-            MediaType.parse("application/json; charset=utf-8"),
-            Gson().toJson(BodyData(page))
-        )
-        orderService.getVerifyingOrder(body)
+        orderService.getVerifyingOrder(page)
             .enqueue(object : retrofit2.Callback<VerifyingOrderResponse> {
                 override fun onResponse(
                     call: Call<VerifyingOrderResponse>,
