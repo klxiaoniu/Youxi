@@ -29,4 +29,7 @@ interface UserService {
     fun getPersonalInfo(
     ): Call<PersonalInfoResponse>
 
+    @POST("temp/login")
+    fun loginWithToken(
+    ):Call<LoginResponse>
 }

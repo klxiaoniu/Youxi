@@ -6,7 +6,11 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
+import com.glittering.youxi.MyApplication.Companion.loggedInUser
 import com.glittering.youxi.R
+import com.glittering.youxi.data.LoginResponse
+import com.glittering.youxi.data.ServiceCreator
+import com.glittering.youxi.data.UserService
 import com.glittering.youxi.databinding.ActivityMainBinding
 import com.glittering.youxi.ui.adapter.PagerAdapter
 import com.glittering.youxi.ui.fragment.buy.BuyFragment
@@ -16,8 +20,14 @@ import com.glittering.youxi.ui.fragment.notifications.NotificationsFragment
 import com.glittering.youxi.utils.DarkUtil.Companion.addMaskIfDark
 import com.glittering.youxi.utils.DarkUtil.Companion.isFollowSystem
 import com.glittering.youxi.utils.DarkUtil.Companion.isForceDark
+import com.glittering.youxi.utils.ToastFail
 import com.glittering.youxi.utils.ToastInfo
+import com.glittering.youxi.utils.getToken
+import com.glittering.youxi.utils.rmToken
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class MainActivity : BaseActivity<ActivityMainBinding>() {
 
@@ -67,13 +77,34 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
         binding.fab.imageTintList = null
         binding.fab.setOnClickListener {
-//            if (loggedInUser == null) {
-            if (false) {
+            if (loggedInUser == null) {
                 ToastInfo("请先登录")
                 startActivity(Intent(this, LoginActivity::class.java))
             } else {
                 startActivity(Intent(this, NewOrderActivity::class.java))
             }
+        }
+
+        if (getToken() != "") {
+            val userService = ServiceCreator.create<UserService>()
+            userService.loginWithToken().enqueue(object : Callback<LoginResponse> {
+                override fun onResponse(
+                    call: Call<LoginResponse>,
+                    response: Response<LoginResponse>
+                ) {
+                    val code = response.body()?.code
+                    if (code == 200) {
+                        loggedInUser = response.body()?.data
+                    } else {
+                        ToastFail("登录过期，请您重新登录")
+                        rmToken()
+                    }
+                }
+
+                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                    t.printStackTrace()
+                }
+            })
         }
     }
 }
