@@ -13,8 +13,6 @@ class MyApplication : Application() {
     init {
         application = this
         Toaster.init(this)
-        //setDefaultNightMode(MODE_NIGHT_NO)  //暂未适配深色模式，不允许开启
-        //DynamicColors.applyToActivitiesIfAvailable(application)     //动态取色
     }
 
 }
