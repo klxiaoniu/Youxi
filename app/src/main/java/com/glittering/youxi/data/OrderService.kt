@@ -24,13 +24,28 @@ interface OrderService {
         @Body body: RequestBody
     ): Call<UpdateOrderResponse>
 
+    @DELETE("order/deleting")
+    fun deleteOrder(
+        @Body body: RequestBody
+    ): Call<DeleteOrderResponse>
+
     @GET("order/view/verifying")
     fun getVerifyingOrder(
-        @Body body: RequestBody
+        @Query("page") page: Int
     ): Call<VerifyingOrderResponse>
 
     @PUT("order/verifying")
     fun verify(
         @Body body: RequestBody
     ): Call<VerifyResponse>
+
+    @GET("order/searching")
+    fun search(
+        @Query("keyword") key: String, @Query("page") page: Int
+    ): Call<SearchResponse>
+
+    @PUT("order/paying")
+    fun pay(
+        @Body body: RequestBody
+    ): Call<PayResponse>
 }

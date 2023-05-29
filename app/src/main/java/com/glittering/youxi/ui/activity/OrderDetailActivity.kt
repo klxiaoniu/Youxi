@@ -10,17 +10,25 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.glittering.youxi.R
+import com.glittering.youxi.data.DeleteOrderResponse
 import com.glittering.youxi.data.Order
 import com.glittering.youxi.data.OrderInfoResponse
 import com.glittering.youxi.data.OrderService
+import com.glittering.youxi.data.PayResponse
 import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.databinding.ActivityOrderDetailBinding
 import com.glittering.youxi.ui.dialog.BottomBiddingDialog
-import com.glittering.youxi.ui.dialog.BottomPayDialog
 import com.glittering.youxi.utils.DarkUtil.Companion.reverseColorIfDark
+import com.glittering.youxi.utils.DialogUtil
 import com.glittering.youxi.utils.ToastFail
 import com.glittering.youxi.utils.ToastInfo
+import com.glittering.youxi.utils.ToastSuccess
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.gson.Gson
+import okhttp3.FormBody
+import okhttp3.MediaType
 import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Response
 
 class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
@@ -96,7 +104,52 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
                                 when (item.itemId) {
                                     R.id.action_share -> ToastInfo("分享-Not implemented")
                                     R.id.action_report -> ToastInfo("举报-Not implemented")
-                                    R.id.action_delete -> ToastInfo("删除-Not implemented")
+                                    R.id.action_delete -> {
+                                        val dialog =
+                                            MaterialAlertDialogBuilder(this@OrderDetailActivity)
+                                                .setTitle("确认删除")
+                                                .setMessage("确认删除此商品？")
+                                                .setPositiveButton("确定") { _, _ ->
+                                                    val orderService =
+                                                        ServiceCreator.create<OrderService>()
+
+                                                    data class DeleteData(val order_id: Int)
+
+                                                    val deleteData = DeleteData(orderId)
+                                                    val json = FormBody.create(
+                                                        MediaType.parse("application/json; charset=utf-8"),
+                                                        Gson().toJson(deleteData)
+                                                    )
+                                                    orderService.deleteOrder(json)
+                                                        .enqueue(object :
+                                                            Callback<DeleteOrderResponse> {
+                                                            override fun onResponse(
+                                                                call: Call<DeleteOrderResponse>,
+                                                                response: Response<DeleteOrderResponse>
+                                                            ) {
+                                                                val code = response.body()?.code
+                                                                if (code == 200) {
+                                                                    ToastSuccess(response.body()?.message.toString())
+                                                                    finish()
+                                                                } else {
+                                                                    ToastFail(response.body()?.message.toString())
+                                                                }
+                                                            }
+
+                                                            override fun onFailure(
+                                                                call: Call<DeleteOrderResponse>,
+                                                                t: Throwable
+                                                            ) {
+                                                                t.printStackTrace()
+                                                                ToastFail(getString(R.string.toast_response_error))
+                                                            }
+                                                        })
+                                                }
+                                                .setNegativeButton("取消", null)
+                                                .show()
+                                        DialogUtil.stylize(dialog)
+                                    }
+
                                     R.id.action_edit -> {
                                         val intent = Intent(
                                             this@OrderDetailActivity,
@@ -127,9 +180,47 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
             if (order == null) {
                 ToastInfo("正在加载商品信息，请稍候")
             } else {
-                BottomPayDialog(this, order!!.order_price).show()
+                //BottomPayDialog(this, order!!.order_price).show()
+                val dialog = MaterialAlertDialogBuilder(this)
+                    .setTitle("确认购买")
+                    .setMessage("确认使用钱包余额购买该商品？")
+                    .setPositiveButton("确定") { dialog, which ->
+
+                        val orderService = ServiceCreator.create<OrderService>()
+
+                        data class PayData(val order_id: Int)
+
+                        val payData = PayData(orderId)
+                        val json = FormBody.create(
+                            MediaType.parse("application/json; charset=utf-8"),
+                            Gson().toJson(payData)
+                        )
+                        orderService.pay(json).enqueue(object : Callback<PayResponse> {
+                            override fun onResponse(
+                                call: Call<PayResponse>,
+                                response: Response<PayResponse>
+                            ) {
+                                if (response.body() != null) {
+                                    val code = response.body()?.code
+                                    if (code == 200) {
+                                        ToastSuccess(response.body()?.message.toString())
+                                    } else {
+                                        ToastFail(response.body()?.message.toString())
+                                    }
+                                } else ToastFail(getString(R.string.toast_response_error))
+                            }
+
+                            override fun onFailure(call: Call<PayResponse>, t: Throwable) {
+                                t.printStackTrace()
+                                ToastFail(getString(R.string.toast_response_error))
+                            }
+                        })
+
+                    }
+                    .setNegativeButton("取消", null)
+                    .show()
+                DialogUtil.stylize(dialog)
             }
-//            BottomPayDialog(this,123.456).show()
         }
         binding.btnChat.setOnClickListener {
             val intent = Intent(this, ChatActivity::class.java)
