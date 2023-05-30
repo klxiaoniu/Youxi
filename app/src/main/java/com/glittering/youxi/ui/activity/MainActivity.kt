@@ -1,5 +1,6 @@
 package com.glittering.youxi.ui.activity
 
+import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatDelegate
@@ -25,6 +26,7 @@ import com.glittering.youxi.utils.ToastInfo
 import com.glittering.youxi.utils.getToken
 import com.glittering.youxi.utils.rmToken
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.gyf.immersionbar.ImmersionBar
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -75,13 +77,17 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
         addMaskIfDark(binding.navView)
 
+        binding.space.layoutParams.height = ImmersionBar.getNavigationBarHeight(this)
         binding.fab.imageTintList = null
         binding.fab.setOnClickListener {
             if (loggedInUser == null) {
                 ToastInfo("请先登录")
                 startActivity(Intent(this, LoginActivity::class.java))
             } else {
-                startActivity(Intent(this, NewOrderActivity::class.java))
+                startActivity(
+                    Intent(this, NewOrderActivity::class.java),
+                    ActivityOptions.makeSceneTransitionAnimation(this).toBundle()
+                )
             }
         }
 

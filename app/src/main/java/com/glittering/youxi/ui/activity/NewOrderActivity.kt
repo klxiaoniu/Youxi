@@ -2,7 +2,9 @@ package com.glittering.youxi.ui.activity
 
 import android.os.Bundle
 import android.provider.MediaStore
+import android.transition.Slide
 import android.util.Log
+import android.view.Window
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import com.bumptech.glide.Glide
@@ -31,11 +33,14 @@ class NewOrderActivity : BaseActivity<ActivityNewOrderBinding>() {
         get() = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        window.requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
+        window.enterTransition = Slide()
+        window.exitTransition = Slide()
         super.onCreate(savedInstanceState)
 
         binding.toolbar.let {
             it.setNavigationIcon(R.drawable.close)
-            it.setNavigationOnClickListener { finish() }
+            it.setNavigationOnClickListener { finishAfterTransition() }
         }
         fitsTitleBar(binding.toolbar)
 
@@ -83,7 +88,12 @@ class NewOrderActivity : BaseActivity<ActivityNewOrderBinding>() {
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
                 if (uri != null) {
                     Log.d("PhotoPicker", "Selected URI: $uri")
-                    binding.ivAdd.setImageBitmap(MediaStore.Images.Media.getBitmap(contentResolver, uri))
+                    binding.ivAdd.setImageBitmap(
+                        MediaStore.Images.Media.getBitmap(
+                            contentResolver,
+                            uri
+                        )
+                    )
                     photoBmp = File(URIPathHelper().getPath(this, uri))
                 } else {
                     Log.d("PhotoPicker", "No media selected")

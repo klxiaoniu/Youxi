@@ -32,11 +32,17 @@
         android:theme="@style/Theme.MaterialComponents.DayNight"
         app:borderWidth="0dp"
         app:elevation="9dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/space"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:rippleColor="@color/primary_yellow_3" />
     <!--更改theme使之圆形-->
+
+    <Space
+        android:id="@+id/space"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/mainViewPager"
