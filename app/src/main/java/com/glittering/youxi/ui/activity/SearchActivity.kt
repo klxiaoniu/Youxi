@@ -1,6 +1,7 @@
 package com.glittering.youxi.ui.activity
 
 import android.os.Bundle
+import android.util.Log
 import android.view.inputmethod.EditorInfo
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.glittering.youxi.R
@@ -57,6 +58,7 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>() {
                 val code = response.body()?.code
                 if (code == 200) {
                     val data = response.body()?.data!!
+                    Log.d("SearchActivity", data.toString())
                     if (adapter == null) {
                         adapter = SearchResultAdapter(data)
                         val layoutManager = LinearLayoutManager(applicationContext)
@@ -71,8 +73,8 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>() {
                     adapter!!.setOnFootViewClickListener { getData(key, i + 1) }
                 } else {
                     ToastFail(response.body()?.message.toString())
-                    adapter!!.setOnFootViewAttachedToWindowListener { getData(key, i) }
-                    adapter!!.setOnFootViewClickListener { getData(key, i) }
+                    adapter?.setOnFootViewAttachedToWindowListener { getData(key, i) }
+                    adapter?.setOnFootViewClickListener { getData(key, i) }
                 }
             }
 
