@@ -1,13 +1,11 @@
 package com.glittering.youxi.ui.fragment.home
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.URLUtil
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -120,18 +118,23 @@ class HomeFragment : Fragment() {
                 .apply(options)
                 .into(imageView)
             textView.text = data.order_title
-            if (data.order_address != "") {
-                layout.setOnClickListener {
-                    if (URLUtil.isValidUrl(data.order_address)) {
-                        val uri = Uri.parse(data.order_address)
-                        val intent = Intent(Intent.ACTION_VIEW, uri)
-                        startActivity(intent)
-                    } else {
-                        val intent = Intent(requireContext(), OrderDetailActivity::class.java)
-                        intent.putExtra("order_id", data.order_address)
-                        startActivity(intent)
-                    }
-                }
+//            if (data.order_address != "") {
+//                layout.setOnClickListener {
+//                    if (URLUtil.isValidUrl(data.order_address)) {
+//                        val uri = Uri.parse(data.order_address)
+//                        val intent = Intent(Intent.ACTION_VIEW, uri)
+//                        startActivity(intent)
+//                    } else {
+//                        val intent = Intent(requireContext(), OrderDetailActivity::class.java)
+//                        intent.putExtra("order_id", data.order_address)
+//                        startActivity(intent)
+//                    }
+//                }
+//            }
+            layout.setOnClickListener {
+                val intent = Intent(requireContext(), OrderDetailActivity::class.java)
+                intent.putExtra("order_id", data.order_id)
+                startActivity(intent)
             }
         }
 
