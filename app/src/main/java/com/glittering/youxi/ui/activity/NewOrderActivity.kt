@@ -1,5 +1,7 @@
 package com.glittering.youxi.ui.activity
 
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.provider.MediaStore
 import android.transition.Slide
@@ -27,10 +29,12 @@ import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Response
 import java.io.File
+import java.io.FileOutputStream
 
 class NewOrderActivity : BaseActivity<ActivityNewOrderBinding>() {
     override val fitSystemWindows: Boolean
         get() = false
+    var photoFile: File? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         window.requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
@@ -67,6 +71,16 @@ class NewOrderActivity : BaseActivity<ActivityNewOrderBinding>() {
                                     .load(order.order_picture)
                                     .apply(option)
                                     .into(binding.ivAdd)
+
+                                val drawable = binding.ivAdd.drawable as BitmapDrawable
+                                val bitmap = drawable.bitmap
+                                photoFile = File(applicationContext.cacheDir, "image.png")
+                                photoFile!!.createNewFile()
+                                val outputStream = FileOutputStream(photoFile)
+                                bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+                                outputStream.flush()
+                                outputStream.close()
+
                                 binding.etTitle.setText(order.order_title)
                                 binding.etPrice.setText(order.order_price.toString())
                                 binding.etDesc.setText(order.order_description)
@@ -83,7 +97,6 @@ class NewOrderActivity : BaseActivity<ActivityNewOrderBinding>() {
             binding.toolbar.title = "修改账号资料"
         }
 
-        var photoBmp: File? = null
         val pickMedia =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
                 if (uri != null) {
@@ -94,7 +107,7 @@ class NewOrderActivity : BaseActivity<ActivityNewOrderBinding>() {
                             uri
                         )
                     )
-                    photoBmp = File(URIPathHelper().getPath(this, uri))
+                    photoFile = File(URIPathHelper().getPath(this, uri))
                 } else {
                     Log.d("PhotoPicker", "No media selected")
                     //ToastShort("未选择图片")
@@ -107,20 +120,19 @@ class NewOrderActivity : BaseActivity<ActivityNewOrderBinding>() {
         binding.btnPublish.setOnClickListener {
             if (orderId == -1) {
                 //新建
-                if (photoBmp == null) {
+                if (photoFile == null) {
                     ToastFail("请添加图片")
                     return@setOnClickListener
                 }
-                //TODO: waiting for check
                 val orderService = ServiceCreator.create<OrderService>()
                 val requestBody: RequestBody = MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
                     .addFormDataPart(
                         "picture",
-                        photoBmp!!.name,
+                        photoFile!!.name,
                         RequestBody.create(
                             MediaType.parse("image/*"),
-                            photoBmp!!
+                            photoFile!!
                         )
                     )
                     .addFormDataPart("title", binding.etTitle.text.toString())
@@ -162,7 +174,7 @@ class NewOrderActivity : BaseActivity<ActivityNewOrderBinding>() {
                     })
             } else {
                 //编辑
-                if (photoBmp == null) {
+                if (photoFile == null) {
                     ToastFail("请添加图片")
                     return@setOnClickListener
                 }
@@ -172,10 +184,10 @@ class NewOrderActivity : BaseActivity<ActivityNewOrderBinding>() {
                     .setType(MultipartBody.FORM)
                     .addFormDataPart(
                         "picture",
-                        photoBmp!!.name,
+                        photoFile!!.name,
                         RequestBody.create(
                             MediaType.parse("image/*"),
-                            photoBmp!!
+                            photoFile!!
                         )
                     )
                     .addFormDataPart("title", binding.etTitle.text.toString())
