@@ -80,10 +80,9 @@ class MeFragment : Fragment() {
                         binding.tvNickname.text = userInfo.name
                         binding.tvSignature.text = "欢迎来到游兮"
                         val options = RequestOptions()
-                            .placeholder(R.drawable.loading)
-                            .error(R.drawable.ic_default_avatar)
+                            .placeholder(R.drawable.ic_default_avatar)
+                            .error(R.drawable.error)
                             .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
                         Glide.with(applicationContext)
                             .load(userInfo.photo)
                             .apply(options)

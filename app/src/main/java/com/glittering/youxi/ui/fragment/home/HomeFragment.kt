@@ -112,7 +112,6 @@ class HomeFragment : Fragment() {
                 //.placeholder(R.drawable.loading)
                 .error(R.drawable.error)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
             Glide.with(this@HomeFragment)
                 .load(data!!.order_picture)
                 .apply(options)
