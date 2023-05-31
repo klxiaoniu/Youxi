@@ -42,6 +42,11 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>() {
                 startActivity(intent)
                 true
             }
+            findPreference<Preference>("verify")?.setOnPreferenceClickListener {
+                val intent = Intent(requireContext(), ProfileUpdateActivity::class.java)
+                startActivity(intent)
+                true
+            }
             findPreference<Preference>("about")?.setOnPreferenceClickListener {
                 val dialog = MaterialAlertDialogBuilder(requireContext())
                     .setTitle("关于游兮")
