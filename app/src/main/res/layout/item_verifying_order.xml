@@ -2,16 +2,56 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:padding="15dp">
 
-    <TextView
-        android:id="@+id/tv_info"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:cardCornerRadius="10dp"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/iv"
+            android:layout_width="80dp"
+            android:layout_height="80dp" />
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:maxLines="1"
+        android:text="Title"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@id/cv"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/tv_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:text="Price"
+        android:textColor="@color/red"
+        android:textSize="14sp"
+        app:layout_constraintStart_toEndOf="@id/cv"
+        app:layout_constraintTop_toBottomOf="@id/tv_title" />
+
+    <TextView
+        android:id="@+id/tv_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:maxLines="2"
+        android:text="desc"
+        android:textColor="@color/dark_2"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@id/cv"
+        app:layout_constraintTop_toBottomOf="@id/tv_price" />
     <Button
         android:id="@+id/btn_verify"
         android:layout_width="wrap_content"
