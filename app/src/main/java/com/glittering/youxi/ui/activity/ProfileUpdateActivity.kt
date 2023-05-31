@@ -143,7 +143,7 @@ class ProfileUpdateActivity : BaseActivity<ActivityProfileUpdateBinding>() {
                     binding.email.setText(userInfo.email)
                     //binding.ivAvatar.setImageDrawable(DrawableUtil().byteToDrawable(res.data.avatar))
                     val options = RequestOptions()
-                        .placeholder(R.drawable.loading)
+                        .placeholder(R.drawable.ic_default_avatar)
                         .error(R.drawable.error)
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
                         .skipMemoryCache(true)
