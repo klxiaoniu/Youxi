@@ -11,6 +11,11 @@ interface UserService {
         @Body body: RequestBody
     ): Call<LoginResponse>
 
+    @POST("register")
+    fun register(
+        @Body body: RequestBody
+    ): Call<RegisterResponse>
+
     @GET("code")
     fun queryCode(
     ): Call<CodeResponse>

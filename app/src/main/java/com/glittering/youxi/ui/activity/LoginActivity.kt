@@ -1,7 +1,6 @@
 package com.glittering.youxi.ui.activity
 
 import android.os.Bundle
-import android.util.Log
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -11,6 +10,8 @@ import com.glittering.youxi.R
 import com.glittering.youxi.data.CodeResponse
 import com.glittering.youxi.data.LoginRequest
 import com.glittering.youxi.data.LoginResponse
+import com.glittering.youxi.data.RegisterRequest
+import com.glittering.youxi.data.RegisterResponse
 import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.data.UserService
 import com.glittering.youxi.databinding.ActivityLoginBinding
@@ -75,14 +76,11 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
                     call: Call<LoginResponse>,
                     response: Response<LoginResponse>
                 ) {
-                    Log.d("body", response.body().toString())
                     val code = response.body()?.code
                     if (code == 200) {
                         val data = response.body()?.data
-                        Log.d("body", data.toString())
                         val token = data?.token!!
                         setToken(token)
-                        Log.d("token", token)
                         MyApplication.loggedInUser = data
                         ToastSuccess("登录成功")
                         finish()
@@ -116,7 +114,40 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
             }
         }
         binding.register.setOnClickListener {
-            // TODO: 注册逻辑
+            if (!binding.checkAgree.isChecked) {
+                ToastFail("请先阅读并同意《用户协议》和《隐私政策》")
+                return@setOnClickListener
+            }
+            val userService = ServiceCreator.create<UserService>()
+            val request = RegisterRequest(
+                username.text.toString(),
+                password.text.toString()
+            )
+            val json = FormBody.create(
+                MediaType.parse("application/json; charset=utf-8"),
+                Gson().toJson(request)
+            )
+            userService.register(json).enqueue(object : Callback<RegisterResponse> {
+                override fun onResponse(
+                    call: Call<RegisterResponse>,
+                    response: Response<RegisterResponse>
+                ) {
+                    val code = response.body()?.code
+                    if (code == 200) {
+                        ToastSuccess(response.body()?.message.toString())
+                        finish()
+                    } else {
+                        ToastFail(response.body()?.message.toString())
+                        getCode()
+                    }
+                }
+
+                override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
+                    t.printStackTrace()
+                    ToastFail(t.toString())
+                    getCode()
+                }
+            })
         }
         binding.phoneLogin.setOnClickListener {
             ToastInfo("敬请期待！")
