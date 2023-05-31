@@ -26,7 +26,7 @@ interface OrderService {
 
     @DELETE("order/deleting")
     fun deleteOrder(
-        @Body body: RequestBody
+        @Query("order_id") id: Int
     ): Call<DeleteOrderResponse>
 
     @GET("order/view/verifying")

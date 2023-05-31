@@ -5,15 +5,18 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.AbsoluteSizeSpan
+import android.view.View
 import androidx.appcompat.widget.PopupMenu
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
+import com.glittering.youxi.MyApplication.Companion.loggedInUser
 import com.glittering.youxi.R
 import com.glittering.youxi.data.DeleteOrderResponse
 import com.glittering.youxi.data.Order
 import com.glittering.youxi.data.OrderInfoResponse
 import com.glittering.youxi.data.OrderService
+import com.glittering.youxi.data.PayRequest
 import com.glittering.youxi.data.PayResponse
 import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.databinding.ActivityOrderDetailBinding
@@ -42,6 +45,7 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
         reverseColorIfDark(
             listOf(
                 binding.back,
+                binding.option,
                 binding.ivFavorite,
 //                binding.ivLike,
 //                binding.ivDislike
@@ -60,7 +64,6 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
                 response: Response<OrderInfoResponse>
             ) {
                 if (response.body() != null) {
-                    println(response.body().toString())
                     if (response.body()!!.code == 200) {
                         order = response.body()!!.data[0]
                         val option = RequestOptions()
@@ -96,58 +99,22 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
                         binding.tvOrderPrice.text = textSpan
                         binding.tvOrderDescription.text = order!!.order_description
 
+                        if (order!!.seller_id == loggedInUser?.id) {
+                            binding.bottom.visibility = View.GONE
+                        }
+
+
+
                         binding.option.setOnClickListener {
-                            val popupMenu = PopupMenu(applicationContext, binding.option)
-                            popupMenu.menuInflater.inflate(R.menu.order_detail_menu, popupMenu.menu)
+                            val popupMenu = PopupMenu(this@OrderDetailActivity, binding.option)
+                            menuInflater.inflate(R.menu.order_detail_menu, popupMenu.menu)
                             //TODO:权限判断，不显示一些选项
                             popupMenu.setOnMenuItemClickListener { item ->
                                 when (item.itemId) {
                                     R.id.action_share -> ToastInfo("分享-Not implemented")
                                     R.id.action_report -> ToastInfo("举报-Not implemented")
                                     R.id.action_delete -> {
-                                        val dialog =
-                                            MaterialAlertDialogBuilder(this@OrderDetailActivity)
-                                                .setTitle("确认删除")
-                                                .setMessage("确认删除此商品？")
-                                                .setPositiveButton("确定") { _, _ ->
-                                                    val orderService =
-                                                        ServiceCreator.create<OrderService>()
-
-                                                    data class DeleteData(val order_id: Int)
-
-                                                    val deleteData = DeleteData(orderId)
-                                                    val json = FormBody.create(
-                                                        MediaType.parse("application/json; charset=utf-8"),
-                                                        Gson().toJson(deleteData)
-                                                    )
-                                                    orderService.deleteOrder(json)
-                                                        .enqueue(object :
-                                                            Callback<DeleteOrderResponse> {
-                                                            override fun onResponse(
-                                                                call: Call<DeleteOrderResponse>,
-                                                                response: Response<DeleteOrderResponse>
-                                                            ) {
-                                                                val code = response.body()?.code
-                                                                if (code == 200) {
-                                                                    ToastSuccess(response.body()?.message.toString())
-                                                                    finish()
-                                                                } else {
-                                                                    ToastFail(response.body()?.message.toString())
-                                                                }
-                                                            }
-
-                                                            override fun onFailure(
-                                                                call: Call<DeleteOrderResponse>,
-                                                                t: Throwable
-                                                            ) {
-                                                                t.printStackTrace()
-                                                                ToastFail(getString(R.string.toast_response_error))
-                                                            }
-                                                        })
-                                                }
-                                                .setNegativeButton("取消", null)
-                                                .show()
-                                        DialogUtil.stylize(dialog)
+                                        deleteOrder(orderId)
                                     }
 
                                     R.id.action_edit -> {
@@ -161,6 +128,7 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
                                 }
                                 true
                             }
+                            popupMenu.show()
                         }
                     } else ToastFail(response.message())
                 } else ToastFail(getString(R.string.toast_response_error))
@@ -177,6 +145,11 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
         }
 
         binding.btnBuy.setOnClickListener {
+            if (loggedInUser == null) {
+                ToastInfo("请先登录")
+                startActivity(Intent(this, LoginActivity::class.java))
+                return@setOnClickListener
+            }
             if (order == null) {
                 ToastInfo("正在加载商品信息，请稍候")
             } else {
@@ -185,12 +158,7 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
                     .setTitle("确认购买")
                     .setMessage("确认使用钱包余额购买该商品？")
                     .setPositiveButton("确定") { dialog, which ->
-
-                        val orderService = ServiceCreator.create<OrderService>()
-
-                        data class PayData(val order_id: Int)
-
-                        val payData = PayData(orderId)
+                        val payData = PayRequest(orderId)
                         val json = FormBody.create(
                             MediaType.parse("application/json; charset=utf-8"),
                             Gson().toJson(payData)
@@ -227,6 +195,45 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
             intent.putExtra("chat_id", order?.seller_id?.toLong())
             startActivity(intent)
         }
+    }
+
+    private fun deleteOrder(orderId: Int) {
+        val dialog =
+            MaterialAlertDialogBuilder(this@OrderDetailActivity)
+                .setTitle("确认删除")
+                .setMessage("确认删除此商品？")
+                .setPositiveButton("确定") { _, _ ->
+                    val orderService =
+                        ServiceCreator.create<OrderService>()
+
+                    orderService.deleteOrder(orderId)
+                        .enqueue(object :
+                            Callback<DeleteOrderResponse> {
+                            override fun onResponse(
+                                call: Call<DeleteOrderResponse>,
+                                response: Response<DeleteOrderResponse>
+                            ) {
+                                val code = response.body()?.code
+                                if (code == 200) {
+                                    ToastSuccess(response.body()?.message.toString())
+                                    finish()
+                                } else {
+                                    ToastFail(response.body()?.message.toString())
+                                }
+                            }
+
+                            override fun onFailure(
+                                call: Call<DeleteOrderResponse>,
+                                t: Throwable
+                            ) {
+                                t.printStackTrace()
+                                ToastFail(getString(R.string.toast_response_error))
+                            }
+                        })
+                }
+                .setNegativeButton("取消", null)
+                .show()
+        DialogUtil.stylize(dialog)
     }
 
 }

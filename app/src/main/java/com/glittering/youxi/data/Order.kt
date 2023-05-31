@@ -7,5 +7,5 @@ class Order(
     val order_picture: String,
     val order_price: Double,
     val order_title: String,
-    val seller_id: Int
+    val seller_id: Long
 )

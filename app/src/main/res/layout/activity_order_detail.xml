@@ -51,21 +51,18 @@
                 android:id="@+id/tv_order_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Order Title"
                 android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/tv_order_price"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="￥114514.00" />
+                android:layout_height="wrap_content" />
 
             <TextView
                 android:id="@+id/tv_order_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="Order Description"
                 android:textColor="@color/dark_2" />
 
         </LinearLayout>
@@ -120,8 +117,7 @@
                     <TextView
                         android:id="@+id/tv_username"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="用户名" />
+                        android:layout_height="wrap_content" />
 
                     <TextView
                         android:id="@+id/tv_real"
