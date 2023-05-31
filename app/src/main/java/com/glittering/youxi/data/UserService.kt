@@ -31,5 +31,10 @@ interface UserService {
 
     @POST("temp/login")
     fun loginWithToken(
-    ):Call<LoginResponse>
+    ): Call<LoginResponse>
+
+    @GET("message")
+    fun getSysMsg(
+        @Query("page") page: Int
+    ): Call<SysMsgResponse>
 }
