@@ -41,10 +41,10 @@ class NotificationsFragment : Fragment() {
         val root: View = binding.root
 
         val list: List<Notification> = listOf(
-            Notification(1, "系统通知", "系统通知内容", 0, R.drawable.ic_notifications_black_24dp),
+            Notification(10000, "系统通知", "系统通知内容", 0, R.drawable.ic_notifications_black_24dp),
             Notification(2, "聊天消息", "聊天消息内容", 0, R.drawable.ic_success)
         )
-        adapter = NotificationAdapter(list)
+        adapter = NotificationAdapter(list,requireActivity())
         val layoutManager = LinearLayoutManager(applicationContext)
         layoutManager.orientation = LinearLayoutManager.VERTICAL
         binding.recyclerview.layoutManager = layoutManager

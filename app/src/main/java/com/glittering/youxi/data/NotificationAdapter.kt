@@ -1,6 +1,8 @@
 package com.glittering.youxi.data
 
+import android.app.Activity
 import android.content.Intent
+import android.text.format.DateFormat
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -9,15 +11,17 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.glittering.youxi.R
+import com.glittering.youxi.database.MsgDatabase
 import com.glittering.youxi.ui.activity.ChatActivity
+import kotlin.concurrent.thread
 
-class NotificationAdapter(var list: List<Notification>) :
+class NotificationAdapter(var list: List<Notification>, val activity: Activity) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     val TYPE_FOOTVIEW: Int = 1 //item类型：footview
     val TYPE_ITEMVIEW: Int = 2 //item类型：itemview
     var typeItem = TYPE_ITEMVIEW
 
-    lateinit var fullList: List<Notification>
+    var fullList: List<Notification>
 
     init {
         fullList = list
@@ -53,13 +57,26 @@ class NotificationAdapter(var list: List<Notification>) :
         Log.d("onBindViewHolder", position.toString())
         if (holder is ItemViewHolder) {
             holder.title.text = list[position].title
-            holder.message.text = list[position].message
-            holder.time.text = list[position].time.toString()
+//            holder.message.text = list[position].message
+//            holder.time.text = list[position].time.toString()
             holder.avatar.setImageResource(list[position].avatar)   //TODO: 从网络获取头像
             holder.item.setOnClickListener {
                 val intent = Intent(it.context, ChatActivity::class.java)
                 intent.putExtra("chat_id", list[position].id)
                 it.context.startActivity(intent)
+            }
+            thread {
+                val msgRecordDao = MsgDatabase.getDatabase().msgRecordDao()
+                val msg = msgRecordDao.loadLastMsgRecord(list[position].id)
+                activity.runOnUiThread {
+                    if (msg != null) {
+                        holder.message.text = msg.content
+                        holder.time.text = DateFormat.format("HH:mm", msg.time)
+                    } else {
+                        holder.message.text = list[position].message
+                        holder.time.text = list[position].time.toString()
+                    }
+                }
             }
         } else if (holder is FootViewHolder) {
             holder.item.visibility = if (itemCount != 1) View.GONE else View.VISIBLE
