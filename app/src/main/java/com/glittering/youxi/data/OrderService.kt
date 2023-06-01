@@ -14,6 +14,12 @@ interface OrderService {
         @Body body: RequestBody
     ): Call<OrderBiddingResponse>
 
+    @GET("bid/searching")
+    fun getBidInfo(
+        @Query("order_id") orderId: Int,
+        @Query("page") page: Int
+    ): Call<BidInfoResponse>
+
     @POST("neworder")
     fun newOrder(
         @Body body: RequestBody

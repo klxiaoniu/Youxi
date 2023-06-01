@@ -34,6 +34,11 @@ interface UserService {
     fun getPersonalInfo(
     ): Call<PersonalInfoResponse>
 
+    @GET("user/information")
+    fun getUserInfo(
+        @Query("id") id: Long
+    ): Call<UserInfoResponse>
+
     @POST("temp/login")
     fun loginWithToken(
     ): Call<LoginResponse>

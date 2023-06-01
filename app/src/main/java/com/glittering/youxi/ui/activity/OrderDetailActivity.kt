@@ -7,11 +7,14 @@ import android.text.SpannableStringBuilder
 import android.text.style.AbsoluteSizeSpan
 import android.view.View
 import androidx.appcompat.widget.PopupMenu
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.glittering.youxi.MyApplication.Companion.loggedInUser
 import com.glittering.youxi.R
+import com.glittering.youxi.data.BidInfoAdapter
+import com.glittering.youxi.data.BidInfoResponse
 import com.glittering.youxi.data.DeleteOrderResponse
 import com.glittering.youxi.data.Order
 import com.glittering.youxi.data.OrderInfoResponse
@@ -19,6 +22,8 @@ import com.glittering.youxi.data.OrderService
 import com.glittering.youxi.data.PayRequest
 import com.glittering.youxi.data.PayResponse
 import com.glittering.youxi.data.ServiceCreator
+import com.glittering.youxi.data.UserInfoResponse
+import com.glittering.youxi.data.UserService
 import com.glittering.youxi.databinding.ActivityOrderDetailBinding
 import com.glittering.youxi.ui.dialog.BottomBiddingDialog
 import com.glittering.youxi.utils.DarkUtil.Companion.reverseColorIfDark
@@ -36,6 +41,7 @@ import retrofit2.Response
 
 class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
     var order: Order? = null
+    var adapter: BidInfoAdapter? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -58,7 +64,7 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
             return
         }
         val orderService = ServiceCreator.create<OrderService>()
-        orderService.getOrderInfo(orderId).enqueue(object : retrofit2.Callback<OrderInfoResponse> {
+        orderService.getOrderInfo(orderId).enqueue(object : Callback<OrderInfoResponse> {
             override fun onResponse(
                 call: Call<OrderInfoResponse>,
                 response: Response<OrderInfoResponse>
@@ -69,7 +75,7 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
                         val option = RequestOptions()
                             .placeholder(R.drawable.error)
                             .error(R.drawable.error)
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
                         Glide.with(this@OrderDetailActivity)
                             .load(order!!.order_picture)
                             .apply(option)
@@ -103,6 +109,57 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
                             binding.bottom.visibility = View.GONE
                         }
 
+                        val userService = ServiceCreator.create<UserService>()
+                        userService.getUserInfo(order!!.seller_id)
+                            .enqueue(object : Callback<UserInfoResponse> {
+                                override fun onResponse(
+                                    call: Call<UserInfoResponse>,
+                                    response: Response<UserInfoResponse>
+                                ) {
+                                    if (response.body() != null) {
+                                        if (response.body()!!.code == 200) {
+                                            val seller = response.body()!!.data[0]
+                                            binding.tvUsername.text = seller.name
+                                            Glide.with(this@OrderDetailActivity)
+                                                .load(seller.photo)
+                                                .apply(option)
+                                                .into(binding.ivAvatar)
+                                            binding.tvAll.text = seller.orders.toString()
+                                        } else ToastFail(response.body()!!.message)
+                                    } else ToastFail(getString(R.string.toast_response_error))
+                                }
+
+                                override fun onFailure(call: Call<UserInfoResponse>, t: Throwable) {
+                                    ToastFail(getString(R.string.toast_response_error))
+                                }
+                            })
+
+
+                        orderService.getBidInfo(orderId, 1)
+                            .enqueue(object : Callback<BidInfoResponse> {
+                                override fun onResponse(
+                                    call: Call<BidInfoResponse>,
+                                    response: Response<BidInfoResponse>
+                                ) {
+                                    if (response.body() != null) {
+                                        if (response.body()!!.code == 200) {
+                                            val bids = response.body()!!.data
+                                            if (bids.isNotEmpty()) {
+                                                adapter = BidInfoAdapter(bids)
+                                                binding.rvBidinfo.layoutManager =
+                                                    LinearLayoutManager(this@OrderDetailActivity).apply {
+                                                        orientation = LinearLayoutManager.VERTICAL
+                                                    }
+                                                binding.rvBidinfo.adapter = adapter
+                                            }
+                                        } else ToastFail(response.body()!!.message)
+                                    } else ToastFail(getString(R.string.toast_response_error))
+                                }
+
+                                override fun onFailure(call: Call<BidInfoResponse>, t: Throwable) {
+                                    ToastFail(getString(R.string.toast_response_error))
+                                }
+                            })
 
 
                         binding.option.setOnClickListener {
