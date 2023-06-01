@@ -1,12 +1,16 @@
 package com.glittering.youxi.data
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.glittering.youxi.R
 import com.glittering.youxi.entity.MsgRecord
+import com.glittering.youxi.utils.DrawableUtil.Companion.base64ToDrawable
 import com.glittering.youxi.utils.ToastInfo
 
 class MsgAdapter(var list: List<MsgRecord>) :
@@ -17,7 +21,7 @@ class MsgAdapter(var list: List<MsgRecord>) :
     var typeItem = TYPE_OTHER
 
     inner class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val tv = view.findViewById<TextView>(R.id.tv_msg)
+        val cv = view.findViewById<CardView>(R.id.cardView_msg)
         val item = view
     }
 
@@ -50,7 +54,20 @@ class MsgAdapter(var list: List<MsgRecord>) :
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is ItemViewHolder) {
-            holder.tv.text = list[position].content
+            when (list[position].msgType) {
+                0 -> {
+                    LayoutInflater.from(holder.item.context).inflate(R.layout.item_chat_msg_text,holder.item as ViewGroup,false).let {
+                        it.findViewById<TextView>(R.id.msg_tv).text=list[position].content
+                        holder.cv.addView(it)
+                    }
+                }
+                1 -> {
+                    LayoutInflater.from(holder.item.context).inflate(R.layout.item_chat_msg_img,holder.item as ViewGroup,false).let {
+                        it.findViewById<ImageView>(R.id.msg_iv).setImageDrawable(base64ToDrawable(list[position].content))
+                        holder.cv.addView(it)
+                    }
+                }
+            }
         } else if (holder is FootViewHolder) {
             holder.tv_msg.visibility = if (itemCount == 1) View.GONE else View.VISIBLE
             //无项目时（往往正加载）不显示footview
@@ -64,6 +81,7 @@ class MsgAdapter(var list: List<MsgRecord>) :
 
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setAdapterList(list2: List<MsgRecord>) {
         list = list2
         notifyDataSetChanged()
@@ -71,7 +89,7 @@ class MsgAdapter(var list: List<MsgRecord>) :
 
     fun plusAdapterList(list2: List<MsgRecord>) {
         list = list.plus(list2)
-        notifyDataSetChanged()
+        notifyItemRangeInserted(list.size - list2.size, list2.size)
     }
 
     override fun getItemCount() = list.size

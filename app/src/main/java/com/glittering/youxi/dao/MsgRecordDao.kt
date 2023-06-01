@@ -26,4 +26,7 @@ interface MsgRecordDao {
 
     @Query("DELETE FROM MsgRecord WHERE chatId = :chatId")
     fun deleteMsgRecordByChatId(chatId: Long)
+
+    @Query("SELECT distinct chatId FROM MsgRecord")
+    fun loadAllChatId(): List<Long>
 }

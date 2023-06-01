@@ -1,8 +1,12 @@
 package com.glittering.youxi.ui.activity
 
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.View
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.glittering.youxi.MyWebSocketClient
 import com.glittering.youxi.R
 import com.glittering.youxi.data.MsgAdapter
 import com.glittering.youxi.data.ServiceCreator
@@ -13,14 +17,17 @@ import com.glittering.youxi.database.MsgDatabase
 import com.glittering.youxi.databinding.ActivityChatBinding
 import com.glittering.youxi.entity.MsgRecord
 import com.glittering.youxi.utils.DialogUtil
+import com.glittering.youxi.utils.DrawableUtil
 import com.glittering.youxi.utils.ToastFail
 import com.glittering.youxi.utils.ToastSuccess
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.gson.Gson
 import com.gyf.immersionbar.ImmersionBar
 import com.gyf.immersionbar.ktx.fitsTitleBar
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.net.URI
 import kotlin.concurrent.thread
 
 class ChatActivity : BaseActivity<ActivityChatBinding>() {
@@ -31,6 +38,7 @@ class ChatActivity : BaseActivity<ActivityChatBinding>() {
 
     var sysMsgAdapter: SysMsgAdapter? = null
     var msgAdapter: MsgAdapter? = null
+    lateinit var client: MyWebSocketClient
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -73,7 +81,10 @@ class ChatActivity : BaseActivity<ActivityChatBinding>() {
         }
         binding.bottomView.setPadding(0, 0, 0, ImmersionBar.getNavigationBarHeight(this))
 
-        //TODO:加载聊天消息
+        //connect websocket
+        val uri: URI? = URI.create("ws://SERVER_ADDRESS:SERVER_PORT/chat/send")
+        client = object : MyWebSocketClient(uri) {}
+        client.connectBlocking()
 
         if (chatId == 10000L) {  //系统通知
             binding.bottomView.visibility = View.GONE
@@ -110,21 +121,22 @@ class ChatActivity : BaseActivity<ActivityChatBinding>() {
             val msgRecordDao = MsgDatabase.getDatabase().msgRecordDao()
             thread {
                 val msgRecordList = msgRecordDao.loadMsgRecord(chatId)
-                if (msgAdapter == null) {
-                    msgAdapter = MsgAdapter(msgRecordList)
-                    val layoutManager = LinearLayoutManager(applicationContext)
-                    layoutManager.orientation = LinearLayoutManager.VERTICAL
-                    binding.recyclerview.layoutManager = layoutManager
-                    binding.recyclerview.adapter = msgAdapter
-                } else {
-                    msgAdapter!!.plusAdapterList(msgRecordList)
+                runOnUiThread {
+                    if (msgAdapter == null) {
+                        msgAdapter = MsgAdapter(msgRecordList)
+                        val layoutManager = LinearLayoutManager(applicationContext)
+                        layoutManager.orientation = LinearLayoutManager.VERTICAL
+                        binding.recyclerview.layoutManager = layoutManager
+                        binding.recyclerview.adapter = msgAdapter
+                    } else {
+                        msgAdapter!!.plusAdapterList(msgRecordList)
+                    }
+                    binding.recyclerview.scrollToPosition(msgAdapter!!.itemCount - 1)
                 }
-                binding.recyclerview.scrollToPosition(msgAdapter!!.itemCount - 1)
             }
 
             binding.bottomSendButton.setOnClickListener {
-                //TODO:Send
-
+                if (binding.editText.text.isEmpty()) return@setOnClickListener
                 thread {
                     val record = MsgRecord(
                         chatId,
@@ -133,38 +145,90 @@ class ChatActivity : BaseActivity<ActivityChatBinding>() {
                         binding.editText.text.toString(),
                         System.currentTimeMillis()
                     )
-                    msgRecordDao.insertMsgRecord(record)
-                    val msg = msgRecordDao.loadLastMsgRecord(chatId)!!
-                    runOnUiThread {
-                        binding.editText.setText("")
-                        msgAdapter?.plusAdapterList(listOf(msg))
-                        binding.recyclerview.smoothScrollToPosition(msgAdapter!!.itemCount)
+                    try {
+                        client.send(Gson().toJson(record))
+                        msgRecordDao.insertMsgRecord(record)
+                        val msg = msgRecordDao.loadLastMsgRecord(chatId)!!
+                        runOnUiThread {
+                            binding.editText.setText("")
+                            msgAdapter?.plusAdapterList(listOf(msg))
+                            binding.recyclerview.smoothScrollToPosition(msgAdapter!!.itemCount)
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        runOnUiThread {
+                            ToastFail("发送失败，请稍后重试")
+                        }
                     }
                 }
-
             }
 
+            val pickMedia =
+                registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+                    if (uri != null) {
+                        val dialog = MaterialAlertDialogBuilder(this)
+                            .setMessage("正在发送，请稍候")
+                            .setCancelable(false)
+                            .show()
+                        thread {
+                            val photoStr: String
+                            try {
+                                val photoBmp =
+                                    MediaStore.Images.Media.getBitmap(contentResolver, uri)
+                                photoStr = DrawableUtil.bitmapShrinkToBase64(photoBmp)
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                                ToastFail("读取图片失败，请稍后重试")
+                                return@thread
+                            }
+                            try {
+                                val record = MsgRecord(
+                                    chatId,
+                                    1,
+                                    1,
+                                    photoStr,
+                                    System.currentTimeMillis()
+                                )
+                                client.send(Gson().toJson(record))
+                                msgRecordDao.insertMsgRecord(record)
+                                runOnUiThread {
+                                    binding.editText.setText("")
+                                    msgAdapter?.plusAdapterList(listOf(record))
+                                    binding.recyclerview.smoothScrollToPosition(msgAdapter!!.itemCount)
+                                }
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                                runOnUiThread {
+                                    ToastFail("发送失败，请稍后重试")
+                                }
+                            }
+                            dialog.dismiss()
+                        }
 
-            binding.bottomSendButton.setOnLongClickListener {
-                //TODO:Send
-
-                thread {
-                    val record = MsgRecord(
-                        chatId,
-                        0,
-                        0,
-                        binding.editText.text.toString(),
-                        System.currentTimeMillis()
-                    )
-                    msgRecordDao.insertMsgRecord(record)
-                    runOnUiThread {
-                        binding.editText.setText("")
-                        msgAdapter?.plusAdapterList(listOf(record))
-                        binding.recyclerview.smoothScrollToPosition(msgAdapter!!.itemCount)
                     }
                 }
-                true
+            binding.bottomImage.setOnClickListener {
+                pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
             }
+//
+//            binding.bottomSendButton.setOnLongClickListener {
+//                thread {
+//                    val record = MsgRecord(
+//                        chatId,
+//                        0,
+//                        0,
+//                        binding.editText.text.toString(),
+//                        System.currentTimeMillis()
+//                    )
+//                    msgRecordDao.insertMsgRecord(record)
+//                    runOnUiThread {
+//                        binding.editText.setText("")
+//                        msgAdapter?.plusAdapterList(listOf(record))
+//                        binding.recyclerview.smoothScrollToPosition(msgAdapter!!.itemCount)
+//                    }
+//                }
+//                true
+//            }
 
         }
     }

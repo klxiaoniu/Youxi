@@ -3,7 +3,6 @@ package com.glittering.youxi.data
 import android.app.Activity
 import android.content.Intent
 import android.text.format.DateFormat
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -54,7 +53,6 @@ class NotificationAdapter(var list: List<Notification>, val activity: Activity) 
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        Log.d("onBindViewHolder", position.toString())
         if (holder is ItemViewHolder) {
             holder.title.text = list[position].title
 //            holder.message.text = list[position].message
@@ -70,7 +68,7 @@ class NotificationAdapter(var list: List<Notification>, val activity: Activity) 
                 val msg = msgRecordDao.loadLastMsgRecord(list[position].id)
                 activity.runOnUiThread {
                     if (msg != null) {
-                        holder.message.text = msg.content
+                        holder.message.text = if (msg.msgType == 0) msg.content.trim() else "[图片]"
                         holder.time.text = DateFormat.format("HH:mm", msg.time)
                     } else {
                         holder.message.text = list[position].message

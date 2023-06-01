@@ -65,6 +65,17 @@ class NotificationsFragment : Fragment() {
         _binding = null
     }
 
+    override fun onResume() {
+        super.onResume()
+updateNotificationList()
+    }
+
+    private fun updateNotificationList() {
+        val notificationsViewModel =
+            ViewModelProvider(this).get(NotificationsViewModel::class.java)
+        notificationsViewModel.updateNotificationList()
+    }
+
     private fun checkPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && PermissionChecker.checkSelfPermission(
                 requireContext(),

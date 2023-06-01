@@ -30,15 +30,5 @@
         app:cardBackgroundColor="@color/primary_yellow_2"
         app:cardCornerRadius="15dp"
         app:layout_constraintEnd_toStartOf="@id/cardView_avatar"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/tv_msg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:maxWidth="280dp"
-            android:text="消息内容"
-            android:textIsSelectable="true" />
-    </androidx.cardview.widget.CardView>
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
