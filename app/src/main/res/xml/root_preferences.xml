@@ -3,7 +3,7 @@
     <PreferenceCategory app:title="账号相关">
 
         <Preference
-            app:key="verify"
+            app:key="realname"
             app:title="实名认证" />
         <Preference
             app:key="password"
@@ -17,17 +17,27 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory
+        app:isPreferenceVisible="false"
+        app:key="management"
+        app:title="平台管理">
+
+        <Preference
+            app:key="verify"
+            app:title="商品审核" />
+
+    </PreferenceCategory>
     <PreferenceCategory app:title="系统设置">
         <ListPreference
             app:defaultValue="0"
             app:entries="@array/skin_entries"
             app:entryValues="@array/skin_values"
             app:key="skin"
-            app:title="主题设置"
+            app:title="主题模式"
             app:useSimpleSummaryProvider="true" />
         <Preference
             app:key="about"
-            app:title="关于" />
+            app:title="关于我们" />
     </PreferenceCategory>
 
 </PreferenceScreen>

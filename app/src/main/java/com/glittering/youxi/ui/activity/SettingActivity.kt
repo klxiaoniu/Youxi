@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.Preference
+import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import com.glittering.youxi.MyApplication.Companion.loggedInUser
 import com.glittering.youxi.R
@@ -42,7 +43,7 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>() {
                 startActivity(intent)
                 true
             }
-            findPreference<Preference>("verify")?.setOnPreferenceClickListener {
+            findPreference<Preference>("realname")?.setOnPreferenceClickListener {
                 val intent = Intent(requireContext(), ProfileUpdateActivity::class.java)
                 startActivity(intent)
                 true
@@ -69,6 +70,14 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>() {
                     .show()
                 DialogUtil.stylize(dialog)
                 true
+            }
+            if (loggedInUser?.type == "admin") {
+                findPreference<PreferenceCategory>("management")?.isVisible = true
+                findPreference<Preference>("verify")?.setOnPreferenceClickListener {
+                    val intent = Intent(requireContext(), VerifyActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
             }
         }
 
