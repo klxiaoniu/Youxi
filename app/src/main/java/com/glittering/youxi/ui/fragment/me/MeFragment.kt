@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
+import com.glittering.youxi.MyApplication.Companion.loggedInUser
 import com.glittering.youxi.R
 import com.glittering.youxi.data.PersonalInfoResponse
 import com.glittering.youxi.data.ServiceCreator
@@ -19,7 +20,7 @@ import com.glittering.youxi.ui.activity.LoginActivity
 import com.glittering.youxi.ui.activity.SettingActivity
 import com.glittering.youxi.utils.DarkUtil.Companion.reverseColorIfDark
 import com.glittering.youxi.utils.ToastFail
-import com.glittering.youxi.utils.ToastSuccess
+import com.glittering.youxi.utils.ToastInfo
 import com.glittering.youxi.utils.applicationContext
 import com.glittering.youxi.utils.getToken
 import retrofit2.Call
@@ -46,8 +47,14 @@ class MeFragment : Fragment() {
 
         reverseColorIfDark(listOf(binding.icSetting))
         binding.userinfo.setOnClickListener {
-            val intent = Intent(context, LoginActivity::class.java)
-            startActivity(intent)
+            if (loggedInUser == null) {
+                val intent = Intent(context, LoginActivity::class.java)
+                startActivity(intent)
+            } else {
+//                val intent = Intent(context, LoginActivity::class.java)
+//                startActivity(intent)
+                ToastInfo("跳转到个人页面")
+            }
         }
         binding.icSetting.setOnLongClickListener {
             val intent = Intent(context, DebugActivity::class.java)
@@ -87,20 +94,11 @@ class MeFragment : Fragment() {
                             .load(userInfo.photo)
                             .apply(options)
                             .into(binding.ivAvatar)
-
-                        binding.userinfo.setOnClickListener {
-//                            val intent = Intent(context, LoginActivity::class.java)
-//                            startActivity(intent)
-                            //TODO:跳转到个人页面
-                            ToastSuccess("跳转到个人页面")
-                        }
-
                     } else ToastFail(res?.message.toString())
                 }
 
                 override fun onFailure(call: Call<PersonalInfoResponse>, t: Throwable) {
                     t.printStackTrace()
-                    ToastFail(applicationContext.getString(R.string.toast_response_error))
                 }
             })
         } else {
