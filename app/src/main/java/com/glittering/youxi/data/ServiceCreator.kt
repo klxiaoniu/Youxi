@@ -1,7 +1,9 @@
 package com.glittering.youxi.data
 
-import com.glittering.youxi.utils.getToken
 import com.glittering.youxi.utils.ToastFail
+import com.glittering.youxi.utils.applicationContext
+import com.glittering.youxi.utils.getToken
+import okhttp3.Cache
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -10,6 +12,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.File
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
@@ -17,12 +20,13 @@ import kotlin.coroutines.suspendCoroutine
 
 
 object ServiceCreator {
-    //在请求头里添加token的拦截器处理
-    class TokenHeaderInterceptor : Interceptor {
+    class HeaderInterceptor : Interceptor {
         @Throws(IOException::class)
         override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+            //在请求头里添加token的拦截器处理
             val token: String = getToken()
-            return if (token == "") {
+            val request: Request = chain.request()
+            val response = if (token == "") {
                 val originalRequest: Request = chain.request()
                 chain.proceed(originalRequest)
             } else {
@@ -31,13 +35,23 @@ object ServiceCreator {
                     originalRequest.newBuilder().header("Authorization", token).build()
                 chain.proceed(updateRequest)
             }
+            //缓存设置
+            val cacheControl: String = request.cacheControl().toString()
+            return response.newBuilder()
+                .removeHeader("Pragma") //清除头信息，因为服务器如果不支持，会返回一些干扰信息，不清除下面无法生效
+                .header("Cache-Control", cacheControl)
+                .build()
         }
     }
+
     private fun getClient(): OkHttpClient.Builder {
-        val httpClientBuilder = OkHttpClient.Builder()
-        httpClientBuilder.connectTimeout(15, TimeUnit.SECONDS)
-        httpClientBuilder.addNetworkInterceptor(TokenHeaderInterceptor())
-        return httpClientBuilder
+        val httpCacheDirectory = File(applicationContext.cacheDir, "HttpCache")
+        val cacheSize = 30 * 1024 * 1024
+        val cache = Cache(httpCacheDirectory, cacheSize.toLong())
+        return OkHttpClient.Builder()
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .addNetworkInterceptor(HeaderInterceptor())
+            .cache(cache)
     }
 
     const val BASE_URL = "https://7f1192d863.imdo.co/"

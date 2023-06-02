@@ -34,6 +34,7 @@ interface UserService {
     fun getPersonalInfo(
     ): Call<PersonalInfoResponse>
 
+    @Headers("Cache-Control:public ,max-age=60")
     @GET("user/information")
     fun getUserInfo(
         @Query("id") id: Long
