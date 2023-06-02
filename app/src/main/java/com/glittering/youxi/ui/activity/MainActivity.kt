@@ -72,7 +72,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 }
 
                 R.id.navigation_notification -> {
-                    mainViewPager.setCurrentItem(2, false)
+                    if (loggedInUser == null) {
+                        ToastInfo("请先登录")
+                        startActivity(Intent(this, LoginActivity::class.java))
+                    } else mainViewPager.setCurrentItem(2, false)
                 }
 
                 R.id.navigation_me -> {
@@ -112,7 +115,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                     val code = response.body()?.code
                     if (code == 200) {
                         loggedInUser = response.body()?.data
-//                        configureWebsocket()
+                        configureWebsocket()
                     } else {
                         ToastFail("登录过期，请您重新登录")
                         rmToken()
@@ -124,14 +127,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 }
             })
         }
-
-        configureWebsocket()
-
     }
 
     private fun configureWebsocket() {
         val uri: URI? = URI.create("ws://121.40.165.18:8800")
-        val client: MyWebSocketClient = object : MyWebSocketClient(uri){
+        val client: MyWebSocketClient = object : MyWebSocketClient(uri) {
             override fun onMessage(message: String?) {
                 super.onMessage(message)
                 val record = Gson().fromJson(message, MsgRecord::class.java)
@@ -147,9 +147,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (manager.getNotificationChannel("chat") == null) {
-                manager.createNotificationChannel(NotificationChannel(
-                    "chat", "聊天消息", NotificationManager.IMPORTANCE_HIGH
-                ))
+                manager.createNotificationChannel(
+                    NotificationChannel(
+                        "chat", "聊天消息", NotificationManager.IMPORTANCE_HIGH
+                    )
+                )
             }
         }
 
