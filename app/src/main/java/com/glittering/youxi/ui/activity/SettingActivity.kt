@@ -37,6 +37,9 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>() {
     class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChangeListener {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey)
+            if (loggedInUser == null) {
+                findPreference<PreferenceCategory>("account")?.isVisible = false
+            }
             findPreference<Preference>("skin")?.onPreferenceChangeListener = this
             findPreference<Preference>("password")?.setOnPreferenceClickListener {
                 val intent = Intent(requireContext(), ProfileUpdateActivity::class.java)
