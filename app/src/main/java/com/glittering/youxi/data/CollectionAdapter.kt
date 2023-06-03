@@ -52,7 +52,6 @@ class CollectionAdapter(var list: List<CollectionData>) :
                 .placeholder(R.drawable.loading)
                 .error(R.drawable.error)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
             Glide.with(applicationContext)
                 .load(list[position].picture)
                 .apply(options)
