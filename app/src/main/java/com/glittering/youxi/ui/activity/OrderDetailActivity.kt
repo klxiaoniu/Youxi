@@ -13,6 +13,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.glittering.youxi.MyApplication.Companion.loggedInUser
 import com.glittering.youxi.R
+import com.glittering.youxi.data.AddFavoriteRequest
+import com.glittering.youxi.data.AddFavoriteResponse
 import com.glittering.youxi.data.BidInfoAdapter
 import com.glittering.youxi.data.BidInfoResponse
 import com.glittering.youxi.data.DeleteOrderResponse
@@ -120,6 +122,10 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
                                         if (response.body()!!.code == 200) {
                                             val seller = response.body()!!.data[0]
                                             binding.tvUsername.text = seller.name
+                                            val option = RequestOptions()
+                                                .placeholder(R.drawable.ic_default_avatar)
+                                                .error(R.drawable.ic_default_avatar)
+                                                .diskCacheStrategy(DiskCacheStrategy.ALL)
                                             Glide.with(this@OrderDetailActivity)
                                                 .load(seller.photo)
                                                 .apply(option)
@@ -252,6 +258,34 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
             intent.putExtra("chat_id", order?.seller_id?.toLong())
             startActivity(intent)
         }
+        binding.ivFavorite.setOnClickListener {
+            val favoriteData = AddFavoriteRequest(orderId)
+            val json = FormBody.create(
+                MediaType.parse("application/json; charset=utf-8"),
+                Gson().toJson(favoriteData)
+            )
+            orderService.addFavorite(json).enqueue(object : Callback<AddFavoriteResponse> {
+                override fun onResponse(
+                    call: Call<AddFavoriteResponse>,
+                    response: Response<AddFavoriteResponse>
+                ) {
+                    if (response.body() != null) {
+                        val code = response.body()?.code
+                        if (code == 200) {
+                            ToastSuccess(response.body()?.message.toString())
+                        } else {
+                            ToastFail(response.body()?.message.toString())
+                        }
+                    } else ToastFail(getString(R.string.toast_response_error))
+                }
+
+                override fun onFailure(call: Call<AddFavoriteResponse>, t: Throwable) {
+                    t.printStackTrace()
+                    ToastFail(getString(R.string.toast_response_error))
+                }
+            })
+        }
+
     }
 
     private fun deleteOrder(orderId: Int) {

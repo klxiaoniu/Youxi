@@ -14,6 +14,11 @@ interface OrderService {
         @Body body: RequestBody
     ): Call<OrderBiddingResponse>
 
+    @PUT("order/collecting")
+    fun addFavorite(
+        @Body body: RequestBody
+    ): Call<AddFavoriteResponse>
+
     @GET("bid/searching")
     fun getBidInfo(
         @Query("order_id") orderId: Int,
