@@ -15,6 +15,7 @@ import com.glittering.youxi.data.PersonalInfoResponse
 import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.data.UserService
 import com.glittering.youxi.databinding.FragmentMeBinding
+import com.glittering.youxi.ui.activity.CollectionActivity
 import com.glittering.youxi.ui.activity.DebugActivity
 import com.glittering.youxi.ui.activity.LoginActivity
 import com.glittering.youxi.ui.activity.SettingActivity
@@ -64,6 +65,14 @@ class MeFragment : Fragment() {
         binding.icSetting.setOnClickListener {
             val intent = Intent(context, SettingActivity::class.java)
             startActivity(intent)
+        }
+        binding.itemCollection.setOnClickListener {
+            if (loggedInUser == null) {
+                ToastInfo("请先登录")
+            } else {
+                val intent = Intent(context, CollectionActivity::class.java)
+                startActivity(intent)
+            }
         }
         return root
     }

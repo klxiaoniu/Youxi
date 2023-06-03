@@ -48,4 +48,9 @@ interface UserService {
     fun getSysMsg(
         @Query("page") page: Int
     ): Call<SysMsgResponse>
+
+    @GET("order/view/collection")
+    fun getCollection(
+        @Query("page") page: Int
+    ): Call<CollectionResponse>
 }
