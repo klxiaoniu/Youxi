@@ -53,4 +53,10 @@ interface UserService {
     fun getCollection(
         @Query("page") page: Int
     ): Call<CollectionResponse>
+
+    @GET("order/view/mine")
+    fun getMyOrder(
+        @Query("type") type: String,
+        @Query("page") page: Int
+    ): Call<MyOrderResponse>
 }

@@ -40,6 +40,16 @@ interface OrderService {
         @Query("order_id") id: Int
     ): Call<DeleteOrderResponse>
 
+    @PUT("order/confirming")
+    fun confirmOrder(
+        @Body body: RequestBody
+    ): Call<ConfirmOrderResponse>
+
+    @PUT("order/delivering")
+    fun deliverOrder(
+        @Body body: RequestBody
+    ): Call<DeliverOrderResponse>
+
     @GET("order/view/verifying")
     fun getVerifyingOrder(
         @Query("page") page: Int

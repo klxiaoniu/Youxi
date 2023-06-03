@@ -18,6 +18,7 @@ import com.glittering.youxi.databinding.FragmentMeBinding
 import com.glittering.youxi.ui.activity.CollectionActivity
 import com.glittering.youxi.ui.activity.DebugActivity
 import com.glittering.youxi.ui.activity.LoginActivity
+import com.glittering.youxi.ui.activity.MyOrderActivity
 import com.glittering.youxi.ui.activity.SettingActivity
 import com.glittering.youxi.utils.DarkUtil.Companion.reverseColorIfDark
 import com.glittering.youxi.utils.ToastFail
@@ -73,6 +74,44 @@ class MeFragment : Fragment() {
                 val intent = Intent(context, CollectionActivity::class.java)
                 startActivity(intent)
             }
+        }
+        listOf<View>(
+            binding.itemBuyOrder,
+            binding.itemBuyWaitPay,
+            binding.itemBuyWaitDeliver,
+            binding.itemBuyWaitRecv,
+        ).forEach {
+            it.setOnClickListener {
+                if (loggedInUser == null) {
+                    ToastInfo("请先登录")
+                } else {
+                    val intent = Intent(context, MyOrderActivity::class.java)
+                        .putExtra("type", "buying")
+                    startActivity(intent)
+                }
+
+            }
+        }
+        listOf<View>(
+            binding.itemSellOrder,
+            binding.itemSellSold,
+            binding.itemSellWaitVerify,
+            binding.itemSellWaitDeliver,
+            binding.itemSellWaitRecv,
+            binding.itemSellAllGoods,
+            binding.itemSellDoneSuccess,
+            binding.itemSellUpstaged
+        ).forEach {
+            it.setOnClickListener {
+                if (loggedInUser == null) {
+                    ToastInfo("请先登录")
+                } else {
+                    val intent = Intent(context, MyOrderActivity::class.java)
+                        .putExtra("type", "selling")
+                    startActivity(intent)
+                }
+            }
+
         }
         return root
     }
