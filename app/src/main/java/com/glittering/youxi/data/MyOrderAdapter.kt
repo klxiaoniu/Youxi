@@ -159,7 +159,7 @@ class MyOrderAdapter(var list: List<MyOrderData>, val type: String, val activity
 
     private fun deliverOrder(orderId: Int, status: Boolean) {
         val orderService = ServiceCreator.create<OrderService>()
-        val data = ConfirmOrderRequest(orderId, if (status) "True" else "False")
+        val data = DeliverOrderRequest(orderId, if (status) "True" else "False")
         val json = FormBody.create(
             MediaType.parse("application/json; charset=utf-8"), Gson().toJson(data)
         )
