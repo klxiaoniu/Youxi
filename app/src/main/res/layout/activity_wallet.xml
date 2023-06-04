@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.activity.WalletActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="我的钱包" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_money"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary_yellow_2"
+        android:padding="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+        <TextView
+            android:id="@+id/title_usable"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingBottom="15dp"
+            android:text="可用余额"
+            android:textAlignment="center"
+            app:layout_constraintEnd_toStartOf="@id/title_frozen"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/title_frozen"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingBottom="15dp"
+            android:text="冻结资金"
+            android:textAlignment="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/title_usable"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_usable"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="100"
+            android:textAlignment="center"
+            android:textSize="36sp"
+            app:layout_constraintEnd_toStartOf="@id/tv_frozen"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title_usable" />
+
+        <TextView
+            android:id="@+id/tv_frozen"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="100"
+            android:textAlignment="center"
+            android:textSize="36sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_usable"
+            app:layout_constraintTop_toBottomOf="@id/title_frozen" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.glittering.youxi.ui.IconTextItem
+        android:id="@+id/item_recharge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:img="@drawable/ic_default_avatar"
+        app:layout_constraintEnd_toStartOf="@id/item_withdraw"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_money"
+        app:title="充值" />
+
+    <com.glittering.youxi.ui.IconTextItem
+        android:id="@+id/item_withdraw"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:img="@drawable/ic_default_avatar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/item_recharge"
+        app:layout_constraintTop_toBottomOf="@id/layout_money"
+        app:title="提现" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

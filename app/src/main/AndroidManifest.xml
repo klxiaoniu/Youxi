@@ -18,6 +18,12 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="33">
         <activity
+            android:name=".ui.activity.PaymentActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activity.WalletActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.activity.CollectionActivity"
             android:exported="false" />
         <activity
