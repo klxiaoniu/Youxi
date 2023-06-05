@@ -4,13 +4,17 @@ plugins {
     id 'org.jetbrains.kotlin.kapt'
 }
 
+def keystorePropsFile = rootProject.file("keystore.properties")
+def keystoreProps = new Properties()
+keystoreProps.load((new FileInputStream(keystorePropsFile)))
+
 android {
     signingConfigs {
         debug {
-            storeFile file('D:\\mtxiaoniu.jks')
-            storePassword 'mtxiaoniu'
-            keyAlias 'mtxiaoniu'
-            keyPassword 'mtxiaoniu'
+            storeFile file(keystoreProps['keystoreFile'])
+            storePassword keystoreProps['keystorePSW']
+            keyAlias keystoreProps['keystoreAlias']
+            keyPassword keystoreProps['keystoreAliasPSW']
         }
     }
     namespace 'com.glittering.youxi'
