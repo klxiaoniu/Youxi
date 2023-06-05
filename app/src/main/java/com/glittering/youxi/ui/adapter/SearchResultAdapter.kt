@@ -1,4 +1,4 @@
-package com.glittering.youxi.data
+package com.glittering.youxi.ui.adapter
 
 import android.content.Intent
 import android.view.LayoutInflater
@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.glittering.youxi.R
+import com.glittering.youxi.data.SearchOrder
 import com.glittering.youxi.ui.activity.OrderDetailActivity
 import com.glittering.youxi.utils.ToastInfo
 import com.glittering.youxi.utils.applicationContext

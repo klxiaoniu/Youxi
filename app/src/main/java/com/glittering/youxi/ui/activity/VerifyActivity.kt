@@ -5,9 +5,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.glittering.youxi.R
 import com.glittering.youxi.data.OrderService
 import com.glittering.youxi.data.ServiceCreator
-import com.glittering.youxi.data.VerifyingOrderAdapter
 import com.glittering.youxi.data.VerifyingOrderResponse
 import com.glittering.youxi.databinding.ActivityVerifyBinding
+import com.glittering.youxi.ui.adapter.VerifyingOrderAdapter
 import com.glittering.youxi.utils.ToastFail
 import com.gyf.immersionbar.ktx.fitsTitleBar
 import retrofit2.Call

@@ -7,9 +7,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.glittering.youxi.R
 import com.glittering.youxi.data.OrderService
 import com.glittering.youxi.data.SearchResponse
-import com.glittering.youxi.data.SearchResultAdapter
 import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.databinding.ActivitySearchBinding
+import com.glittering.youxi.ui.adapter.SearchResultAdapter
 import com.glittering.youxi.utils.DarkUtil.Companion.reverseColorIfDark
 import com.glittering.youxi.utils.ToastFail
 import retrofit2.Call

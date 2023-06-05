@@ -1,4 +1,4 @@
-package com.glittering.youxi.data
+package com.glittering.youxi.ui.adapter
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -13,6 +13,13 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.glittering.youxi.R
+import com.glittering.youxi.data.ConfirmOrderRequest
+import com.glittering.youxi.data.ConfirmOrderResponse
+import com.glittering.youxi.data.DeliverOrderRequest
+import com.glittering.youxi.data.DeliverOrderResponse
+import com.glittering.youxi.data.MyOrderData
+import com.glittering.youxi.data.OrderService
+import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.ui.activity.OrderDetailActivity
 import com.glittering.youxi.utils.DialogUtil
 import com.glittering.youxi.utils.ToastFail

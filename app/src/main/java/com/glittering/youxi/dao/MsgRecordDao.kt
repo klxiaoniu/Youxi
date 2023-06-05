@@ -29,4 +29,7 @@ interface MsgRecordDao {
 
     @Query("SELECT distinct chatId FROM MsgRecord")
     fun loadAllChatId(): List<Long>
+
+    @Query("SELECT distinct chatId FROM MsgRecord WHERE msgType = 0 AND content LIKE '%' || :key || '%'")
+    fun searchChatIdContain(key:String): List<Long>
 }

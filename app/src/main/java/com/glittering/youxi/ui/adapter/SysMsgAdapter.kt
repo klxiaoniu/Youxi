@@ -1,27 +1,22 @@
-package com.glittering.youxi.data
+package com.glittering.youxi.ui.adapter
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.glittering.youxi.R
-import com.glittering.youxi.entity.MsgRecord
-import com.glittering.youxi.utils.DrawableUtil.Companion.base64ToDrawable
+import com.glittering.youxi.data.SysMsg
 import com.glittering.youxi.utils.ToastInfo
 
-class MsgAdapter(var list: List<MsgRecord>) :
+class SysMsgAdapter(var list: List<SysMsg>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    val TYPE_OTHER: Int = 0
-    val TYPE_ME: Int = 1
-    val TYPE_SYSTEM: Int = 2
-    var typeItem = TYPE_OTHER
+    val TYPE_FOOTVIEW: Int = 1 //item类型：footview
+    val TYPE_ITEMVIEW: Int = 2 //item类型：itemview
+    var typeItem = TYPE_ITEMVIEW
 
     inner class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val cv = view.findViewById<CardView>(R.id.cardView_msg)
+        val tv=view.findViewById<TextView>(R.id.tv_msg)
         val item = view
     }
 
@@ -30,44 +25,21 @@ class MsgAdapter(var list: List<MsgRecord>) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when (typeItem) {
-            TYPE_OTHER -> {
-                val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_chat_other, parent, false)
-                ItemViewHolder(view)
-            }
+        return if (typeItem == TYPE_ITEMVIEW) {
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_chat_other, parent, false)
+            ItemViewHolder(view)
+        } else {
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_search_foot, parent, false)
+            FootViewHolder(view)
 
-            TYPE_ME -> {
-                val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_chat_me, parent, false)
-                ItemViewHolder(view)
-            }
-
-            else -> {
-                //TYPE_SYSTEM
-                val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_chat_system, parent, false)
-                ItemViewHolder(view)
-            }
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is ItemViewHolder) {
-            when (list[position].msgType) {
-                0 -> {
-                    LayoutInflater.from(holder.item.context).inflate(R.layout.item_chat_msg_text,holder.item as ViewGroup,false).let {
-                        it.findViewById<TextView>(R.id.msg_tv).text=list[position].content
-                        holder.cv.addView(it)
-                    }
-                }
-                1 -> {
-                    LayoutInflater.from(holder.item.context).inflate(R.layout.item_chat_msg_img,holder.item as ViewGroup,false).let {
-                        it.findViewById<ImageView>(R.id.msg_iv).setImageDrawable(base64ToDrawable(list[position].content))
-                        holder.cv.addView(it)
-                    }
-                }
-            }
+            holder.tv.text = list[position].message
         } else if (holder is FootViewHolder) {
             holder.tv_msg.visibility = if (itemCount == 1) View.GONE else View.VISIBLE
             //无项目时（往往正加载）不显示footview
@@ -81,21 +53,21 @@ class MsgAdapter(var list: List<MsgRecord>) :
 
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    fun setAdapterList(list2: List<MsgRecord>) {
+    fun setAdapterList(list2: List<SysMsg>) {
         list = list2
         notifyDataSetChanged()
     }
 
-    fun plusAdapterList(list2: List<MsgRecord>) {
+    fun plusAdapterList(list2: List<SysMsg>) {
         list = list.plus(list2)
-        notifyItemRangeInserted(list.size - list2.size, list2.size)
+        notifyDataSetChanged()
     }
 
     override fun getItemCount() = list.size
 
     override fun getItemViewType(position: Int): Int {
-        typeItem = list[position].senderType
+        //设置在数据最底部显示footview
+        typeItem = if (position == list.size) TYPE_FOOTVIEW else TYPE_ITEMVIEW
         return typeItem
     }
 

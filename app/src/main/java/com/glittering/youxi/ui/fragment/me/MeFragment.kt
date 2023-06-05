@@ -20,6 +20,7 @@ import com.glittering.youxi.ui.activity.DebugActivity
 import com.glittering.youxi.ui.activity.LoginActivity
 import com.glittering.youxi.ui.activity.MyOrderActivity
 import com.glittering.youxi.ui.activity.SettingActivity
+import com.glittering.youxi.ui.activity.WalletActivity
 import com.glittering.youxi.utils.DarkUtil.Companion.reverseColorIfDark
 import com.glittering.youxi.utils.ToastFail
 import com.glittering.youxi.utils.ToastInfo
@@ -112,6 +113,10 @@ class MeFragment : Fragment() {
                 }
             }
 
+        }
+        binding.itemWallet.setOnClickListener {
+            val intent = Intent(context, WalletActivity::class.java)
+            startActivity(intent)
         }
         return root
     }

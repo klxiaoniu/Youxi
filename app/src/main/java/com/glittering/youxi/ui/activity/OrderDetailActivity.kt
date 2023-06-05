@@ -15,7 +15,6 @@ import com.glittering.youxi.MyApplication.Companion.loggedInUser
 import com.glittering.youxi.R
 import com.glittering.youxi.data.AddFavoriteRequest
 import com.glittering.youxi.data.AddFavoriteResponse
-import com.glittering.youxi.data.BidInfoAdapter
 import com.glittering.youxi.data.BidInfoResponse
 import com.glittering.youxi.data.DeleteOrderResponse
 import com.glittering.youxi.data.Order
@@ -27,6 +26,7 @@ import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.data.UserInfoResponse
 import com.glittering.youxi.data.UserService
 import com.glittering.youxi.databinding.ActivityOrderDetailBinding
+import com.glittering.youxi.ui.adapter.BidInfoAdapter
 import com.glittering.youxi.ui.dialog.BottomBiddingDialog
 import com.glittering.youxi.utils.DarkUtil.Companion.reverseColorIfDark
 import com.glittering.youxi.utils.DialogUtil

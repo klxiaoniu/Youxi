@@ -1,38 +1,47 @@
-package com.glittering.youxi.data
+package com.glittering.youxi.ui.adapter
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.glittering.youxi.R
+import com.glittering.youxi.data.CollectionData
+import com.glittering.youxi.ui.activity.OrderDetailActivity
 import com.glittering.youxi.utils.ToastInfo
+import com.glittering.youxi.utils.applicationContext
 
-class BidInfoAdapter(var list: List<BidInfo>) :
+class CollectionAdapter(var list: List<CollectionData>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     val TYPE_FOOTVIEW: Int = 1 //item类型：footview
     val TYPE_ITEMVIEW: Int = 2 //item类型：itemview
     var typeItem = TYPE_ITEMVIEW
 
     inner class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val tvUser = view.findViewById<TextView>(R.id.tv_username)
-        val tvTime = view.findViewById<TextView>(R.id.tv_time)
-        val tvMsg = view.findViewById<TextView>(R.id.tv_msg)
-        val tvPrice = view.findViewById<TextView>(R.id.tv_price)
+        val iv = view.findViewById<ImageView>(R.id.iv)
+        val tvTitle = view.findViewById<TextView>(R.id.tv_title)
+//        val tvPrice = view.findViewById<TextView>(R.id.tv_price)
+//        val tvDesc = view.findViewById<TextView>(R.id.tv_desc)
+        val item = view
     }
 
-    inner class FootViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val tv_info = view.findViewById<TextView>(R.id.tv_info)
+    inner class FootViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var tv_msg = itemView.findViewById<TextView>(R.id.tv_info)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (typeItem == TYPE_ITEMVIEW) {
             val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_bid, parent, false)
+                .inflate(R.layout.item_collection, parent, false)
             ItemViewHolder(view)
         } else {
             val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_verifying_foot, parent, false)
+                .inflate(R.layout.item_search_foot, parent, false)
             FootViewHolder(view)
 
         }
@@ -40,16 +49,27 @@ class BidInfoAdapter(var list: List<BidInfo>) :
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is ItemViewHolder) {
-            holder.tvUser.text = list[position].buyer_name
-            holder.tvTime.text = list[position].time
-            holder.tvMsg.text = list[position].message
-            holder.tvPrice.text = "出价￥" + list[position].price.toString()
+            val options = RequestOptions()
+                .placeholder(R.drawable.loading)
+                .error(R.drawable.error)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+            Glide.with(applicationContext)
+                .load(list[position].picture)
+                .apply(options)
+                .into(holder.iv)
+            holder.tvTitle.text = list[position].title
+//            holder.tvPrice.text = "￥" + list[position].price
+            holder.item.setOnClickListener {
+                val intent = Intent(it.context, OrderDetailActivity::class.java)
+                intent.putExtra("order_id", list[position].order_id)
+                it.context.startActivity(intent)
+            }
         } else if (holder is FootViewHolder) {
-//            holder.tv_info.visibility = if (itemCount == 1) View.GONE else View.VISIBLE
+            holder.tv_msg.visibility = if (itemCount == 1) View.GONE else View.VISIBLE
             //无项目时（往往正加载）不显示footview
 
             //当点击footview时，将该事件回调出去
-            holder.tv_info.setOnClickListener {
+            holder.tv_msg.setOnClickListener {
                 footViewClickListener.invoke()
             }
         }
@@ -57,17 +77,17 @@ class BidInfoAdapter(var list: List<BidInfo>) :
 
     }
 
-    fun setAdapterList(list2: List<BidInfo>) {
+    fun setAdapterList(list2: List<CollectionData>) {
         list = list2
         notifyDataSetChanged()
     }
 
-    fun plusAdapterList(list2: List<BidInfo>) {
+    fun plusAdapterList(list2: List<CollectionData>) {
         list = list.plus(list2)
         notifyDataSetChanged()
     }
 
-    override fun getItemCount() = list.size
+    override fun getItemCount() = list.size + 1
 
     override fun getItemViewType(position: Int): Int {
         //设置在数据最底部显示footview
@@ -101,4 +121,3 @@ class BidInfoAdapter(var list: List<BidInfo>) :
         this.footViewClickListener = pListener
     }
 }
-

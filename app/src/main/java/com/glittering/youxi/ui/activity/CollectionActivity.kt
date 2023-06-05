@@ -2,11 +2,11 @@ package com.glittering.youxi.ui.activity
 
 import android.os.Bundle
 import com.glittering.youxi.R
-import com.glittering.youxi.data.CollectionAdapter
 import com.glittering.youxi.data.CollectionResponse
 import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.data.UserService
 import com.glittering.youxi.databinding.ActivityCollectionBinding
+import com.glittering.youxi.ui.adapter.CollectionAdapter
 import com.glittering.youxi.utils.ToastFail
 import com.gyf.immersionbar.ktx.fitsTitleBar
 

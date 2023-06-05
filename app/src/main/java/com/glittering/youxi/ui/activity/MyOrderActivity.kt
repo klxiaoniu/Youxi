@@ -3,11 +3,11 @@ package com.glittering.youxi.ui.activity
 import android.os.Bundle
 import android.util.Log
 import com.glittering.youxi.R
-import com.glittering.youxi.data.MyOrderAdapter
 import com.glittering.youxi.data.MyOrderResponse
 import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.data.UserService
 import com.glittering.youxi.databinding.ActivityMyOrderBinding
+import com.glittering.youxi.ui.adapter.MyOrderAdapter
 import com.glittering.youxi.utils.ToastFail
 import com.gyf.immersionbar.ktx.fitsTitleBar
 import retrofit2.Call
