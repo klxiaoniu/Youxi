@@ -20,4 +20,30 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+#retrofit2  混淆
+-dontwarn javax.annotation.**
+-dontwarn javax.inject.**
+# OkHttp3
+-dontwarn okhttp3.logging.**
+-keep class okhttp3.internal.**{*;}
+-dontwarn okio.**
+# Retrofit
+-dontwarn retrofit2.**
+-keep class retrofit2.** { *; }
+-keepattributes Signature
+-keepattributes Exceptions
+# Gson
+-keep class com.google.gson.stream.** { *; }
+-keepattributes EnclosingMethod
+
+-keep class * implements androidx.viewbinding.ViewBinding {*;}
+
+-keepclassmembers class * implements androidx.viewbinding.ViewBinding {
+public static ** bind(***);
+public static ** inflate(...);
+}
+
+-keep,allowobfuscation,allowshrinking class com.glittering.youxi.ui.activity.BaseActivity
 -keep class com.glittering.youxi.data.** { *; }
+
+-dontwarn org.slf4j.impl.StaticLoggerBinder
