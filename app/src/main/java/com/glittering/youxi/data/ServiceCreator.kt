@@ -25,15 +25,12 @@ object ServiceCreator {
         override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
             //在请求头里添加token的拦截器处理
             val token: String = getToken()
-            val request: Request = chain.request()
+            var request: Request = chain.request()
             val response = if (token == "") {
-                val originalRequest: Request = chain.request()
-                chain.proceed(originalRequest)
+                chain.proceed(request)
             } else {
-                val originalRequest: Request = chain.request()
-                val updateRequest: Request =
-                    originalRequest.newBuilder().header("Authorization", token).build()
-                chain.proceed(updateRequest)
+                request = request.newBuilder().header("Authorization", token).build()
+                chain.proceed(request)
             }
             //缓存设置
             val cacheControl: String = request.cacheControl().toString()
