@@ -1,5 +1,6 @@
 package com.glittering.youxi.ui.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -53,6 +54,7 @@ class SysMsgAdapter(var list: List<SysMsg>) :
 
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setAdapterList(list2: List<SysMsg>) {
         list = list2
         notifyDataSetChanged()
@@ -60,7 +62,7 @@ class SysMsgAdapter(var list: List<SysMsg>) :
 
     fun plusAdapterList(list2: List<SysMsg>) {
         list = list.plus(list2)
-        notifyDataSetChanged()
+        notifyItemRangeInserted(list.size - list2.size, list2.size)
     }
 
     override fun getItemCount() = list.size

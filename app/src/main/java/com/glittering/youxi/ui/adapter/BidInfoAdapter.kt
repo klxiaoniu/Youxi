@@ -1,5 +1,6 @@
 package com.glittering.youxi.ui.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -58,6 +59,7 @@ class BidInfoAdapter(var list: List<BidInfo>) :
 
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setAdapterList(list2: List<BidInfo>) {
         list = list2
         notifyDataSetChanged()
@@ -65,7 +67,7 @@ class BidInfoAdapter(var list: List<BidInfo>) :
 
     fun plusAdapterList(list2: List<BidInfo>) {
         list = list.plus(list2)
-        notifyDataSetChanged()
+        notifyItemRangeInserted(list.size - list2.size, list2.size)
     }
 
     override fun getItemCount() = list.size

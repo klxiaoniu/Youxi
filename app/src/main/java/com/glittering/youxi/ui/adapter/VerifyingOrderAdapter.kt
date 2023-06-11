@@ -1,5 +1,6 @@
 package com.glittering.youxi.ui.adapter
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.view.LayoutInflater
@@ -140,6 +141,7 @@ class VerifyingOrderAdapter(var list: List<VerifyingOrder>, val activity: Activi
         DialogUtil.stylize(dialog)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setAdapterList(list2: List<VerifyingOrder>) {
         list = list2
         notifyDataSetChanged()
@@ -147,7 +149,7 @@ class VerifyingOrderAdapter(var list: List<VerifyingOrder>, val activity: Activi
 
     fun plusAdapterList(list2: List<VerifyingOrder>) {
         list = list.plus(list2)
-        notifyDataSetChanged()
+        notifyItemRangeInserted(list.size - list2.size, list2.size)
     }
 
     override fun getItemCount() = list.size + 1

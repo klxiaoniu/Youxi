@@ -1,5 +1,6 @@
 package com.glittering.youxi.ui.adapter
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
@@ -79,6 +80,7 @@ class SearchResultAdapter(var list: List<SearchOrder>) :
 
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setAdapterList(list2: List<SearchOrder>) {
         list = list2
         notifyDataSetChanged()
@@ -86,7 +88,7 @@ class SearchResultAdapter(var list: List<SearchOrder>) :
 
     fun plusAdapterList(list2: List<SearchOrder>) {
         list = list.plus(list2)
-        notifyDataSetChanged()
+        notifyItemRangeInserted(list.size - list2.size, list2.size)
     }
 
     override fun getItemCount() = list.size + 1
