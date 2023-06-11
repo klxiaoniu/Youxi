@@ -69,7 +69,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.glittering.youxi.ui.IconTextItem
+    <com.glittering.youxi.ui.view.IconTextItem
         android:id="@+id/item_recharge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -79,7 +79,7 @@
         app:layout_constraintTop_toBottomOf="@id/layout_money"
         app:title="充值" />
 
-    <com.glittering.youxi.ui.IconTextItem
+    <com.glittering.youxi.ui.view.IconTextItem
         android:id="@+id/item_withdraw"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

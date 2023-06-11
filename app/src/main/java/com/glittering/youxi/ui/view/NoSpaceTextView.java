@@ -1,4 +1,4 @@
-package com.glittering.youxi.ui;
+package com.glittering.youxi.ui.view;
 
 
 import android.annotation.SuppressLint;

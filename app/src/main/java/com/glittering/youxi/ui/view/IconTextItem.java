@@ -1,4 +1,4 @@
-package com.glittering.youxi.ui;
+package com.glittering.youxi.ui.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -32,7 +32,6 @@ public class IconTextItem extends ConstraintLayout {
         int id = typedArray.getResourceId(R.styleable.IconTextItem_img, R.drawable.ic_default_avatar);
         boolean round = typedArray.getBoolean(R.styleable.IconTextItem_cornerRound, true);
         int wh = typedArray.getDimensionPixelSize(R.styleable.IconTextItem_widthHeight, -1);
-        System.out.println("wh = " + wh);
         typedArray.recycle();
         //if (wh == 40) wh = (int) (getResources().getDisplayMetrics().density * 50);
         if (wh != -1) {

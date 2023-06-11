@@ -89,7 +89,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/userinfo">
 
-        <com.glittering.youxi.ui.IconTextItem
+        <com.glittering.youxi.ui.view.IconTextItem
             android:id="@+id/item_collection"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -97,14 +97,14 @@
             app:img="@drawable/ic_me_favorite"
             app:title="收藏" />
 
-        <com.glittering.youxi.ui.IconTextItem
+        <com.glittering.youxi.ui.view.IconTextItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             app:img="@drawable/ic_me_history"
             app:title="历史" />
 
-        <com.glittering.youxi.ui.IconTextItem
+        <com.glittering.youxi.ui.view.IconTextItem
             android:id="@+id/item_wallet"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -112,14 +112,14 @@
             app:img="@drawable/ic_me_wallet"
             app:title="钱包" />
 
-        <com.glittering.youxi.ui.IconTextItem
+        <com.glittering.youxi.ui.view.IconTextItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             app:img="@drawable/ic_me_follows"
             app:title="关注" />
 
-        <com.glittering.youxi.ui.IconTextItem
+        <com.glittering.youxi.ui.view.IconTextItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -159,7 +159,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/title_mybuy">
 
-            <com.glittering.youxi.ui.IconTextItem
+            <com.glittering.youxi.ui.view.IconTextItem
                 android:id="@+id/item_buy_order"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -167,7 +167,7 @@
                 app:img="@drawable/ic_me_order"
                 app:title="订单" />
 
-            <com.glittering.youxi.ui.IconTextItem
+            <com.glittering.youxi.ui.view.IconTextItem
                 android:id="@+id/item_buy_wait_pay"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -175,7 +175,7 @@
                 app:img="@drawable/ic_me_wait_pay"
                 app:title="待付款" />
 
-            <com.glittering.youxi.ui.IconTextItem
+            <com.glittering.youxi.ui.view.IconTextItem
                 android:id="@+id/item_buy_wait_deliver"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -183,7 +183,7 @@
                 app:img="@drawable/ic_me_wait_send"
                 app:title="待发货" />
 
-            <com.glittering.youxi.ui.IconTextItem
+            <com.glittering.youxi.ui.view.IconTextItem
                 android:id="@+id/item_buy_wait_recv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -191,7 +191,7 @@
                 app:img="@drawable/ic_me_wait_recv"
                 app:title="待收货" />
 
-            <com.glittering.youxi.ui.IconTextItem
+            <com.glittering.youxi.ui.view.IconTextItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -221,7 +221,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/title_mysell">
 
-            <com.glittering.youxi.ui.IconTextItem
+            <com.glittering.youxi.ui.view.IconTextItem
                 android:id="@+id/item_sell_order"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -229,7 +229,7 @@
                 app:img="@drawable/ic_me_order"
                 app:title="订单" />
 
-            <com.glittering.youxi.ui.IconTextItem
+            <com.glittering.youxi.ui.view.IconTextItem
                 android:id="@+id/item_sell_wait_verify"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -237,7 +237,7 @@
                 app:img="@drawable/ic_me_wait_examine"
                 app:title="待审核" />
 
-            <com.glittering.youxi.ui.IconTextItem
+            <com.glittering.youxi.ui.view.IconTextItem
                 android:id="@+id/item_sell_upstaged"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -245,7 +245,7 @@
                 app:img="@drawable/ic_me_has_upstaged"
                 app:title="已上架" />
 
-            <com.glittering.youxi.ui.IconTextItem
+            <com.glittering.youxi.ui.view.IconTextItem
                 android:id="@+id/item_sell_sold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -253,7 +253,7 @@
                 app:img="@drawable/ic_me_has_sold"
                 app:title="已出售" />
 
-            <com.glittering.youxi.ui.IconTextItem
+            <com.glittering.youxi.ui.view.IconTextItem
                 android:id="@+id/item_sell_wait_deliver"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -274,7 +274,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/mysell">
 
-            <com.glittering.youxi.ui.IconTextItem
+            <com.glittering.youxi.ui.view.IconTextItem
                 android:id="@+id/item_sell_wait_recv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -282,7 +282,7 @@
                 app:img="@drawable/ic_me_wait_recv"
                 app:title="待收货" />
 
-            <com.glittering.youxi.ui.IconTextItem
+            <com.glittering.youxi.ui.view.IconTextItem
                 android:id="@+id/item_sell_all_goods"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -290,7 +290,7 @@
                 app:img="@drawable/ic_me_all_goods"
                 app:title="全部商品" />
 
-            <com.glittering.youxi.ui.IconTextItem
+            <com.glittering.youxi.ui.view.IconTextItem
                 android:id="@+id/item_sell_done_success"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
