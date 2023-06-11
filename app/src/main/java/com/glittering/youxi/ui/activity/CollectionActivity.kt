@@ -2,7 +2,8 @@ package com.glittering.youxi.ui.activity
 
 import android.os.Bundle
 import com.glittering.youxi.R
-import com.glittering.youxi.data.CollectionResponse
+import com.glittering.youxi.data.BaseDataResponse
+import com.glittering.youxi.data.CollectionData
 import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.data.UserService
 import com.glittering.youxi.databinding.ActivityCollectionBinding
@@ -27,10 +28,10 @@ class CollectionActivity : BaseActivity<ActivityCollectionBinding>() {
 
     private fun getData(i: Int) {
         val userService = ServiceCreator.create<UserService>()
-        userService.getCollection(i).enqueue(object : retrofit2.Callback<CollectionResponse> {
+        userService.getCollection(i).enqueue(object : retrofit2.Callback<BaseDataResponse<List<CollectionData>>> {
             override fun onResponse(
-                call: retrofit2.Call<CollectionResponse>,
-                response: retrofit2.Response<CollectionResponse>
+                call: retrofit2.Call<BaseDataResponse<List<CollectionData>>>,
+                response: retrofit2.Response<BaseDataResponse<List<CollectionData>>>
             ) {
                 if (response.body() != null) {
                     if (response.body()!!.code == 200) {
@@ -59,7 +60,7 @@ class CollectionActivity : BaseActivity<ActivityCollectionBinding>() {
                 }
             }
 
-            override fun onFailure(call: retrofit2.Call<CollectionResponse>, t: Throwable) {
+            override fun onFailure(call: retrofit2.Call<BaseDataResponse<List<CollectionData>>>, t: Throwable) {
                 t.printStackTrace()
                 ToastFail(getString(R.string.toast_response_error))
                 adapter?.setOnFootViewAttachedToWindowListener { }

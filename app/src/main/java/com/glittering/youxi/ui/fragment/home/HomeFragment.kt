@@ -15,7 +15,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.glittering.youxi.R
 import com.glittering.youxi.data.BannerBean
-import com.glittering.youxi.data.BannerResponse
+import com.glittering.youxi.data.BaseDataResponse
 import com.glittering.youxi.data.MainpageService
 import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.databinding.FragmentHomeBinding
@@ -68,10 +68,10 @@ class HomeFragment : Fragment() {
 
         val mainpageService = ServiceCreator.create<MainpageService>()
 
-        mainpageService.getBanner().enqueue(object : Callback<BannerResponse> {
+        mainpageService.getBanner().enqueue(object : Callback<BaseDataResponse<List<BannerBean>>> {
             override fun onResponse(
-                call: Call<BannerResponse>,
-                response: Response<BannerResponse>
+                call: Call<BaseDataResponse<List<BannerBean>>>,
+                response: Response<BaseDataResponse<List<BannerBean>>>
             ) {
                 Log.d("banner", response.body().toString())
                 val code = response.body()?.code
@@ -83,7 +83,7 @@ class HomeFragment : Fragment() {
                 }
             }
 
-            override fun onFailure(call: Call<BannerResponse>, t: Throwable) {
+            override fun onFailure(call: Call<BaseDataResponse<List<BannerBean>>>, t: Throwable) {
                 t.printStackTrace()
                 ToastFail(applicationContext.getString(R.string.toast_response_error))
             }

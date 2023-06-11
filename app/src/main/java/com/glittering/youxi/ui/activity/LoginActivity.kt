@@ -7,11 +7,12 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.glittering.youxi.MyApplication
 import com.glittering.youxi.R
+import com.glittering.youxi.data.BaseDataResponse
+import com.glittering.youxi.data.BaseResponse
 import com.glittering.youxi.data.CodeResponse
 import com.glittering.youxi.data.LoginRequest
-import com.glittering.youxi.data.LoginResponse
+import com.glittering.youxi.data.LoginUser
 import com.glittering.youxi.data.RegisterRequest
-import com.glittering.youxi.data.RegisterResponse
 import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.data.UserService
 import com.glittering.youxi.databinding.ActivityLoginBinding
@@ -71,10 +72,10 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
                 MediaType.parse("application/json; charset=utf-8"),
                 Gson().toJson(loginRequest)
             )
-            userService.login(json).enqueue(object : Callback<LoginResponse> {
+            userService.login(json).enqueue(object : Callback<BaseDataResponse<LoginUser>> {
                 override fun onResponse(
-                    call: Call<LoginResponse>,
-                    response: Response<LoginResponse>
+                    call: Call<BaseDataResponse<LoginUser>>,
+                    response: Response<BaseDataResponse<LoginUser>>
                 ) {
                     val code = response.body()?.code
                     if (code == 200) {
@@ -90,7 +91,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
                     }
                 }
 
-                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                override fun onFailure(call: Call<BaseDataResponse<LoginUser>>, t: Throwable) {
                     t.printStackTrace()
                     ToastFail(t.toString())
                     getCode()
@@ -127,10 +128,10 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
                 MediaType.parse("application/json; charset=utf-8"),
                 Gson().toJson(request)
             )
-            userService.register(json).enqueue(object : Callback<RegisterResponse> {
+            userService.register(json).enqueue(object : Callback<BaseResponse> {
                 override fun onResponse(
-                    call: Call<RegisterResponse>,
-                    response: Response<RegisterResponse>
+                    call: Call<BaseResponse>,
+                    response: Response<BaseResponse>
                 ) {
                     val code = response.body()?.code
                     if (code == 200) {
@@ -142,7 +143,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
                     }
                 }
 
-                override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
+                override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
                     t.printStackTrace()
                     ToastFail(t.toString())
                     getCode()

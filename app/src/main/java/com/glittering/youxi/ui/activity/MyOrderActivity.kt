@@ -1,9 +1,9 @@
 package com.glittering.youxi.ui.activity
 
 import android.os.Bundle
-import android.util.Log
 import com.glittering.youxi.R
-import com.glittering.youxi.data.MyOrderResponse
+import com.glittering.youxi.data.BaseDataResponse
+import com.glittering.youxi.data.MyOrderData
 import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.data.UserService
 import com.glittering.youxi.databinding.ActivityMyOrderBinding
@@ -44,15 +44,14 @@ class MyOrderActivity : BaseActivity<ActivityMyOrderBinding>() {
 
     private fun getData(type: String, page: Int) {
         val userService = ServiceCreator.create<UserService>()
-        userService.getMyOrder(type, page).enqueue(object : retrofit2.Callback<MyOrderResponse> {
+        userService.getMyOrder(type, page).enqueue(object : retrofit2.Callback<BaseDataResponse<List<MyOrderData>>> {
             override fun onResponse(
-                call: Call<MyOrderResponse>,
-                response: retrofit2.Response<MyOrderResponse>
+                call: Call<BaseDataResponse<List<MyOrderData>>>,
+                response: retrofit2.Response<BaseDataResponse<List<MyOrderData>>>
             ) {
                 if (response.body() != null) {
                     if (response.body()!!.code == 200) {
                         val list = response.body()!!.data
-                        Log.d("MyOrderActivity",page.toString()+"||"+ list.toString())
                         if (adapter == null) {
                             adapter = MyOrderAdapter(list, type, this@MyOrderActivity)
                             binding.rv.adapter = adapter
@@ -75,7 +74,7 @@ class MyOrderActivity : BaseActivity<ActivityMyOrderBinding>() {
                 }
             }
 
-            override fun onFailure(call: Call<MyOrderResponse>, t: Throwable) {
+            override fun onFailure(call: Call<BaseDataResponse<List<MyOrderData>>>, t: Throwable) {
                 t.printStackTrace()
                 adapter?.setOnFootViewAttachedToWindowListener { }
                 adapter?.setOnFootViewClickListener { getData(type, page) }

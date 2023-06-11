@@ -6,8 +6,8 @@ import android.view.inputmethod.EditorInfo.IME_ACTION_DONE
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import com.glittering.youxi.R
+import com.glittering.youxi.data.BaseResponse
 import com.glittering.youxi.data.OrderBiddingRequest
-import com.glittering.youxi.data.OrderBiddingResponse
 import com.glittering.youxi.data.OrderService
 import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.utils.ToastFail
@@ -53,10 +53,10 @@ class BottomBiddingDialog(context: Context, orderid: Int) : CustomBottomDialog(c
                     MediaType.parse("application/json; charset=utf-8"),
                     Gson().toJson(orderBiddingRequest)
                 )
-                orderService.bid(json).enqueue(object : retrofit2.Callback<OrderBiddingResponse> {
+                orderService.bid(json).enqueue(object : retrofit2.Callback<BaseResponse> {
                     override fun onResponse(
-                        call: Call<OrderBiddingResponse>,
-                        response: Response<OrderBiddingResponse>
+                        call: Call<BaseResponse>,
+                        response: Response<BaseResponse>
                     ) {
                         if (response.body() != null) {
                             if (response.body()!!.code == 200) {
@@ -66,7 +66,7 @@ class BottomBiddingDialog(context: Context, orderid: Int) : CustomBottomDialog(c
                         } else ToastFail(context.getString(R.string.toast_response_error))
                     }
 
-                    override fun onFailure(call: Call<OrderBiddingResponse>, t: Throwable) {
+                    override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
                         t.printStackTrace()
                         ToastFail(t.toString())
                     }

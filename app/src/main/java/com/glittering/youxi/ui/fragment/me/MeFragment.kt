@@ -11,7 +11,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.glittering.youxi.MyApplication.Companion.loggedInUser
 import com.glittering.youxi.R
-import com.glittering.youxi.data.PersonalInfoResponse
+import com.glittering.youxi.data.BaseDataResponse
+import com.glittering.youxi.data.PersonalInfo
 import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.data.UserService
 import com.glittering.youxi.databinding.FragmentMeBinding
@@ -129,10 +130,10 @@ class MeFragment : Fragment() {
     private fun updateUserInfo() {
         if (getToken() != "") {
             val userService = ServiceCreator.create<UserService>()
-            userService.getPersonalInfo().enqueue(object : Callback<PersonalInfoResponse> {
+            userService.getPersonalInfo().enqueue(object : Callback<BaseDataResponse<List<PersonalInfo>>> {
                 override fun onResponse(
-                    call: Call<PersonalInfoResponse>,
-                    response: Response<PersonalInfoResponse>
+                    call: Call<BaseDataResponse<List<PersonalInfo>>>,
+                    response: Response<BaseDataResponse<List<PersonalInfo>>>
                 ) {
                     val res = response.body()
                     if (res?.code == 200) {
@@ -150,7 +151,7 @@ class MeFragment : Fragment() {
                     } else ToastFail(res?.message.toString())
                 }
 
-                override fun onFailure(call: Call<PersonalInfoResponse>, t: Throwable) {
+                override fun onFailure(call: Call<BaseDataResponse<List<PersonalInfo>>>, t: Throwable) {
                     t.printStackTrace()
                 }
             })

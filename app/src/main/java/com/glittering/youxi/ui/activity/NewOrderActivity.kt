@@ -13,11 +13,11 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.glittering.youxi.R
-import com.glittering.youxi.data.NewOrderResponse
-import com.glittering.youxi.data.OrderInfoResponse
+import com.glittering.youxi.data.BaseDataResponse
+import com.glittering.youxi.data.BaseResponse
+import com.glittering.youxi.data.Order
 import com.glittering.youxi.data.OrderService
 import com.glittering.youxi.data.ServiceCreator
-import com.glittering.youxi.data.UpdateOrderResponse
 import com.glittering.youxi.databinding.ActivityNewOrderBinding
 import com.glittering.youxi.utils.ToastFail
 import com.glittering.youxi.utils.ToastSuccess
@@ -53,10 +53,10 @@ class NewOrderActivity : BaseActivity<ActivityNewOrderBinding>() {
             //加载信息，进入编辑模式
             val orderService = ServiceCreator.create<OrderService>()
             orderService.getOrderInfo(orderId)
-                .enqueue(object : retrofit2.Callback<OrderInfoResponse> {
+                .enqueue(object : retrofit2.Callback<BaseDataResponse<List<Order>>> {
                     override fun onResponse(
-                        call: Call<OrderInfoResponse>,
-                        response: Response<OrderInfoResponse>
+                        call: Call<BaseDataResponse<List<Order>>>,
+                        response: Response<BaseDataResponse<List<Order>>>
                     ) {
                         if (response.body() != null) {
                             println(response.body().toString())
@@ -88,7 +88,7 @@ class NewOrderActivity : BaseActivity<ActivityNewOrderBinding>() {
                         } else ToastFail(getString(R.string.toast_response_error))
                     }
 
-                    override fun onFailure(call: Call<OrderInfoResponse>, t: Throwable) {
+                    override fun onFailure(call: Call<BaseDataResponse<List<Order>>>, t: Throwable) {
                         t.printStackTrace()
                         ToastFail(t.toString())
                     }
@@ -145,10 +145,10 @@ class NewOrderActivity : BaseActivity<ActivityNewOrderBinding>() {
                     .addFormDataPart("resources", binding.etAccountInfo.text.toString())
                     .build()
                 orderService.newOrder(requestBody)
-                    .enqueue(object : retrofit2.Callback<NewOrderResponse> {
+                    .enqueue(object : retrofit2.Callback<BaseResponse> {
                         override fun onResponse(
-                            call: Call<NewOrderResponse>,
-                            response: Response<NewOrderResponse>
+                            call: Call<BaseResponse>,
+                            response: Response<BaseResponse>
                         ) {
                             val body = response.body()
                             if (body?.code == 200) {
@@ -164,7 +164,7 @@ class NewOrderActivity : BaseActivity<ActivityNewOrderBinding>() {
                         }
 
                         override fun onFailure(
-                            call: Call<NewOrderResponse>,
+                            call: Call<BaseResponse>,
                             t: Throwable
                         ) {
                             t.printStackTrace()
@@ -198,13 +198,11 @@ class NewOrderActivity : BaseActivity<ActivityNewOrderBinding>() {
                     )
                     .addFormDataPart("price", binding.etPrice.text.toString())
                     .addFormDataPart("resources", binding.etAccountInfo.text.toString())
-                    .addFormDataPart("order_id", orderId.toString())
-                    .build()
+                    .addFormDataPart("order_id", orderId.toString()).build()
                 orderService.updateOrder(requestBody)
-                    .enqueue(object : retrofit2.Callback<UpdateOrderResponse> {
+                    .enqueue(object : retrofit2.Callback<BaseResponse> {
                         override fun onResponse(
-                            call: Call<UpdateOrderResponse>,
-                            response: Response<UpdateOrderResponse>
+                            call: Call<BaseResponse>, response: Response<BaseResponse>
                         ) {
                             val body = response.body()
                             if (body?.code == 200) {
@@ -220,8 +218,7 @@ class NewOrderActivity : BaseActivity<ActivityNewOrderBinding>() {
                         }
 
                         override fun onFailure(
-                            call: Call<UpdateOrderResponse>,
-                            t: Throwable
+                            call: Call<BaseResponse>, t: Throwable
                         ) {
                             t.printStackTrace()
                             ToastFail(t.toString())

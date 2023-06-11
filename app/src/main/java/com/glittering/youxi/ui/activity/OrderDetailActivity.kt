@@ -14,16 +14,14 @@ import com.bumptech.glide.request.RequestOptions
 import com.glittering.youxi.MyApplication.Companion.loggedInUser
 import com.glittering.youxi.R
 import com.glittering.youxi.data.AddFavoriteRequest
-import com.glittering.youxi.data.AddFavoriteResponse
-import com.glittering.youxi.data.BidInfoResponse
-import com.glittering.youxi.data.DeleteOrderResponse
+import com.glittering.youxi.data.BaseDataResponse
+import com.glittering.youxi.data.BaseResponse
+import com.glittering.youxi.data.BidInfo
 import com.glittering.youxi.data.Order
-import com.glittering.youxi.data.OrderInfoResponse
 import com.glittering.youxi.data.OrderService
 import com.glittering.youxi.data.PayRequest
-import com.glittering.youxi.data.PayResponse
 import com.glittering.youxi.data.ServiceCreator
-import com.glittering.youxi.data.UserInfoResponse
+import com.glittering.youxi.data.UserInfo
 import com.glittering.youxi.data.UserService
 import com.glittering.youxi.databinding.ActivityOrderDetailBinding
 import com.glittering.youxi.ui.adapter.BidInfoAdapter
@@ -66,10 +64,10 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
             return
         }
         val orderService = ServiceCreator.create<OrderService>()
-        orderService.getOrderInfo(orderId).enqueue(object : Callback<OrderInfoResponse> {
+        orderService.getOrderInfo(orderId).enqueue(object : Callback<BaseDataResponse<List<Order>>> {
             override fun onResponse(
-                call: Call<OrderInfoResponse>,
-                response: Response<OrderInfoResponse>
+                call: Call<BaseDataResponse<List<Order>>>,
+                response: Response<BaseDataResponse<List<Order>>>
             ) {
                 if (response.body() != null) {
                     if (response.body()!!.code == 200) {
@@ -83,7 +81,6 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
                             .apply(option)
                             .into(binding.ivOrderPicture)
                         binding.tvOrderTitle.text = order!!.order_title
-                        val s = order!!.order_price.toString().split(".")
                         val text = "￥" + order!!.order_price.toString()
                         val textSpan = SpannableStringBuilder(text)
                         textSpan.setSpan(
@@ -113,10 +110,10 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
 
                         val userService = ServiceCreator.create<UserService>()
                         userService.getUserInfo(order!!.seller_id)
-                            .enqueue(object : Callback<UserInfoResponse> {
+                            .enqueue(object : Callback<BaseDataResponse<List<UserInfo>>> {
                                 override fun onResponse(
-                                    call: Call<UserInfoResponse>,
-                                    response: Response<UserInfoResponse>
+                                    call: Call<BaseDataResponse<List<UserInfo>>>,
+                                    response: Response<BaseDataResponse<List<UserInfo>>>
                                 ) {
                                     if (response.body() != null) {
                                         if (response.body()!!.code == 200) {
@@ -135,17 +132,17 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
                                     } else ToastFail(getString(R.string.toast_response_error))
                                 }
 
-                                override fun onFailure(call: Call<UserInfoResponse>, t: Throwable) {
+                                override fun onFailure(call: Call<BaseDataResponse<List<UserInfo>>>, t: Throwable) {
                                     ToastFail(getString(R.string.toast_response_error))
                                 }
                             })
 
 
                         orderService.getBidInfo(orderId, 1)
-                            .enqueue(object : Callback<BidInfoResponse> {
+                            .enqueue(object : Callback<BaseDataResponse<List<BidInfo>>> {
                                 override fun onResponse(
-                                    call: Call<BidInfoResponse>,
-                                    response: Response<BidInfoResponse>
+                                    call: Call<BaseDataResponse<List<BidInfo>>>,
+                                    response: Response<BaseDataResponse<List<BidInfo>>>
                                 ) {
                                     if (response.body() != null) {
                                         if (response.body()!!.code == 200) {
@@ -162,7 +159,7 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
                                     } else ToastFail(getString(R.string.toast_response_error))
                                 }
 
-                                override fun onFailure(call: Call<BidInfoResponse>, t: Throwable) {
+                                override fun onFailure(call: Call<BaseDataResponse<List<BidInfo>>>, t: Throwable) {
                                     ToastFail(getString(R.string.toast_response_error))
                                 }
                             })
@@ -197,7 +194,7 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
                 } else ToastFail(getString(R.string.toast_response_error))
             }
 
-            override fun onFailure(call: Call<OrderInfoResponse>, t: Throwable) {
+            override fun onFailure(call: Call<BaseDataResponse<List<Order>>>, t: Throwable) {
                 t.printStackTrace()
                 ToastFail(getString(R.string.toast_response_error))
             }
@@ -226,10 +223,10 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
                             MediaType.parse("application/json; charset=utf-8"),
                             Gson().toJson(payData)
                         )
-                        orderService.pay(json).enqueue(object : Callback<PayResponse> {
+                        orderService.pay(json).enqueue(object : Callback<BaseResponse> {
                             override fun onResponse(
-                                call: Call<PayResponse>,
-                                response: Response<PayResponse>
+                                call: Call<BaseResponse>,
+                                response: Response<BaseResponse>
                             ) {
                                 if (response.body() != null) {
                                     val code = response.body()?.code
@@ -241,7 +238,7 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
                                 } else ToastFail(getString(R.string.toast_response_error))
                             }
 
-                            override fun onFailure(call: Call<PayResponse>, t: Throwable) {
+                            override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
                                 t.printStackTrace()
                                 ToastFail(getString(R.string.toast_response_error))
                             }
@@ -264,10 +261,10 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
                 MediaType.parse("application/json; charset=utf-8"),
                 Gson().toJson(favoriteData)
             )
-            orderService.addFavorite(json).enqueue(object : Callback<AddFavoriteResponse> {
+            orderService.addFavorite(json).enqueue(object : Callback<BaseResponse> {
                 override fun onResponse(
-                    call: Call<AddFavoriteResponse>,
-                    response: Response<AddFavoriteResponse>
+                    call: Call<BaseResponse>,
+                    response: Response<BaseResponse>
                 ) {
                     if (response.body() != null) {
                         val code = response.body()?.code
@@ -279,7 +276,7 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
                     } else ToastFail(getString(R.string.toast_response_error))
                 }
 
-                override fun onFailure(call: Call<AddFavoriteResponse>, t: Throwable) {
+                override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
                     t.printStackTrace()
                     ToastFail(getString(R.string.toast_response_error))
                 }
@@ -297,12 +294,9 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
                     val orderService =
                         ServiceCreator.create<OrderService>()
 
-                    orderService.deleteOrder(orderId)
-                        .enqueue(object :
-                            Callback<DeleteOrderResponse> {
+                    orderService.deleteOrder(orderId).enqueue(object : Callback<BaseResponse> {
                             override fun onResponse(
-                                call: Call<DeleteOrderResponse>,
-                                response: Response<DeleteOrderResponse>
+                                call: Call<BaseResponse>, response: Response<BaseResponse>
                             ) {
                                 val code = response.body()?.code
                                 if (code == 200) {
@@ -314,8 +308,7 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
                             }
 
                             override fun onFailure(
-                                call: Call<DeleteOrderResponse>,
-                                t: Throwable
+                                call: Call<BaseResponse>, t: Throwable
                             ) {
                                 t.printStackTrace()
                                 ToastFail(getString(R.string.toast_response_error))

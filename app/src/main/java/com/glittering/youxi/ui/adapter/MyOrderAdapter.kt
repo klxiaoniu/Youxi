@@ -13,10 +13,9 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.glittering.youxi.R
+import com.glittering.youxi.data.BaseResponse
 import com.glittering.youxi.data.ConfirmOrderRequest
-import com.glittering.youxi.data.ConfirmOrderResponse
 import com.glittering.youxi.data.DeliverOrderRequest
-import com.glittering.youxi.data.DeliverOrderResponse
 import com.glittering.youxi.data.MyOrderData
 import com.glittering.youxi.data.OrderService
 import com.glittering.youxi.data.ServiceCreator
@@ -141,9 +140,9 @@ class MyOrderAdapter(var list: List<MyOrderData>, val type: String, val activity
         val json = FormBody.create(
             MediaType.parse("application/json; charset=utf-8"), Gson().toJson(data)
         )
-        orderService.confirmOrder(json).enqueue(object : Callback<ConfirmOrderResponse> {
+        orderService.confirmOrder(json).enqueue(object : Callback<BaseResponse> {
             override fun onResponse(
-                call: Call<ConfirmOrderResponse>, response: Response<ConfirmOrderResponse>
+                call: Call<BaseResponse>, response: Response<BaseResponse>
             ) {
                 val resp = response.body()
                 if (resp != null) {
@@ -156,7 +155,7 @@ class MyOrderAdapter(var list: List<MyOrderData>, val type: String, val activity
             }
 
             override fun onFailure(
-                call: Call<ConfirmOrderResponse>, t: Throwable
+                call: Call<BaseResponse>, t: Throwable
             ) {
                 ToastFail("验货失败")
             }
@@ -170,9 +169,9 @@ class MyOrderAdapter(var list: List<MyOrderData>, val type: String, val activity
         val json = FormBody.create(
             MediaType.parse("application/json; charset=utf-8"), Gson().toJson(data)
         )
-        orderService.deliverOrder(json).enqueue(object : Callback<DeliverOrderResponse> {
+        orderService.deliverOrder(json).enqueue(object : Callback<BaseResponse> {
                 override fun onResponse(
-                    call: Call<DeliverOrderResponse>, response: Response<DeliverOrderResponse>
+                    call: Call<BaseResponse>, response: Response<BaseResponse>
                 ) {
                     val resp = response.body()
                     if (resp != null) {
@@ -185,7 +184,7 @@ class MyOrderAdapter(var list: List<MyOrderData>, val type: String, val activity
                 }
 
                 override fun onFailure(
-                    call: Call<DeliverOrderResponse>, t: Throwable
+                    call: Call<BaseResponse>, t: Throwable
                 ) {
                     ToastFail("发货失败")
                 }

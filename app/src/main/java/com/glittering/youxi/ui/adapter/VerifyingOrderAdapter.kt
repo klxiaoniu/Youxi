@@ -14,9 +14,9 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.glittering.youxi.R
+import com.glittering.youxi.data.BaseResponse
 import com.glittering.youxi.data.OrderService
 import com.glittering.youxi.data.ServiceCreator
-import com.glittering.youxi.data.VerifyResponse
 import com.glittering.youxi.data.VerifyingOrder
 import com.glittering.youxi.data.VerifyingOrderRequest
 import com.glittering.youxi.ui.activity.OrderDetailActivity
@@ -117,10 +117,10 @@ class VerifyingOrderAdapter(var list: List<VerifyingOrder>, val activity: Activi
                     )
                 )
                 orderService.verify(body)
-                    .enqueue(object : retrofit2.Callback<VerifyResponse> {
+                    .enqueue(object : retrofit2.Callback<BaseResponse> {
                         override fun onResponse(
-                            call: Call<VerifyResponse>,
-                            response: Response<VerifyResponse>
+                            call: Call<BaseResponse>,
+                            response: Response<BaseResponse>
                         ) {
                             if (response.body() != null && response.body()!!.code == 200) {
                                 ToastSuccess(response.body()!!.message)
@@ -129,7 +129,7 @@ class VerifyingOrderAdapter(var list: List<VerifyingOrder>, val activity: Activi
                             }
                         }
 
-                        override fun onFailure(call: Call<VerifyResponse>, t: Throwable) {
+                        override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
                             ToastFail(applicationContext.getString(R.string.toast_response_error))
                         }
                     }

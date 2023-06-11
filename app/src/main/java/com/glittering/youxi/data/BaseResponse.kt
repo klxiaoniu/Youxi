@@ -1,7 +1,6 @@
 package com.glittering.youxi.data
 
-data class MyOrderResponse(
+data class BaseResponse(
     val code: Int,
-    val data: List<MyOrderData>,
     val message: String
 )

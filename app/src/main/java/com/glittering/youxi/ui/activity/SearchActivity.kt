@@ -1,12 +1,12 @@
 package com.glittering.youxi.ui.activity
 
 import android.os.Bundle
-import android.util.Log
 import android.view.inputmethod.EditorInfo
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.glittering.youxi.R
+import com.glittering.youxi.data.BaseDataResponse
 import com.glittering.youxi.data.OrderService
-import com.glittering.youxi.data.SearchResponse
+import com.glittering.youxi.data.SearchOrder
 import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.databinding.ActivitySearchBinding
 import com.glittering.youxi.ui.adapter.SearchResultAdapter
@@ -50,15 +50,14 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>() {
     private fun getData(key: String, i: Int) {
         val orderService = ServiceCreator.create<OrderService>()
 
-        orderService.search(key, i).enqueue(object : Callback<SearchResponse> {
+        orderService.search(key, i).enqueue(object : Callback<BaseDataResponse<List<SearchOrder>>> {
             override fun onResponse(
-                call: Call<SearchResponse>,
-                response: Response<SearchResponse>
+                call: Call<BaseDataResponse<List<SearchOrder>>>,
+                response: Response<BaseDataResponse<List<SearchOrder>>>
             ) {
                 val code = response.body()?.code
                 if (code == 200) {
                     val data = response.body()?.data!!
-                    Log.d("SearchActivity", data.toString())
                     if (adapter == null) {
                         adapter = SearchResultAdapter(data)
                         val layoutManager = LinearLayoutManager(applicationContext)
@@ -78,7 +77,7 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>() {
                 }
             }
 
-            override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
+            override fun onFailure(call: Call<BaseDataResponse<List<SearchOrder>>>, t: Throwable) {
                 ToastFail(getString(R.string.toast_response_error))
                 adapter?.setOnFootViewAttachedToWindowListener { }
                 adapter?.setOnFootViewClickListener { getData(key, i) }

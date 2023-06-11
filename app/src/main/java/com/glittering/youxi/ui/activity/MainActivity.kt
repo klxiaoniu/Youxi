@@ -16,7 +16,8 @@ import androidx.viewpager2.widget.ViewPager2
 import com.glittering.youxi.MyApplication.Companion.loggedInUser
 import com.glittering.youxi.MyWebSocketClient
 import com.glittering.youxi.R
-import com.glittering.youxi.data.LoginResponse
+import com.glittering.youxi.data.BaseDataResponse
+import com.glittering.youxi.data.LoginUser
 import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.data.UserService
 import com.glittering.youxi.database.MsgDatabase
@@ -107,10 +108,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
         if (getToken() != "") {
             val userService = ServiceCreator.create<UserService>()
-            userService.loginWithToken().enqueue(object : Callback<LoginResponse> {
+            userService.loginWithToken().enqueue(object : Callback<BaseDataResponse<LoginUser>> {
                 override fun onResponse(
-                    call: Call<LoginResponse>,
-                    response: Response<LoginResponse>
+                    call: Call<BaseDataResponse<LoginUser>>,
+                    response: Response<BaseDataResponse<LoginUser>>
                 ) {
                     val code = response.body()?.code
                     if (code == 200) {
@@ -122,7 +123,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                     }
                 }
 
-                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                override fun onFailure(call: Call<BaseDataResponse<LoginUser>>, t: Throwable) {
                     t.printStackTrace()
                 }
             })

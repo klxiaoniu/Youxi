@@ -7,66 +7,66 @@ import retrofit2.http.*
 interface OrderService {
 
     @GET("order/information")
-    fun getOrderInfo(@Query("order_id") orderId: Int): Call<OrderInfoResponse>
+    fun getOrderInfo(@Query("order_id") orderId: Int): Call<BaseDataResponse<List<Order>>>
 
     @POST("order/bidding")
     fun bid(
         @Body body: RequestBody
-    ): Call<OrderBiddingResponse>
+    ): Call<BaseResponse>
 
     @PUT("order/collecting")
     fun addFavorite(
         @Body body: RequestBody
-    ): Call<AddFavoriteResponse>
+    ): Call<BaseResponse>
 
     @GET("bid/searching")
     fun getBidInfo(
         @Query("order_id") orderId: Int,
         @Query("page") page: Int
-    ): Call<BidInfoResponse>
+    ): Call<BaseDataResponse<List<BidInfo>>>
 
     @POST("neworder")
     fun newOrder(
         @Body body: RequestBody
-    ): Call<NewOrderResponse>
+    ): Call<BaseResponse>
 
     @PUT("order/updating")
     fun updateOrder(
         @Body body: RequestBody
-    ): Call<UpdateOrderResponse>
+    ): Call<BaseResponse>
 
     @DELETE("order/deleting")
     fun deleteOrder(
         @Query("order_id") id: Int
-    ): Call<DeleteOrderResponse>
+    ): Call<BaseResponse>
 
     @PUT("order/confirming")
     fun confirmOrder(
         @Body body: RequestBody
-    ): Call<ConfirmOrderResponse>
+    ): Call<BaseResponse>
 
     @PUT("order/delivering")
     fun deliverOrder(
         @Body body: RequestBody
-    ): Call<DeliverOrderResponse>
+    ): Call<BaseResponse>
 
     @GET("order/view/verifying")
     fun getVerifyingOrder(
         @Query("page") page: Int
-    ): Call<VerifyingOrderResponse>
+    ): Call<BaseDataResponse<List<VerifyingOrder>>>
 
     @PUT("order/verifying")
     fun verify(
         @Body body: RequestBody
-    ): Call<VerifyResponse>
+    ): Call<BaseResponse>
 
     @GET("order/searching")
     fun search(
         @Query("keyword") key: String, @Query("page") page: Int
-    ): Call<SearchResponse>
+    ): Call<BaseDataResponse<List<SearchOrder>>>
 
     @PUT("order/paying")
     fun pay(
         @Body body: RequestBody
-    ): Call<PayResponse>
+    ): Call<BaseResponse>
 }

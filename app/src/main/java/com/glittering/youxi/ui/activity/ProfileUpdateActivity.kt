@@ -10,12 +10,11 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.glittering.youxi.R
+import com.glittering.youxi.data.BaseDataResponse
+import com.glittering.youxi.data.BaseResponse
 import com.glittering.youxi.data.EmailRequest
-import com.glittering.youxi.data.EmailResponse
 import com.glittering.youxi.data.PersonalInfo
-import com.glittering.youxi.data.PersonalInfoResponse
 import com.glittering.youxi.data.ServiceCreator
-import com.glittering.youxi.data.UpdatingResponse
 import com.glittering.youxi.data.UserService
 import com.glittering.youxi.databinding.ActivityProfileUpdateBinding
 import com.glittering.youxi.utils.DarkUtil.Companion.reverseColorIfDark
@@ -69,16 +68,16 @@ class ProfileUpdateActivity : BaseActivity<ActivityProfileUpdateBinding>() {
                 MediaType.parse("application/json; charset=utf-8"),
                 Gson().toJson(emailRequest)
             )
-            userService.queryEmailCode(json).enqueue(object : Callback<EmailResponse> {
+            userService.queryEmailCode(json).enqueue(object : Callback<BaseResponse> {
                 override fun onResponse(
-                    call: Call<EmailResponse>,
-                    response: Response<EmailResponse>
+                    call: Call<BaseResponse>,
+                    response: Response<BaseResponse>
                 ) {
                     val res = response.body()
                     ToastSuccess(res?.message.toString())
                 }
 
-                override fun onFailure(call: Call<EmailResponse>, t: Throwable) {
+                override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
                     t.printStackTrace()
                     ToastFail(t.toString())
                 }
@@ -106,10 +105,10 @@ class ProfileUpdateActivity : BaseActivity<ActivityProfileUpdateBinding>() {
                     binding.email.text.toString().let { if (it == userInfo.email) "" else it })
                 .addFormDataPart("ecode", binding.ecode.text.toString())
                 .build()
-            userService.updating(requestBody).enqueue(object : Callback<UpdatingResponse> {
+            userService.updating(requestBody).enqueue(object : Callback<BaseResponse> {
                 override fun onResponse(
-                    call: Call<UpdatingResponse>,
-                    response: Response<UpdatingResponse>
+                    call: Call<BaseResponse>,
+                    response: Response<BaseResponse>
                 ) {
                     val res = response.body()
                     if (res != null) {
@@ -122,7 +121,7 @@ class ProfileUpdateActivity : BaseActivity<ActivityProfileUpdateBinding>() {
                     }
                 }
 
-                override fun onFailure(call: Call<UpdatingResponse>, t: Throwable) {
+                override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
                     t.printStackTrace()
                     ToastFail(t.toString())
                 }
@@ -130,10 +129,10 @@ class ProfileUpdateActivity : BaseActivity<ActivityProfileUpdateBinding>() {
         }
 
         val userService = ServiceCreator.create<UserService>()
-        userService.getPersonalInfo().enqueue(object : Callback<PersonalInfoResponse> {
+        userService.getPersonalInfo().enqueue(object : Callback<BaseDataResponse<List<PersonalInfo>>> {
             override fun onResponse(
-                call: Call<PersonalInfoResponse>,
-                response: Response<PersonalInfoResponse>
+                call: Call<BaseDataResponse<List<PersonalInfo>>>,
+                response: Response<BaseDataResponse<List<PersonalInfo>>>
             ) {
                 val res = response.body()
                 if (res?.code == 200) {
@@ -154,7 +153,7 @@ class ProfileUpdateActivity : BaseActivity<ActivityProfileUpdateBinding>() {
                 } else ToastFail(res?.message.toString())
             }
 
-            override fun onFailure(call: Call<PersonalInfoResponse>, t: Throwable) {
+            override fun onFailure(call: Call<BaseDataResponse<List<PersonalInfo>>>, t: Throwable) {
                 t.printStackTrace()
                 ToastFail(t.toString())
             }

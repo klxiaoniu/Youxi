@@ -9,12 +9,12 @@ interface UserService {
     @POST("login")
     fun login(
         @Body body: RequestBody
-    ): Call<LoginResponse>
+    ): Call<BaseDataResponse<LoginUser>>
 
     @POST("register")
     fun register(
         @Body body: RequestBody
-    ): Call<RegisterResponse>
+    ): Call<BaseResponse>
 
     @GET("code")
     fun queryCode(
@@ -23,40 +23,40 @@ interface UserService {
     @PUT("information/updating")
     fun updating(
         @Body body: RequestBody
-    ): Call<UpdatingResponse>
+    ): Call<BaseResponse>
 
     @POST("email")
     fun queryEmailCode(
         @Body body: RequestBody
-    ): Call<EmailResponse>
+    ): Call<BaseResponse>
 
     @GET("information")
     fun getPersonalInfo(
-    ): Call<PersonalInfoResponse>
+    ): Call<BaseDataResponse<List<PersonalInfo>>>
 
     @Headers("Cache-Control:public ,max-age=60")
     @GET("user/information")
     fun getUserInfo(
         @Query("id") id: Long
-    ): Call<UserInfoResponse>
+    ): Call<BaseDataResponse<List<UserInfo>>>
 
     @POST("temp/login")
     fun loginWithToken(
-    ): Call<LoginResponse>
+    ): Call<BaseDataResponse<LoginUser>>
 
     @GET("message")
     fun getSysMsg(
         @Query("page") page: Int
-    ): Call<SysMsgResponse>
+    ): Call<BaseDataResponse<List<SysMsg>>>
 
     @GET("order/view/collection")
     fun getCollection(
         @Query("page") page: Int
-    ): Call<CollectionResponse>
+    ): Call<BaseDataResponse<List<CollectionData>>>
 
     @GET("order/view/mine")
     fun getMyOrder(
         @Query("type") type: String,
         @Query("page") page: Int
-    ): Call<MyOrderResponse>
+    ): Call<BaseDataResponse<List<MyOrderData>>>
 }

@@ -3,9 +3,10 @@ package com.glittering.youxi.ui.activity
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.glittering.youxi.R
+import com.glittering.youxi.data.BaseDataResponse
 import com.glittering.youxi.data.OrderService
 import com.glittering.youxi.data.ServiceCreator
-import com.glittering.youxi.data.VerifyingOrderResponse
+import com.glittering.youxi.data.VerifyingOrder
 import com.glittering.youxi.databinding.ActivityVerifyBinding
 import com.glittering.youxi.ui.adapter.VerifyingOrderAdapter
 import com.glittering.youxi.utils.ToastFail
@@ -37,10 +38,10 @@ class VerifyActivity : BaseActivity<ActivityVerifyBinding>() {
         val orderService = ServiceCreator.create<OrderService>()
 
         orderService.getVerifyingOrder(page)
-            .enqueue(object : retrofit2.Callback<VerifyingOrderResponse> {
+            .enqueue(object : retrofit2.Callback<BaseDataResponse<List<VerifyingOrder>>> {
                 override fun onResponse(
-                    call: Call<VerifyingOrderResponse>,
-                    response: Response<VerifyingOrderResponse>
+                    call: Call<BaseDataResponse<List<VerifyingOrder>>>,
+                    response: Response<BaseDataResponse<List<VerifyingOrder>>>
                 ) {
                     if (response.body() != null && response.body()!!.code == 200) {
                         val list = response.body()!!.data
@@ -60,7 +61,7 @@ class VerifyActivity : BaseActivity<ActivityVerifyBinding>() {
                     }
                 }
 
-                override fun onFailure(call: Call<VerifyingOrderResponse>, t: Throwable) {
+                override fun onFailure(call: Call<BaseDataResponse<List<VerifyingOrder>>>, t: Throwable) {
                     ToastFail(getString(R.string.toast_response_error))
                 }
             }
