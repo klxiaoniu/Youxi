@@ -7,17 +7,22 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.content.PermissionChecker
+import com.alipay.sdk.app.PayTask
 import com.glittering.youxi.R
 import com.glittering.youxi.databinding.ActivityDebugBinding
 import com.glittering.youxi.utils.DialogUtil
+import com.glittering.youxi.utils.ToastInfo
 import com.glittering.youxi.utils.setToken
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hjq.toast.Toaster
+
 
 class DebugActivity : BaseActivity<ActivityDebugBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -122,7 +127,7 @@ class DebugActivity : BaseActivity<ActivityDebugBinding>() {
         }
         binding.btnChat.setOnClickListener {
             val intent = Intent(this, ChatActivity::class.java)
-            intent.putExtra("chat_id",0L)
+            intent.putExtra("chat_id", 0L)
             startActivity(intent)
         }
         binding.setting.setOnClickListener {
@@ -132,6 +137,37 @@ class DebugActivity : BaseActivity<ActivityDebugBinding>() {
         binding.verify.setOnClickListener {
             val intent = Intent(this, VerifyActivity::class.java)
             startActivity(intent)
+        }
+        binding.pay.setOnClickListener {
+            var orderInfo: String
+
+            val et = EditText(this)
+            MaterialAlertDialogBuilder(this)
+                .setTitle("输入orderString")
+                .setView(et)
+                .setNegativeButton("取消", null)
+                .setPositiveButton("确定") { dialog, which ->
+                    orderInfo = et.text.toString()
+
+
+                    val payRunnable = Runnable {
+                        val alipay = PayTask(this)
+                        val result = alipay.payV2(orderInfo, true)
+
+                        ToastInfo(result["resultStatus"] + " " + result["memo"])
+                        Log.d("alipay", result.toString())
+
+                    }
+                    // 必须异步调用
+                    val payThread = Thread(payRunnable)
+                    payThread.start()
+                }
+                .show()
+                .let {
+                    DialogUtil.stylize(it)
+                }
+
+
         }
     }
 }
