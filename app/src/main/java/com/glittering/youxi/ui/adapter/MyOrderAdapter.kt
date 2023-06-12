@@ -13,7 +13,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.glittering.youxi.R
-import com.glittering.youxi.data.BaseResponse
+import com.glittering.youxi.data.BaseDataResponse
 import com.glittering.youxi.data.ConfirmOrderRequest
 import com.glittering.youxi.data.DeliverOrderRequest
 import com.glittering.youxi.data.MyOrderData
@@ -33,7 +33,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MyOrderAdapter(var list: List<MyOrderData>, val type: String, val activity: Activity) :
+class MyOrderAdapter(var list: MutableList<MyOrderData>, val type: String, val activity: Activity) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     val TYPE_FOOTVIEW: Int = 1 //item类型：footview
     val TYPE_ITEMVIEW: Int = 2 //item类型：itemview
@@ -85,9 +85,9 @@ class MyOrderAdapter(var list: List<MyOrderData>, val type: String, val activity
                                 MaterialAlertDialogBuilder(activity).setTitle("确认验货")
                                     .setMessage("请确认货物满足您的要求后再验货哦")
                                     .setPositiveButton("确认验货") { _, _ ->
-                                        confirmOrder(list[position].order_id, true)
+                                        confirmOrder(position, true)
                                     }.setNegativeButton("拒绝验货") { _, _ ->
-                                        confirmOrder(list[position].order_id, false)
+                                        confirmOrder(position, false)
                                     }.setNeutralButton("取消", null).show().let {
                                         DialogUtil.stylize(it)
                                     }
@@ -105,9 +105,9 @@ class MyOrderAdapter(var list: List<MyOrderData>, val type: String, val activity
                                 MaterialAlertDialogBuilder(activity).setTitle("确认发货")
                                     .setMessage("确认发货吗？")
                                     .setPositiveButton("确认发货") { _, _ ->
-                                        deliverOrder(list[position].order_id, true)
+                                        deliverOrder(position, true)
                                     }.setNegativeButton("拒绝发货") { _, _ ->
-                                        deliverOrder(list[position].order_id, false)
+                                        deliverOrder(position, false)
                                     }.setNeutralButton("取消", null).show().let {
                                         DialogUtil.stylize(it)
                                     }
@@ -134,19 +134,21 @@ class MyOrderAdapter(var list: List<MyOrderData>, val type: String, val activity
 
     }
 
-    private fun confirmOrder(orderId: Int, status: Boolean) {
+    private fun confirmOrder(position: Int, status: Boolean) {
         val orderService = ServiceCreator.create<OrderService>()
-        val data = ConfirmOrderRequest(orderId, if (status) "True" else "False")
+        val data = ConfirmOrderRequest(list[position].order_id, if (status) "True" else "False")
         val json = FormBody.create(
             MediaType.parse("application/json; charset=utf-8"), Gson().toJson(data)
         )
-        orderService.confirmOrder(json).enqueue(object : Callback<BaseResponse> {
+        orderService.confirmOrder(json).enqueue(object : Callback<BaseDataResponse<MyOrderData>> {
             override fun onResponse(
-                call: Call<BaseResponse>, response: Response<BaseResponse>
+                call: Call<BaseDataResponse<MyOrderData>>,
+                response: Response<BaseDataResponse<MyOrderData>>
             ) {
                 val resp = response.body()
                 if (resp != null) {
                     if (resp.code == 200) {
+                        setDataInList(resp.data, position)
                         ToastSuccess(resp.message)
                     } else {
                         ToastFail(resp.message)
@@ -155,7 +157,7 @@ class MyOrderAdapter(var list: List<MyOrderData>, val type: String, val activity
             }
 
             override fun onFailure(
-                call: Call<BaseResponse>, t: Throwable
+                call: Call<BaseDataResponse<MyOrderData>>, t: Throwable
             ) {
                 ToastFail("验货失败")
             }
@@ -163,43 +165,50 @@ class MyOrderAdapter(var list: List<MyOrderData>, val type: String, val activity
 
     }
 
-    private fun deliverOrder(orderId: Int, status: Boolean) {
+    private fun deliverOrder(position: Int, status: Boolean) {
         val orderService = ServiceCreator.create<OrderService>()
-        val data = DeliverOrderRequest(orderId, if (status) "True" else "False")
+        val data = DeliverOrderRequest(list[position].order_id, if (status) "True" else "False")
         val json = FormBody.create(
             MediaType.parse("application/json; charset=utf-8"), Gson().toJson(data)
         )
-        orderService.deliverOrder(json).enqueue(object : Callback<BaseResponse> {
-                override fun onResponse(
-                    call: Call<BaseResponse>, response: Response<BaseResponse>
-                ) {
-                    val resp = response.body()
-                    if (resp != null) {
-                        if (resp.code == 200) {
-                            ToastSuccess(resp.message)
-                        } else {
-                            ToastFail(resp.message)
-                        }
+        orderService.deliverOrder(json).enqueue(object : Callback<BaseDataResponse<MyOrderData>> {
+            override fun onResponse(
+                call: Call<BaseDataResponse<MyOrderData>>,
+                response: Response<BaseDataResponse<MyOrderData>>
+            ) {
+                val resp = response.body()
+                if (resp != null) {
+                    if (resp.code == 200) {
+                        setDataInList(resp.data, position)
+                        ToastSuccess(resp.message)
+                    } else {
+                        ToastFail(resp.message)
                     }
                 }
+            }
 
-                override fun onFailure(
-                    call: Call<BaseResponse>, t: Throwable
-                ) {
-                    ToastFail("发货失败")
-                }
-            })
+            override fun onFailure(
+                call: Call<BaseDataResponse<MyOrderData>>, t: Throwable
+            ) {
+                ToastFail("发货失败")
+            }
+        })
 
     }
 
+    fun setDataInList(order: MyOrderData, i: Int) {
+        list[i] = order
+        notifyItemChanged(i)
+    }
+
     @SuppressLint("NotifyDataSetChanged")
-    fun setAdapterList(list2: List<MyOrderData>) {
+    fun setAdapterList(list2: MutableList<MyOrderData>) {
         list = list2
         notifyDataSetChanged()
     }
 
-    fun plusAdapterList(list2: List<MyOrderData>) {
-        list = list.plus(list2)
+    fun plusAdapterList(list2: MutableList<MyOrderData>) {
+        list.addAll(list2)
         notifyItemRangeInserted(list.size - list2.size, list2.size)
     }
 

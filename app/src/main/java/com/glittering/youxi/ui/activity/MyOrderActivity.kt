@@ -53,7 +53,7 @@ class MyOrderActivity : BaseActivity<ActivityMyOrderBinding>() {
                     if (response.body()!!.code == 200) {
                         val list = response.body()!!.data
                         if (adapter == null) {
-                            adapter = MyOrderAdapter(list, type, this@MyOrderActivity)
+                            adapter = MyOrderAdapter(list as MutableList<MyOrderData>, type, this@MyOrderActivity)
                             binding.rv.adapter = adapter
                             val layoutManager =
                                 androidx.recyclerview.widget.LinearLayoutManager(applicationContext)
@@ -61,7 +61,7 @@ class MyOrderActivity : BaseActivity<ActivityMyOrderBinding>() {
                                 androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
                             binding.rv.layoutManager = layoutManager
                         } else {
-                            adapter!!.plusAdapterList(list)
+                            adapter!!.plusAdapterList(list as MutableList<MyOrderData>)
                         }
                         adapter!!.setOnFootViewAttachedToWindowListener { getData(type, page + 1) }
                         adapter!!.setOnFootViewClickListener { getData(type, page + 1) }
