@@ -43,12 +43,12 @@ interface OrderService {
     @PUT("order/confirming")
     fun confirmOrder(
         @Body body: RequestBody
-    ): Call<BaseResponse>
+    ): Call<BaseDataResponse<MyOrderData>>
 
     @PUT("order/delivering")
     fun deliverOrder(
         @Body body: RequestBody
-    ): Call<BaseResponse>
+    ): Call<BaseDataResponse<MyOrderData>>
 
     @GET("order/view/verifying")
     fun getVerifyingOrder(

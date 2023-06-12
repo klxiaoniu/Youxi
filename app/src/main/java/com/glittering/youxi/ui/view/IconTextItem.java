@@ -54,4 +54,12 @@ public class IconTextItem extends ConstraintLayout {
         cv = view.findViewById(R.id.cardView_wx);
     }
 
+    public ImageView getImageView() {
+        return iv;
+    }
+
+    public void setText(String str) {
+        tv.setText(str);
+    }
+
 }

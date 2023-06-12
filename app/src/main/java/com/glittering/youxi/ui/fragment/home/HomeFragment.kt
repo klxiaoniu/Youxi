@@ -2,7 +2,6 @@ package com.glittering.youxi.ui.fragment.home
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,16 +9,19 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.glittering.youxi.R
 import com.glittering.youxi.data.BannerBean
 import com.glittering.youxi.data.BaseDataResponse
+import com.glittering.youxi.data.Jingpin
 import com.glittering.youxi.data.MainpageService
 import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.databinding.FragmentHomeBinding
 import com.glittering.youxi.ui.activity.OrderDetailActivity
+import com.glittering.youxi.ui.adapter.JingpinAdapter
 import com.glittering.youxi.utils.ToastFail
 import com.glittering.youxi.utils.applicationContext
 import com.zhpan.bannerview.BannerViewPager
@@ -37,6 +39,7 @@ class HomeFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
     private lateinit var mViewPager: BannerViewPager<BannerBean>
+    private lateinit var jingpinAdapter: JingpinAdapter
 
     companion object {
         val instance: HomeFragment by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
@@ -56,7 +59,26 @@ class HomeFragment : Fragment() {
         val root: View = binding.root
         setupViewPager()
 
+        getJingpinData()
+
         return root
+    }
+
+    private fun getJingpinData() {
+        val list = listOf(
+            Jingpin("https://profile.csdnimg.cn/5/B/9/2_ghhhhuyh", "111"),
+            Jingpin("https://profile.csdnimg.cn/5/B/9/2_ghhhhuyh", "222"),
+            Jingpin("https://profile.csdnimg.cn/5/B/9/2_ghhhhuyh", "333"),
+            Jingpin("https://profile.csdnimg.cn/5/B/9/2_ghhhhuyh", "444"),
+            Jingpin("https://profile.csdnimg.cn/5/B/9/2_ghhhhuyh", "555"),
+            Jingpin("https://profile.csdnimg.cn/5/B/9/2_ghhhhuyh", "666"),
+            Jingpin("https://profile.csdnimg.cn/5/B/9/2_ghhhhuyh", "777")
+        )
+        val layoutManager = StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL)
+        layoutManager.gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
+        binding.rvJingpin.layoutManager = layoutManager
+        jingpinAdapter = JingpinAdapter(list)
+        binding.rvJingpin.adapter = jingpinAdapter
     }
 
     private fun setupViewPager() {
@@ -73,7 +95,6 @@ class HomeFragment : Fragment() {
                 call: Call<BaseDataResponse<List<BannerBean>>>,
                 response: Response<BaseDataResponse<List<BannerBean>>>
             ) {
-                Log.d("banner", response.body().toString())
                 val code = response.body()?.code
                 if (code == 200) {
                     val data = response.body()?.data
