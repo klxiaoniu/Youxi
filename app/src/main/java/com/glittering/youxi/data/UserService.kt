@@ -59,4 +59,13 @@ interface UserService {
         @Query("type") type: String,
         @Query("page") page: Int
     ): Call<BaseDataResponse<List<MyOrderData>>>
+
+    @GET("money")
+    fun getMoney(
+    ): Call<BaseDataResponse<MoneyData>>
+
+    @PUT("money")
+    fun operateMoney(
+        @Body body: RequestBody
+    ): Call<BaseResponse>
 }

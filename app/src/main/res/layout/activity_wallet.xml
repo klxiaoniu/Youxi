@@ -30,42 +30,41 @@
             android:paddingBottom="15dp"
             android:text="可用余额"
             android:textAlignment="center"
-            app:layout_constraintEnd_toStartOf="@id/title_frozen"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/title_frozen"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:paddingBottom="15dp"
-            android:text="冻结资金"
-            android:textAlignment="center"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/title_usable"
-            app:layout_constraintTop_toTopOf="parent" />
+        <!--        <TextView-->
+        <!--            android:id="@+id/title_frozen"-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:paddingBottom="15dp"-->
+        <!--            android:text="冻结资金"-->
+        <!--            android:textAlignment="center"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintStart_toEndOf="@id/title_usable"-->
+        <!--            app:layout_constraintTop_toTopOf="parent" />-->
 
         <TextView
             android:id="@+id/tv_usable"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="100"
-            android:textAlignment="center"
-            android:textSize="36sp"
-            app:layout_constraintEnd_toStartOf="@id/tv_frozen"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/title_usable" />
-
-        <TextView
-            android:id="@+id/tv_frozen"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="100"
+            android:text="加载中..."
             android:textAlignment="center"
             android:textSize="36sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/tv_usable"
-            app:layout_constraintTop_toBottomOf="@id/title_frozen" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title_usable" />
+
+        <!--        <TextView-->
+        <!--            android:id="@+id/tv_frozen"-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:textAlignment="center"-->
+        <!--            android:textSize="36sp"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintStart_toEndOf="@id/tv_usable"-->
+        <!--            app:layout_constraintTop_toBottomOf="@id/title_frozen" />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -73,6 +72,7 @@
         android:id="@+id/item_recharge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
         app:img="@drawable/ic_default_avatar"
         app:layout_constraintEnd_toStartOf="@id/item_withdraw"
         app:layout_constraintStart_toStartOf="parent"
@@ -83,6 +83,7 @@
         android:id="@+id/item_withdraw"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
         app:img="@drawable/ic_default_avatar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/item_recharge"

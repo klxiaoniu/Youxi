@@ -4,6 +4,8 @@
         <!--        &lt;!&ndash; Primary brand color. &ndash;&gt;-->
         <item name="colorPrimary">@color/primary_yellow</item>
         <!--        <item name="colorPrimaryVariant">@color/primary_yellow</item>-->
+        <item name="colorSecondary">@color/primary_yellow_3</item>
+        <item name="colorAccent">@color/primary_yellow_2</item>
         <item name="colorOnPrimary">@color/black</item>
         <item name="android:windowBackground">@color/white</item>
         <!--        &lt;!&ndash; Secondary brand color. &ndash;&gt;-->

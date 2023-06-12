@@ -116,8 +116,12 @@ class MeFragment : Fragment() {
 
         }
         binding.itemWallet.setOnClickListener {
-            val intent = Intent(context, WalletActivity::class.java)
-            startActivity(intent)
+            if (loggedInUser == null) {
+                ToastInfo("请先登录")
+            } else {
+                val intent = Intent(context, WalletActivity::class.java)
+                startActivity(intent)
+            }
         }
         return root
     }
