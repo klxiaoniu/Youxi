@@ -20,6 +20,23 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="33">
         <activity
+            android:name=".ui.activity.PayResultActivity"
+            android:exported="true"
+            android:theme="@style/AppAnimationTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:path="/paysuccess"
+                    android:scheme="youxi" />
+
+            </intent-filter>
+
+        </activity>
+        <activity
             android:name=".ui.activity.ExceptionActivity"
             android:exported="false" />
         <activity

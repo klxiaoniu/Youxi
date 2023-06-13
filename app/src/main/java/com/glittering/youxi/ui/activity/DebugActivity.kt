@@ -5,6 +5,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -171,6 +172,10 @@ class DebugActivity : BaseActivity<ActivityDebugBinding>() {
         }
         binding.exception.setOnClickListener {
             val intent = Intent(this, ExceptionActivity::class.java)
+            startActivity(intent)
+        }
+        binding.paysuccess.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("youxi://123.com"))
             startActivity(intent)
         }
     }

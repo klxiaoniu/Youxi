@@ -45,4 +45,11 @@
         <item name="windowSplashScreenAnimatedIcon">@drawable/splash</item>
         <item name="postSplashScreenTheme">@style/Theme.游兮</item>
     </style>
+
+    <!--自下而上进入 自上而下退出 -->
+    <style name="AppAnimationTheme" parent="Theme.游兮">
+        <!-- 将Activity的Theme设置成透明 -->
+        <item name="android:windowBackground">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
 </resources>
