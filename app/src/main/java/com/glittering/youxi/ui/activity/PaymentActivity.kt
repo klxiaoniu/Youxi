@@ -1,14 +1,16 @@
 package com.glittering.youxi.ui.activity
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import com.glittering.youxi.R
-import com.glittering.youxi.data.BaseResponse
+import com.glittering.youxi.data.BaseDataResponse
 import com.glittering.youxi.data.MoneyOperateRequest
+import com.glittering.youxi.data.RechargeData
 import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.data.UserService
 import com.glittering.youxi.databinding.ActivityPaymentBinding
 import com.glittering.youxi.utils.ToastFail
-import com.glittering.youxi.utils.ToastSuccess
 import com.google.gson.Gson
 import com.gyf.immersionbar.ktx.fitsTitleBar
 import okhttp3.FormBody
@@ -53,14 +55,20 @@ class PaymentActivity : BaseActivity<ActivityPaymentBinding>() {
                 Gson().toJson(data)
             )
             userService.operateMoney(json)
-                .enqueue(object : retrofit2.Callback<BaseResponse> {
+                .enqueue(object : retrofit2.Callback<BaseDataResponse<RechargeData>> {
                     override fun onResponse(
-                        call: retrofit2.Call<BaseResponse>,
-                        response: retrofit2.Response<BaseResponse>
+                        call: retrofit2.Call<BaseDataResponse<RechargeData>>,
+                        response: retrofit2.Response<BaseDataResponse<RechargeData>>
                     ) {
                         if (response.body() != null) {
                             if (response.body()!!.code == 200) {
-                                ToastSuccess(response.body()!!.message)
+                                //ToastSuccess(response.body()!!.message)
+                                val intent = Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse(response.body()!!.data.pay_url)
+                                )
+                                startActivity(intent)
+                                finish()
                             } else {
                                 ToastFail(response.body()!!.message)
                             }
@@ -70,7 +78,7 @@ class PaymentActivity : BaseActivity<ActivityPaymentBinding>() {
                     }
 
                     override fun onFailure(
-                        call: retrofit2.Call<BaseResponse>, t: Throwable
+                        call: retrofit2.Call<BaseDataResponse<RechargeData>>, t: Throwable
                     ) {
                         t.printStackTrace()
                         ToastFail(getString(R.string.toast_response_error))

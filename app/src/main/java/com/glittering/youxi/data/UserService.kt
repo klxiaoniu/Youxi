@@ -67,5 +67,5 @@ interface UserService {
     @PUT("money")
     fun operateMoney(
         @Body body: RequestBody
-    ): Call<BaseResponse>
+    ): Call<BaseDataResponse<RechargeData>>
 }
