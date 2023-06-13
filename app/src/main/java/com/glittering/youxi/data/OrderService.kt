@@ -50,16 +50,6 @@ interface OrderService {
         @Body body: RequestBody
     ): Call<BaseDataResponse<MyOrderData>>
 
-    @GET("order/view/verifying")
-    fun getVerifyingOrder(
-        @Query("page") page: Int
-    ): Call<BaseDataResponse<List<VerifyingOrder>>>
-
-    @PUT("order/verifying")
-    fun verify(
-        @Body body: RequestBody
-    ): Call<BaseResponse>
-
     @GET("order/searching")
     fun search(
         @Query("keyword") key: String, @Query("page") page: Int
@@ -67,6 +57,16 @@ interface OrderService {
 
     @PUT("order/paying")
     fun pay(
+        @Body body: RequestBody
+    ): Call<BaseResponse>
+
+    @POST("exception/100")
+    fun reportException1(
+        @Body body: RequestBody
+    ): Call<BaseResponse>
+
+    @POST("exception/200")
+    fun reportException2(
         @Body body: RequestBody
     ): Call<BaseResponse>
 }

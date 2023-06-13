@@ -28,6 +28,10 @@
             app:key="verify"
             app:title="商品审核" />
 
+        <Preference
+            app:key="exception"
+            app:title="事故处理" />
+
     </PreferenceCategory>
     <PreferenceCategory app:title="系统设置">
         <ListPreference

@@ -20,6 +20,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="33">
         <activity
+            android:name=".ui.activity.ExceptionActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.activity.PaymentActivity"
             android:exported="false" />
         <activity

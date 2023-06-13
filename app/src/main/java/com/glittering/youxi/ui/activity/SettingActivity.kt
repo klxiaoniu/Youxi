@@ -81,6 +81,11 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>() {
                     startActivity(intent)
                     true
                 }
+                findPreference<Preference>("exception")?.setOnPreferenceClickListener {
+                    val intent = Intent(requireContext(), ExceptionActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
             }
         }
 

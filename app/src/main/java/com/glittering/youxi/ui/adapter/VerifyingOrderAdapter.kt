@@ -15,8 +15,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.glittering.youxi.R
+import com.glittering.youxi.data.AdminService
 import com.glittering.youxi.data.BaseResponse
-import com.glittering.youxi.data.OrderService
 import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.data.VerifyingOrder
 import com.glittering.youxi.data.VerifyingOrderRequest
@@ -106,7 +106,7 @@ class VerifyingOrderAdapter(var list: List<VerifyingOrder>, val activity: Activi
             .setTitle("审核")
             .setView(view)
             .setPositiveButton("确定") { dialog, which ->
-                val orderService = ServiceCreator.create<OrderService>()
+                val adminService = ServiceCreator.create<AdminService>()
 
                 val body = FormBody.create(
                     MediaType.parse("application/json; charset=utf-8"),
@@ -117,7 +117,7 @@ class VerifyingOrderAdapter(var list: List<VerifyingOrder>, val activity: Activi
                         )
                     )
                 )
-                orderService.verify(body)
+                adminService.verify(body)
                     .enqueue(object : retrofit2.Callback<BaseResponse> {
                         override fun onResponse(
                             call: Call<BaseResponse>,

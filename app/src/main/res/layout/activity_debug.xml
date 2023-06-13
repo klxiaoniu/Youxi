@@ -82,4 +82,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="支付" />
+
+    <Button
+        android:id="@+id/exception"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="事故处理" />
 </LinearLayout>

@@ -3,8 +3,8 @@ package com.glittering.youxi.ui.activity
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.glittering.youxi.R
+import com.glittering.youxi.data.AdminService
 import com.glittering.youxi.data.BaseDataResponse
-import com.glittering.youxi.data.OrderService
 import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.data.VerifyingOrder
 import com.glittering.youxi.databinding.ActivityVerifyBinding
@@ -35,9 +35,9 @@ class VerifyActivity : BaseActivity<ActivityVerifyBinding>() {
 
 
     private fun getData(page: Int) {
-        val orderService = ServiceCreator.create<OrderService>()
+        val adminService = ServiceCreator.create<AdminService>()
 
-        orderService.getVerifyingOrder(page)
+        adminService.getVerifyingOrder(page)
             .enqueue(object : retrofit2.Callback<BaseDataResponse<List<VerifyingOrder>>> {
                 override fun onResponse(
                     call: Call<BaseDataResponse<List<VerifyingOrder>>>,

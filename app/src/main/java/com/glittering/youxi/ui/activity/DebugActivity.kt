@@ -169,5 +169,9 @@ class DebugActivity : BaseActivity<ActivityDebugBinding>() {
 
 
         }
+        binding.exception.setOnClickListener {
+            val intent = Intent(this, ExceptionActivity::class.java)
+            startActivity(intent)
+        }
     }
 }

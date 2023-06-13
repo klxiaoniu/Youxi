@@ -1,27 +1,38 @@
 package com.glittering.youxi.ui.activity
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.DrawableImageViewTarget
+import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.transition.Transition
 import com.glittering.youxi.MyWebSocketClient
 import com.glittering.youxi.R
-import com.glittering.youxi.data.MsgAdapter
+import com.glittering.youxi.data.BaseDataResponse
+import com.glittering.youxi.data.PersonalInfo
 import com.glittering.youxi.data.ServiceCreator
-import com.glittering.youxi.data.SysMsgAdapter
-import com.glittering.youxi.data.SysMsgResponse
+import com.glittering.youxi.data.SysMsg
+import com.glittering.youxi.data.UserInfo
 import com.glittering.youxi.data.UserService
 import com.glittering.youxi.database.MsgDatabase
 import com.glittering.youxi.databinding.ActivityChatBinding
 import com.glittering.youxi.entity.MsgRecord
+import com.glittering.youxi.ui.adapter.MsgAdapter
+import com.glittering.youxi.ui.adapter.SysMsgAdapter
 import com.glittering.youxi.utils.DialogUtil
 import com.glittering.youxi.utils.DrawableUtil
 import com.glittering.youxi.utils.ToastFail
 import com.glittering.youxi.utils.ToastSuccess
+import com.glittering.youxi.utils.getToken
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.gson.Gson
 import com.gyf.immersionbar.ImmersionBar
 import com.gyf.immersionbar.ktx.fitsTitleBar
 import retrofit2.Call
@@ -29,6 +40,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.net.URI
 import kotlin.concurrent.thread
+
 
 class ChatActivity : BaseActivity<ActivityChatBinding>() {
     override val fitSystemWindows: Boolean
@@ -39,6 +51,8 @@ class ChatActivity : BaseActivity<ActivityChatBinding>() {
     var sysMsgAdapter: SysMsgAdapter? = null
     var msgAdapter: MsgAdapter? = null
     lateinit var client: MyWebSocketClient
+    var otherAvatar: MutableLiveData<Drawable> = MutableLiveData()
+    var selfAvatar: MutableLiveData<Drawable> = MutableLiveData()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -48,7 +62,7 @@ class ChatActivity : BaseActivity<ActivityChatBinding>() {
             return
         }
 
-        binding.toolbar.let { it ->
+        binding.toolbar.let {
             it.setNavigationIcon(R.drawable.ic_back)
             it.setNavigationOnClickListener { finish() }
             it.inflateMenu(R.menu.chat_menu)
@@ -89,10 +103,10 @@ class ChatActivity : BaseActivity<ActivityChatBinding>() {
         if (chatId == 10000L) {  //系统通知
             binding.bottomView.visibility = View.GONE
             val userService = ServiceCreator.create<UserService>()
-            userService.getSysMsg(1).enqueue(object : Callback<SysMsgResponse> {
+            userService.getSysMsg(1).enqueue(object : Callback<BaseDataResponse<List<SysMsg>>> {
                 override fun onResponse(
-                    call: Call<SysMsgResponse>,
-                    response: Response<SysMsgResponse>
+                    call: Call<BaseDataResponse<List<SysMsg>>>,
+                    response: Response<BaseDataResponse<List<SysMsg>>>
                 ) {
                     val code = response.body()?.code
                     if (code == 200) {
@@ -111,7 +125,7 @@ class ChatActivity : BaseActivity<ActivityChatBinding>() {
                     }
                 }
 
-                override fun onFailure(call: Call<SysMsgResponse>, t: Throwable) {
+                override fun onFailure(call: Call<BaseDataResponse<List<SysMsg>>>, t: Throwable) {
                     t.printStackTrace()
                     ToastFail(getString(R.string.toast_response_error))
                 }
@@ -123,7 +137,7 @@ class ChatActivity : BaseActivity<ActivityChatBinding>() {
                 val msgRecordList = msgRecordDao.loadMsgRecord(chatId)
                 runOnUiThread {
                     if (msgAdapter == null) {
-                        msgAdapter = MsgAdapter(msgRecordList)
+                        msgAdapter = MsgAdapter(msgRecordList, otherAvatar, selfAvatar)
                         val layoutManager = LinearLayoutManager(applicationContext)
                         layoutManager.orientation = LinearLayoutManager.VERTICAL
                         binding.recyclerview.layoutManager = layoutManager
@@ -146,7 +160,7 @@ class ChatActivity : BaseActivity<ActivityChatBinding>() {
                         System.currentTimeMillis()
                     )
                     try {
-                        client.send(Gson().toJson(record))
+//                        client.send(Gson().toJson(record))
                         msgRecordDao.insertMsgRecord(record)
                         val msg = msgRecordDao.loadLastMsgRecord(chatId)!!
                         runOnUiThread {
@@ -189,7 +203,7 @@ class ChatActivity : BaseActivity<ActivityChatBinding>() {
                                     photoStr,
                                     System.currentTimeMillis()
                                 )
-                                client.send(Gson().toJson(record))
+//                                client.send(Gson().toJson(record))
                                 msgRecordDao.insertMsgRecord(record)
                                 runOnUiThread {
                                     binding.editText.setText("")
@@ -229,6 +243,76 @@ class ChatActivity : BaseActivity<ActivityChatBinding>() {
 //                }
 //                true
 //            }
+
+            val userService = ServiceCreator.create<UserService>()
+            userService.getUserInfo(chatId).enqueue(object : Callback<BaseDataResponse<List<UserInfo>>> {
+                override fun onResponse(
+                    call: Call<BaseDataResponse<List<UserInfo>>>,
+                    response: Response<BaseDataResponse<List<UserInfo>>>
+                ) {
+                    val code = response.body()?.code
+                    if (code == 200) {
+                        val data = response.body()?.data!![0]
+                        binding.titleUsername.text = data.name
+                        val options = RequestOptions()
+                            .placeholder(R.drawable.ic_default_avatar)
+                            .error(R.drawable.ic_default_avatar)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        Glide.with(applicationContext)
+                            .load(data.photo)
+                            .apply(options)
+                            .placeholder(R.drawable.ic_default_avatar)
+                            .into(object : DrawableImageViewTarget(binding.ivAvatar) {
+                                override fun onResourceReady(
+                                    resource: Drawable,
+                                    transition: Transition<in Drawable>?
+                                ) {
+                                    super.onResourceReady(resource, transition)
+                                    binding.ivAvatar.setImageDrawable(resource)
+                                    otherAvatar.value = resource
+                                }
+                            })
+                    }
+                }
+
+                override fun onFailure(call: Call<BaseDataResponse<List<UserInfo>>>, t: Throwable) {
+                    t.printStackTrace()
+                }
+            })
+
+            if (getToken() != "") {
+                userService.getPersonalInfo().enqueue(object : Callback<BaseDataResponse<List<PersonalInfo>>> {
+                    override fun onResponse(
+                        call: Call<BaseDataResponse<List<PersonalInfo>>>,
+                        response: Response<BaseDataResponse<List<PersonalInfo>>>
+                    ) {
+                        val res = response.body()
+                        if (res?.code == 200) {
+                            val data = res.data[0]
+                            val options = RequestOptions()
+                                .placeholder(R.drawable.ic_default_avatar)
+                                .error(R.drawable.ic_default_avatar)
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            Glide.with(applicationContext)
+                                .load(data.photo)
+                                .apply(options)
+                                .placeholder(R.drawable.ic_default_avatar)
+                                .into(object : SimpleTarget<Drawable>() {
+                                    override fun onResourceReady(
+                                        resource: Drawable,
+                                        transition: Transition<in Drawable>?
+                                    ) {
+                                        selfAvatar.value = resource
+                                    }
+                                })
+                        }
+                    }
+
+                    override fun onFailure(call: Call<BaseDataResponse<List<PersonalInfo>>>, t: Throwable) {
+                        t.printStackTrace()
+                    }
+                })
+            }
 
         }
     }

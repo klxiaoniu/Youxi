@@ -14,13 +14,16 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.glittering.youxi.R
 import com.glittering.youxi.data.BaseDataResponse
+import com.glittering.youxi.data.BaseResponse
 import com.glittering.youxi.data.ConfirmOrderRequest
 import com.glittering.youxi.data.DeliverOrderRequest
+import com.glittering.youxi.data.ExceptionOneRequest
 import com.glittering.youxi.data.MyOrderData
 import com.glittering.youxi.data.OrderService
 import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.ui.activity.OrderDetailActivity
 import com.glittering.youxi.utils.DialogUtil
+import com.glittering.youxi.utils.RequestUtil.Companion.generateJson
 import com.glittering.youxi.utils.ToastFail
 import com.glittering.youxi.utils.ToastInfo
 import com.glittering.youxi.utils.ToastSuccess
@@ -115,6 +118,41 @@ class MyOrderAdapter(var list: MutableList<MyOrderData>, val type: String, val a
                         }
                     }
                 }
+
+                "已结束" -> {
+                    if (type == "buying") {
+                        holder.btnOperate.let {
+                            it.text = "举报"
+                            it.visibility = View.VISIBLE
+                            it.setOnClickListener {
+                                MaterialAlertDialogBuilder(activity).setTitle("举报订单")
+                                    .setMessage("将紧急冻结卖家钱包，移交管理员审核账号情况。情况属实，若卖家钱包足够交易价格，平台按交易价格返回给买家，解冻卖家钱包，将卖家加入黑名单。")
+                                    .setPositiveButton("确定") { _, _ ->
+                                        reportOrder1(position)
+                                    }.setNegativeButton("取消", null)
+                                    .show().let {
+                                        DialogUtil.stylize(it)
+                                    }
+                            }
+                        }
+                    } else {
+                        holder.btnOperate.let {
+                            it.text = "举报"
+                            it.visibility = View.VISIBLE
+                            it.setOnClickListener {
+                                MaterialAlertDialogBuilder(activity).setTitle("举报订单")
+                                    .setMessage("将提交管理员审核账号情况。账号确实受损，则按照账号受损情况将交易金按协议比例发给卖家，剩余交易金返回买家。")
+                                    .setPositiveButton("确定") { _, _ ->
+                                        reportOrder2(position)
+                                    }.setNegativeButton("取消", null)
+                                    .show().let {
+                                        DialogUtil.stylize(it)
+                                    }
+                            }
+                        }
+
+                    }
+                }
             }
             holder.item.setOnClickListener {
                 val intent = Intent(it.context, OrderDetailActivity::class.java)
@@ -132,6 +170,43 @@ class MyOrderAdapter(var list: MutableList<MyOrderData>, val type: String, val a
         }
 
 
+    }
+
+    private fun reportOrder2(position: Int) {
+        val orderService = ServiceCreator.create<OrderService>()
+        val json = generateJson(ExceptionOneRequest(list[position].order_id))   //参数和1一样
+        orderService.reportException2(json).enqueue(object : Callback<BaseResponse> {
+            override fun onResponse(call: Call<BaseResponse>, response: Response<BaseResponse>) {
+                if (response.body() != null && response.body()!!.code == 200) {
+                    ToastSuccess(response.body()!!.message)
+                } else {
+                    ToastFail(response.body()!!.message)
+                }
+            }
+
+            override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
+                ToastFail(activity.getString(R.string.toast_response_error))
+            }
+        })
+
+    }
+
+    private fun reportOrder1(position: Int) {
+        val orderService = ServiceCreator.create<OrderService>()
+        val json = generateJson(ExceptionOneRequest(list[position].order_id))
+        orderService.reportException1(json).enqueue(object : Callback<BaseResponse> {
+            override fun onResponse(call: Call<BaseResponse>, response: Response<BaseResponse>) {
+                if (response.body() != null && response.body()!!.code == 200) {
+                    ToastSuccess(response.body()!!.message)
+                } else {
+                    ToastFail(response.body()!!.message)
+                }
+            }
+
+            override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
+                ToastFail(activity.getString(R.string.toast_response_error))
+            }
+        })
     }
 
     private fun confirmOrder(position: Int, status: Boolean) {
