@@ -32,6 +32,10 @@
             app:key="exception"
             app:title="事故处理" />
 
+        <Preference
+            app:key="user_report"
+            app:title="用户举报" />
+
     </PreferenceCategory>
     <PreferenceCategory app:title="系统设置">
         <ListPreference

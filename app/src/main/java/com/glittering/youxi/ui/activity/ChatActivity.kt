@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
+import android.widget.EditText
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.MutableLiveData
@@ -17,7 +18,9 @@ import com.bumptech.glide.request.transition.Transition
 import com.glittering.youxi.MyWebSocketClient
 import com.glittering.youxi.R
 import com.glittering.youxi.data.BaseDataResponse
+import com.glittering.youxi.data.BaseResponse
 import com.glittering.youxi.data.PersonalInfo
+import com.glittering.youxi.data.ReportUserRequest
 import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.data.SysMsg
 import com.glittering.youxi.data.UserInfo
@@ -29,6 +32,7 @@ import com.glittering.youxi.ui.adapter.MsgAdapter
 import com.glittering.youxi.ui.adapter.SysMsgAdapter
 import com.glittering.youxi.utils.DialogUtil
 import com.glittering.youxi.utils.DrawableUtil
+import com.glittering.youxi.utils.RequestUtil.Companion.generateJson
 import com.glittering.youxi.utils.ToastFail
 import com.glittering.youxi.utils.ToastSuccess
 import com.glittering.youxi.utils.getToken
@@ -69,7 +73,7 @@ class ChatActivity : BaseActivity<ActivityChatBinding>() {
             it.setOnMenuItemClickListener { it2 ->
                 when (it2.itemId) {
                     R.id.action_clear -> {
-                        val dialog = MaterialAlertDialogBuilder(this)
+                        MaterialAlertDialogBuilder(this)
                             .setTitle("清空聊天记录")
                             .setMessage("确定要清空聊天记录吗？")
                             .setPositiveButton("确定") { _, _ ->
@@ -84,7 +88,55 @@ class ChatActivity : BaseActivity<ActivityChatBinding>() {
                             }
                             .setNegativeButton("取消", null)
                             .show()
-                        DialogUtil.stylize(dialog)
+                            .let {
+                                DialogUtil.stylize(it)
+                            }
+                        true
+                    }
+
+                    R.id.report_user -> {
+                        val view = layoutInflater.inflate(R.layout.dialog_report_user, null)
+                        MaterialAlertDialogBuilder(this)
+                            .setTitle("举报该用户")
+                            .setView(view)
+                            .setPositiveButton("确定") { _, _ ->
+                                val userService = ServiceCreator.create<UserService>()
+                                val json = generateJson(
+                                    ReportUserRequest(
+                                        chatId,
+                                        view.findViewById<EditText>(R.id.et_info).text.toString()
+                                    )
+                                )
+                                userService.reportUser(json)
+                                    .enqueue(object : Callback<BaseResponse> {
+                                        override fun onResponse(
+                                            call: Call<BaseResponse>,
+                                            response: Response<BaseResponse>
+                                        ) {
+                                            if (response.body() != null) {
+                                                if (response.body()!!.code == 200) {
+                                                    ToastSuccess(response.body()!!.message)
+                                                } else {
+                                                    ToastFail(response.body()!!.message)
+                                                }
+                                            } else {
+                                                ToastFail(getString(R.string.toast_response_error))
+                                            }
+                                        }
+
+                                        override fun onFailure(
+                                            call: Call<BaseResponse>,
+                                            t: Throwable
+                                        ) {
+                                            ToastFail(getString(R.string.toast_response_error))
+                                        }
+                                    })
+                            }
+                            .setNegativeButton("取消", null)
+                            .show()
+                            .let {
+                                DialogUtil.stylize(it)
+                            }
                         true
                     }
 
@@ -245,50 +297,16 @@ class ChatActivity : BaseActivity<ActivityChatBinding>() {
 //            }
 
             val userService = ServiceCreator.create<UserService>()
-            userService.getUserInfo(chatId).enqueue(object : Callback<BaseDataResponse<List<UserInfo>>> {
-                override fun onResponse(
-                    call: Call<BaseDataResponse<List<UserInfo>>>,
-                    response: Response<BaseDataResponse<List<UserInfo>>>
-                ) {
-                    val code = response.body()?.code
-                    if (code == 200) {
-                        val data = response.body()?.data!![0]
-                        binding.titleUsername.text = data.name
-                        val options = RequestOptions()
-                            .placeholder(R.drawable.ic_default_avatar)
-                            .error(R.drawable.ic_default_avatar)
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        Glide.with(applicationContext)
-                            .load(data.photo)
-                            .apply(options)
-                            .placeholder(R.drawable.ic_default_avatar)
-                            .into(object : DrawableImageViewTarget(binding.ivAvatar) {
-                                override fun onResourceReady(
-                                    resource: Drawable,
-                                    transition: Transition<in Drawable>?
-                                ) {
-                                    super.onResourceReady(resource, transition)
-                                    binding.ivAvatar.setImageDrawable(resource)
-                                    otherAvatar.value = resource
-                                }
-                            })
-                    }
-                }
-
-                override fun onFailure(call: Call<BaseDataResponse<List<UserInfo>>>, t: Throwable) {
-                    t.printStackTrace()
-                }
-            })
-
-            if (getToken() != "") {
-                userService.getPersonalInfo().enqueue(object : Callback<BaseDataResponse<List<PersonalInfo>>> {
+            userService.getUserInfo(chatId)
+                .enqueue(object : Callback<BaseDataResponse<List<UserInfo>>> {
                     override fun onResponse(
-                        call: Call<BaseDataResponse<List<PersonalInfo>>>,
-                        response: Response<BaseDataResponse<List<PersonalInfo>>>
+                        call: Call<BaseDataResponse<List<UserInfo>>>,
+                        response: Response<BaseDataResponse<List<UserInfo>>>
                     ) {
-                        val res = response.body()
-                        if (res?.code == 200) {
-                            val data = res.data[0]
+                        val code = response.body()?.code
+                        if (code == 200) {
+                            val data = response.body()?.data!![0]
+                            binding.titleUsername.text = data.name
                             val options = RequestOptions()
                                 .placeholder(R.drawable.ic_default_avatar)
                                 .error(R.drawable.ic_default_avatar)
@@ -297,21 +315,63 @@ class ChatActivity : BaseActivity<ActivityChatBinding>() {
                                 .load(data.photo)
                                 .apply(options)
                                 .placeholder(R.drawable.ic_default_avatar)
-                                .into(object : SimpleTarget<Drawable>() {
+                                .into(object : DrawableImageViewTarget(binding.ivAvatar) {
                                     override fun onResourceReady(
                                         resource: Drawable,
                                         transition: Transition<in Drawable>?
                                     ) {
-                                        selfAvatar.value = resource
+                                        super.onResourceReady(resource, transition)
+                                        binding.ivAvatar.setImageDrawable(resource)
+                                        otherAvatar.value = resource
                                     }
                                 })
                         }
                     }
 
-                    override fun onFailure(call: Call<BaseDataResponse<List<PersonalInfo>>>, t: Throwable) {
+                    override fun onFailure(
+                        call: Call<BaseDataResponse<List<UserInfo>>>,
+                        t: Throwable
+                    ) {
                         t.printStackTrace()
                     }
                 })
+
+            if (getToken() != "") {
+                userService.getPersonalInfo()
+                    .enqueue(object : Callback<BaseDataResponse<List<PersonalInfo>>> {
+                        override fun onResponse(
+                            call: Call<BaseDataResponse<List<PersonalInfo>>>,
+                            response: Response<BaseDataResponse<List<PersonalInfo>>>
+                        ) {
+                            val res = response.body()
+                            if (res?.code == 200) {
+                                val data = res.data[0]
+                                val options = RequestOptions()
+                                    .placeholder(R.drawable.ic_default_avatar)
+                                    .error(R.drawable.ic_default_avatar)
+                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                Glide.with(applicationContext)
+                                    .load(data.photo)
+                                    .apply(options)
+                                    .placeholder(R.drawable.ic_default_avatar)
+                                    .into(object : SimpleTarget<Drawable>() {
+                                        override fun onResourceReady(
+                                            resource: Drawable,
+                                            transition: Transition<in Drawable>?
+                                        ) {
+                                            selfAvatar.value = resource
+                                        }
+                                    })
+                            }
+                        }
+
+                        override fun onFailure(
+                            call: Call<BaseDataResponse<List<PersonalInfo>>>,
+                            t: Throwable
+                        ) {
+                            t.printStackTrace()
+                        }
+                    })
             }
 
         }

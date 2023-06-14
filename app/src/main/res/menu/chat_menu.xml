@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-<item
-    android:id="@+id/action_options"
-    android:title="更多"
-    app:showAsAction="ifRoom"
-    android:icon="@drawable/ic_options">
+    <item
+        android:id="@+id/action_options"
+        android:icon="@drawable/ic_options"
+        android:title="更多"
+        app:showAsAction="ifRoom">
 
-    <menu>
+        <menu>
 
-        <item
-            android:id="@+id/action_clear"
-            android:title="清空聊天记录" />
+            <item
+                android:id="@+id/report_user"
+                android:title="举报" />
+            <item
+                android:id="@+id/action_clear"
+                android:title="清空聊天记录" />
 
-    </menu>
+        </menu>
 
-</item>
+    </item>
 </menu>

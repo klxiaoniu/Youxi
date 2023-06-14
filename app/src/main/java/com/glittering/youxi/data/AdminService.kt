@@ -34,4 +34,14 @@ interface AdminService {
     fun handleException2(
         @Body body: RequestBody
     ): Call<BaseResponse>
+
+    @GET("report/view/verifying")
+    fun getReportList(
+        @Query("page") page:Int
+    ): Call<BaseDataResponse<List<ReportUserData>>>
+
+    @PUT("report/verifying")
+    fun handleReport(
+        @Body body: RequestBody
+    ): Call<BaseResponse>
 }

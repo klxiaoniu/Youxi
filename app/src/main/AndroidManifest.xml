@@ -32,9 +32,7 @@
                 <data
                     android:path="/paysuccess"
                     android:scheme="youxi" />
-
             </intent-filter>
-
         </activity>
         <activity
             android:name=".ui.activity.ExceptionActivity"

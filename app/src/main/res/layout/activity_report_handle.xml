@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.activity.ExceptionActivity"
+    tools:context=".ui.activity.ReportHandleActivity"
     android:fitsSystemWindows="false">
 
     <androidx.appcompat.widget.Toolbar
@@ -14,7 +14,7 @@
         android:background="@color/primary_yellow_2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:title="事故处理" />
+        app:title="用户举报" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv"

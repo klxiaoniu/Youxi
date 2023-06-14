@@ -68,4 +68,9 @@ interface UserService {
     fun operateMoney(
         @Body body: RequestBody
     ): Call<BaseDataResponse<RechargeData>>
+
+    @POST("reporting")
+    fun reportUser(
+        @Body body: RequestBody
+    ): Call<BaseResponse>
 }

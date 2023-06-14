@@ -86,6 +86,11 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>() {
                     startActivity(intent)
                     true
                 }
+                findPreference<Preference>("user_report")?.setOnPreferenceClickListener {
+                    val intent = Intent(requireContext(), ReportHandleActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
             }
         }
 
