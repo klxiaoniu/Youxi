@@ -122,7 +122,10 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
             val userService = ServiceCreator.create<UserService>()
             val request = RegisterRequest(
                 username.text.toString(),
-                password.text.toString()
+                toHexStr(
+                    MessageDigest.getInstance("SHA256")
+                        .digest(password.text.toString().toByteArray())
+                )
             )
             val json = FormBody.create(
                 MediaType.parse("application/json; charset=utf-8"),
@@ -135,12 +138,12 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
                 ) {
                     val code = response.body()?.code
                     if (code == 200) {
-                        ToastSuccess(response.body()?.message.toString())
-                        finish()
+                        ToastSuccess("注册成功，请登录")
+                        binding.toRegister.performClick()
                     } else {
                         ToastFail(response.body()?.message.toString())
-                        getCode()
                     }
+                    getCode()
                 }
 
                 override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
@@ -193,7 +196,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
         })
     }
 
-    fun toHexStr(byteArray: ByteArray) =
+    private fun toHexStr(byteArray: ByteArray) =
         with(StringBuilder()) {
             byteArray.forEach {
                 val hex = it.toInt() and (0xFF)
