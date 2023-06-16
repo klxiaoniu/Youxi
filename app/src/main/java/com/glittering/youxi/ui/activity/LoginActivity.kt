@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
-import com.glittering.youxi.MyApplication
 import com.glittering.youxi.R
 import com.glittering.youxi.data.BaseDataResponse
 import com.glittering.youxi.data.BaseResponse
@@ -21,6 +20,7 @@ import com.glittering.youxi.utils.RequestUtil
 import com.glittering.youxi.utils.ToastFail
 import com.glittering.youxi.utils.ToastInfo
 import com.glittering.youxi.utils.ToastSuccess
+import com.glittering.youxi.utils.UserStateUtil
 import com.glittering.youxi.utils.setToken
 import retrofit2.Call
 import retrofit2.Callback
@@ -77,7 +77,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
                         val data = response.body()?.data
                         val token = data?.token!!
                         setToken(token)
-                        MyApplication.loggedInUser = data
+                        UserStateUtil.getInstance().setLoggedInUser(data)
                         ToastSuccess("登录成功")
                         finish()
                     } else {

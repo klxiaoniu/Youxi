@@ -13,7 +13,6 @@ import androidx.core.app.NotificationCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
-import com.glittering.youxi.MyApplication.Companion.loggedInUser
 import com.glittering.youxi.MyWebSocketClient
 import com.glittering.youxi.R
 import com.glittering.youxi.data.BaseDataResponse
@@ -32,7 +31,7 @@ import com.glittering.youxi.utils.DarkUtil.Companion.addMaskIfDark
 import com.glittering.youxi.utils.DarkUtil.Companion.isFollowSystem
 import com.glittering.youxi.utils.DarkUtil.Companion.isForceDark
 import com.glittering.youxi.utils.ToastFail
-import com.glittering.youxi.utils.ToastInfo
+import com.glittering.youxi.utils.UserStateUtil
 import com.glittering.youxi.utils.getToken
 import com.glittering.youxi.utils.rmToken
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -73,10 +72,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 }
 
                 R.id.navigation_notification -> {
-                    if (loggedInUser == null) {
-                        ToastInfo("请先登录")
-                        startActivity(Intent(this, LoginActivity::class.java))
-                    } else mainViewPager.setCurrentItem(2, false)
+                    if (UserStateUtil.getInstance().checkLogin(this)) {
+                        mainViewPager.setCurrentItem(2, false)
+                    }
                 }
 
                 R.id.navigation_me -> {
@@ -95,10 +93,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         binding.space.layoutParams.height = ImmersionBar.getNavigationBarHeight(this)
         binding.fab.imageTintList = null
         binding.fab.setOnClickListener {
-            if (loggedInUser == null) {
-                ToastInfo("请先登录")
-                startActivity(Intent(this, LoginActivity::class.java))
-            } else {
+            if (UserStateUtil.getInstance().checkLogin(this)) {
                 startActivity(
                     Intent(this, NewOrderActivity::class.java),
                     ActivityOptions.makeSceneTransitionAnimation(this).toBundle()
@@ -113,13 +108,16 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                     call: Call<BaseDataResponse<LoginUser>>,
                     response: Response<BaseDataResponse<LoginUser>>
                 ) {
-                    val code = response.body()?.code
-                    if (code == 200) {
-                        loggedInUser = response.body()?.data
-                        configureWebsocket()
+                    if (response.body() == null) {
+                        ToastFail("登录失败，请稍后重试")
                     } else {
-                        ToastFail("登录过期，请您重新登录")
-                        rmToken()
+                        if (response.body()!!.code == 200) {
+                            UserStateUtil.getInstance().setLoggedInUser(response.body()!!.data)
+                            configureWebsocket()
+                        } else {
+                            ToastFail("登录过期，请您重新登录")
+                            rmToken()
+                        }
                     }
                 }
 

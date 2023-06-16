@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
-import com.glittering.youxi.MyApplication.Companion.loggedInUser
 import com.glittering.youxi.R
 import com.glittering.youxi.data.AddFavoriteRequest
 import com.glittering.youxi.data.BaseDataResponse
@@ -32,6 +31,7 @@ import com.glittering.youxi.utils.RequestUtil
 import com.glittering.youxi.utils.ToastFail
 import com.glittering.youxi.utils.ToastInfo
 import com.glittering.youxi.utils.ToastSuccess
+import com.glittering.youxi.utils.UserStateUtil
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import retrofit2.Call
 import retrofit2.Callback
@@ -94,7 +94,7 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
                             binding.tvOrderPrice.text = textSpan
                             binding.tvOrderDescription.text = order!!.order_description
 
-                            if (order!!.seller_id == loggedInUser?.id) {
+                            if (order!!.seller_id == UserStateUtil.getInstance().getUserId()) {
                                 binding.bottom.visibility = View.GONE
                             }
 
@@ -163,7 +163,7 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
                                 val popupMenu = PopupMenu(this@OrderDetailActivity, binding.option)
                                 menuInflater.inflate(R.menu.order_detail_menu, popupMenu.menu)
                                 // 权限判断，不显示一些选项
-                                if (order!!.seller_id != loggedInUser?.id && loggedInUser?.type != "admin") {
+                                if (order!!.seller_id != UserStateUtil.getInstance().getUserId() && !UserStateUtil.getInstance().isAdmin()) {
                                     popupMenu.menu.removeItem(R.id.action_edit)
                                     popupMenu.menu.removeItem(R.id.action_delete)
                                 }
@@ -199,15 +199,12 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
             })
 
         binding.llPricing.setOnClickListener {
+            if (!UserStateUtil.getInstance().checkLogin(this)) return@setOnClickListener
             BottomBiddingDialog(this, orderId).show()
         }
 
         binding.btnBuy.setOnClickListener {
-            if (loggedInUser == null) {
-                ToastInfo("请先登录")
-                startActivity(Intent(this, LoginActivity::class.java))
-                return@setOnClickListener
-            }
+            if (!UserStateUtil.getInstance().checkLogin(this)) return@setOnClickListener
             if (order == null) {
                 ToastInfo("正在加载商品信息，请稍候")
             } else {
@@ -241,21 +238,13 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
             }
         }
         binding.btnChat.setOnClickListener {
-            if (loggedInUser == null) {
-                ToastInfo("请先登录")
-                startActivity(Intent(this, LoginActivity::class.java))
-                return@setOnClickListener
-            }
+            if (!UserStateUtil.getInstance().checkLogin(this)) return@setOnClickListener
             val intent = Intent(this, ChatActivity::class.java)
             intent.putExtra("chat_id", order?.seller_id?.toLong())
             startActivity(intent)
         }
         binding.ivFavorite.setOnClickListener {
-            if (loggedInUser == null) {
-                ToastInfo("请先登录")
-                startActivity(Intent(this, LoginActivity::class.java))
-                return@setOnClickListener
-            }
+            if (!UserStateUtil.getInstance().checkLogin(this)) return@setOnClickListener
             val json = RequestUtil.generateJson(AddFavoriteRequest(orderId))
             orderService.addFavorite(json).enqueue(object : Callback<BaseResponse> {
                 override fun onResponse(

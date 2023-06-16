@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
-import com.glittering.youxi.MyApplication.Companion.loggedInUser
 import com.glittering.youxi.R
 import com.glittering.youxi.data.BaseDataResponse
 import com.glittering.youxi.data.PersonalInfo
@@ -24,7 +23,7 @@ import com.glittering.youxi.ui.activity.SettingActivity
 import com.glittering.youxi.ui.activity.WalletActivity
 import com.glittering.youxi.utils.DarkUtil.Companion.reverseColorIfDark
 import com.glittering.youxi.utils.ToastFail
-import com.glittering.youxi.utils.ToastInfo
+import com.glittering.youxi.utils.UserStateUtil
 import com.glittering.youxi.utils.applicationContext
 import com.glittering.youxi.utils.getToken
 import retrofit2.Call
@@ -51,13 +50,11 @@ class MeFragment : Fragment() {
 
         reverseColorIfDark(listOf(binding.icSetting))
         binding.userinfo.setOnClickListener {
-            if (loggedInUser == null) {
+            if (UserStateUtil.getInstance().isLogin()) {
+                //TODO: 跳转到个人页面
+            } else {
                 val intent = Intent(context, LoginActivity::class.java)
                 startActivity(intent)
-            } else {
-//                val intent = Intent(context, LoginActivity::class.java)
-//                startActivity(intent)
-                //TODO: 跳转到个人页面
             }
         }
         binding.icSetting.setOnLongClickListener {
@@ -70,9 +67,7 @@ class MeFragment : Fragment() {
             startActivity(intent)
         }
         binding.itemCollection.setOnClickListener {
-            if (loggedInUser == null) {
-                ToastInfo("请先登录")
-            } else {
+            if (UserStateUtil.getInstance().checkLogin(requireContext())) {
                 val intent = Intent(context, CollectionActivity::class.java)
                 startActivity(intent)
             }
@@ -84,9 +79,7 @@ class MeFragment : Fragment() {
             binding.itemBuyWaitRecv,
         ).forEach {
             it.setOnClickListener {
-                if (loggedInUser == null) {
-                    ToastInfo("请先登录")
-                } else {
+                if (UserStateUtil.getInstance().checkLogin(requireContext())) {
                     val intent = Intent(context, MyOrderActivity::class.java)
                         .putExtra("type", "buying")
                     startActivity(intent)
@@ -105,9 +98,7 @@ class MeFragment : Fragment() {
             binding.itemSellUpstaged
         ).forEach {
             it.setOnClickListener {
-                if (loggedInUser == null) {
-                    ToastInfo("请先登录")
-                } else {
+                if (UserStateUtil.getInstance().checkLogin(requireContext())) {
                     val intent = Intent(context, MyOrderActivity::class.java)
                         .putExtra("type", "selling")
                     startActivity(intent)
@@ -116,9 +107,7 @@ class MeFragment : Fragment() {
 
         }
         binding.itemWallet.setOnClickListener {
-            if (loggedInUser == null) {
-                ToastInfo("请先登录")
-            } else {
+            if (UserStateUtil.getInstance().checkLogin(requireContext())) {
                 val intent = Intent(context, WalletActivity::class.java)
                 startActivity(intent)
             }

@@ -15,7 +15,6 @@ fun getToken(): String {
 fun rmToken() {
     val sp = applicationContext.getSharedPreferences("common", AppCompatActivity.MODE_PRIVATE).edit()
     sp.remove("token").apply()
-    //loggedInUser = null
 }
 fun setFirstEnter(firstEnter: Boolean) {
     val sp = applicationContext.getSharedPreferences("common", AppCompatActivity.MODE_PRIVATE).edit()
