@@ -75,6 +75,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 R.id.navigation_notification -> {
                     if (UserStateUtil.getInstance().checkLogin(this)) {
                         mainViewPager.setCurrentItem(2, false)
+                        binding.navView.getOrCreateBadge(R.id.navigation_notification).number = 0
                     }
                 }
 
@@ -127,6 +128,25 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 }
             })
         }
+
+//        binding.fab.setOnLongClickListener {
+//            thread {
+//                val record = MsgRecord(
+//                    1,
+//                    0,
+//                    0,
+//                    "测试消息123",
+//                    System.currentTimeMillis()
+//                )
+//                MsgDatabase.getDatabase().msgRecordDao().insertMsgRecord(record)
+//
+////                val intentBr = Intent("com.glittering.youxi.NEW_MSG")
+////                    .putExtra("chat_id", 1)
+////                LocalBroadcastManager.getInstance(this).sendBroadcast(intentBr)
+//                sendNotification(record)
+//            }
+//            true
+//        }
     }
 
     private fun configureWebsocket() {
@@ -180,5 +200,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             .build()
         manager.notify(record.chatId.toInt(), notification)
 
+        binding.navView.getOrCreateBadge(R.id.navigation_notification).number++
+        // 目前的badge会在app重启后消失
     }
 }

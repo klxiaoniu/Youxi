@@ -31,5 +31,8 @@ interface MsgRecordDao {
     fun loadAllChatId(): List<Long>
 
     @Query("SELECT distinct chatId FROM MsgRecord WHERE msgType = 0 AND content LIKE '%' || :key || '%'")
-    fun searchChatIdContain(key:String): List<Long>
+    fun searchChatIdContain(key: String): List<Long>
+
+//    @Query("SELECT COUNT(*) FROM MsgRecord WHERE id > :lastMsgId AND chatId = :chatId")
+//    fun getUnreadMsgCount(chatId: Long, lastMsgId: Long): Int
 }
