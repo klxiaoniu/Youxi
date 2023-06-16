@@ -153,10 +153,14 @@ class ReportHandleAdapter(var list: List<ReportUserData>, val activity: Activity
                         override fun onResponse(
                             call: Call<BaseResponse>, response: Response<BaseResponse>
                         ) {
-                            if (response.body() != null && response.body()!!.code == 200) {
-                                ToastSuccess(response.body()!!.message)
+                            if (response.body() != null) {
+                                if (response.body()!!.code == 200) {
+                                    ToastSuccess(response.body()!!.message)
+                                } else {
+                                    ToastFail(response.body()!!.message)
+                                }
                             } else {
-                                ToastFail(response.body()!!.message)
+                                ToastFail(applicationContext.getString(R.string.toast_response_error))
                             }
                         }
 

@@ -177,10 +177,11 @@ class MyOrderAdapter(var list: MutableList<MyOrderData>, val type: String, val a
         val json = generateJson(ExceptionOneRequest(list[position].order_id))   //参数和1一样
         orderService.reportException2(json).enqueue(object : Callback<BaseResponse> {
             override fun onResponse(call: Call<BaseResponse>, response: Response<BaseResponse>) {
-                if (response.body() != null && response.body()!!.code == 200) {
-                    ToastSuccess(response.body()!!.message)
+                if (response.body() != null) {
+                    if (response.body()!!.code == 200) ToastSuccess(response.body()!!.message)
+                    else ToastFail(response.body()!!.message)
                 } else {
-                    ToastFail(response.body()!!.message)
+                    ToastFail(activity.getString(R.string.toast_response_error))
                 }
             }
 
@@ -196,10 +197,11 @@ class MyOrderAdapter(var list: MutableList<MyOrderData>, val type: String, val a
         val json = generateJson(ExceptionOneRequest(list[position].order_id))
         orderService.reportException1(json).enqueue(object : Callback<BaseResponse> {
             override fun onResponse(call: Call<BaseResponse>, response: Response<BaseResponse>) {
-                if (response.body() != null && response.body()!!.code == 200) {
-                    ToastSuccess(response.body()!!.message)
+                if (response.body() != null) {
+                    if (response.body()!!.code == 200) ToastSuccess(response.body()!!.message)
+                    else ToastFail(response.body()!!.message)
                 } else {
-                    ToastFail(response.body()!!.message)
+                    ToastFail(activity.getString(R.string.toast_response_error))
                 }
             }
 

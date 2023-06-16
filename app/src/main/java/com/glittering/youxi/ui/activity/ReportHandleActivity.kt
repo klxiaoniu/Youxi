@@ -46,11 +46,17 @@ class ReportHandleActivity : BaseActivity<ActivityReportHandleBinding>() {
                     call: Call<BaseDataResponse<List<ReportUserData>>>,
                     response: Response<BaseDataResponse<List<ReportUserData>>>
                 ) {
-                    if (response.body() != null && response.body()!!.code == 200) {
-                        val list = response.body()!!.data
-                        adapter.plusAdapterList(list)
-                        adapter.setOnFootViewClickListener { getData(page + 1) }
-                        adapter.setOnFootViewAttachedToWindowListener { getData(page + 1) }
+                    if (response.body() != null) {
+                        if (response.body()!!.code == 200) {
+                            val list = response.body()!!.data
+                            adapter.plusAdapterList(list)
+                            adapter.setOnFootViewClickListener { getData(page + 1) }
+                            adapter.setOnFootViewAttachedToWindowListener { getData(page + 1) }
+                        } else {
+                            ToastFail(response.body()!!.message)
+                            adapter.setOnFootViewClickListener { getData(page) }
+                            adapter.setOnFootViewAttachedToWindowListener { getData(page) }
+                        }
                     } else {
                         ToastFail(getString(R.string.toast_response_error))
                         adapter.setOnFootViewClickListener { getData(page) }

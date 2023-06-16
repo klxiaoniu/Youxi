@@ -44,8 +44,10 @@ class WalletActivity : BaseActivity<ActivityWalletBinding>() {
                 call: retrofit2.Call<BaseDataResponse<MoneyData>>,
                 response: retrofit2.Response<BaseDataResponse<MoneyData>>
             ) {
-                if (response.body() != null && response.body()!!.code == 200) {
-                    binding.tvUsable.text = response.body()!!.data.money.toString()
+                if (response.body() != null) {
+                    if (response.body()!!.code == 200) {
+                        binding.tvUsable.text = response.body()!!.data.money.toString()
+                    } else ToastFail(response.body()!!.message)
                 } else {
                     ToastFail(getString(R.string.toast_response_error))
                 }

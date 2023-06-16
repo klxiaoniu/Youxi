@@ -43,25 +43,32 @@ class VerifyActivity : BaseActivity<ActivityVerifyBinding>() {
                     call: Call<BaseDataResponse<List<VerifyingOrder>>>,
                     response: Response<BaseDataResponse<List<VerifyingOrder>>>
                 ) {
-                    if (response.body() != null && response.body()!!.code == 200) {
-                        val list = response.body()!!.data
-                        if (adapter == null) {
-                            val layoutManager = LinearLayoutManager(applicationContext)
-                            layoutManager.orientation = LinearLayoutManager.VERTICAL
-                            binding.rv.layoutManager = layoutManager
-                            adapter = VerifyingOrderAdapter(list, this@VerifyActivity)
-                            binding.rv.adapter = adapter
+                    if (response.body() != null) {
+                        if (response.body()!!.code == 200) {
+                            val list = response.body()!!.data
+                            if (adapter == null) {
+                                val layoutManager = LinearLayoutManager(applicationContext)
+                                layoutManager.orientation = LinearLayoutManager.VERTICAL
+                                binding.rv.layoutManager = layoutManager
+                                adapter = VerifyingOrderAdapter(list, this@VerifyActivity)
+                                binding.rv.adapter = adapter
+                            } else {
+                                adapter!!.plusAdapterList(list)
+                            }
+                            adapter!!.setOnFootViewClickListener { getData(page + 1) }
                         } else {
-                            adapter!!.plusAdapterList(list)
+                            ToastFail(response.body()!!.message)
+                            adapter!!.setOnFootViewClickListener { getData(page) }
                         }
-                        adapter!!.setOnFootViewClickListener { getData(page + 1) }
-                        //adapter.setOnFootViewAttachedToWindowListener { getData(page + 1) }
                     } else {
                         ToastFail(getString(R.string.toast_response_error))
                     }
                 }
 
-                override fun onFailure(call: Call<BaseDataResponse<List<VerifyingOrder>>>, t: Throwable) {
+                override fun onFailure(
+                    call: Call<BaseDataResponse<List<VerifyingOrder>>>,
+                    t: Throwable
+                ) {
                     ToastFail(getString(R.string.toast_response_error))
                 }
             }

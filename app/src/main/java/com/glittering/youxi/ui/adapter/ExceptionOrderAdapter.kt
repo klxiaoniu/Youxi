@@ -118,8 +118,11 @@ class ExceptionOrderAdapter(var list: List<ExceptionOrder>, val activity: Activi
                                 override fun onResponse(
                                     call: Call<BaseResponse>, response: Response<BaseResponse>
                                 ) {
-                                    if (response.body() != null && response.body()!!.code == 200) {
-                                        ToastSuccess(response.body()!!.message)
+                                    if (response.body() != null) {
+                                        if (response.body()!!.code == 200)
+                                            ToastSuccess(response.body()!!.message)
+                                        else
+                                            ToastFail(response.body()!!.message)
                                     } else {
                                         ToastFail(response.body()!!.message)
                                     }
@@ -165,10 +168,13 @@ class ExceptionOrderAdapter(var list: List<ExceptionOrder>, val activity: Activi
                                 override fun onResponse(
                                     call: Call<BaseResponse>, response: Response<BaseResponse>
                                 ) {
-                                    if (response.body() != null && response.body()!!.code == 200) {
-                                        ToastSuccess(response.body()!!.message)
+                                    if (response.body() != null) {
+                                        if (response.body()!!.code == 200)
+                                            ToastSuccess(response.body()!!.message)
+                                        else
+                                            ToastFail(response.body()!!.message)
                                     } else {
-                                        ToastFail(response.body()!!.message)
+                                        ToastFail(applicationContext.getString(R.string.toast_response_error))
                                     }
                                 }
 
