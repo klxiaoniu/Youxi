@@ -28,6 +28,7 @@ import com.glittering.youxi.ui.adapter.BidInfoAdapter
 import com.glittering.youxi.ui.dialog.BottomBiddingDialog
 import com.glittering.youxi.utils.DarkUtil.Companion.reverseColorIfDark
 import com.glittering.youxi.utils.DialogUtil
+import com.glittering.youxi.utils.RequestUtil.Companion.generateJson
 import com.glittering.youxi.utils.ToastFail
 import com.glittering.youxi.utils.ToastInfo
 import com.glittering.youxi.utils.ToastSuccess
@@ -247,15 +248,22 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
             }
         }
         binding.btnChat.setOnClickListener {
+            if (loggedInUser == null) {
+                ToastInfo("请先登录")
+                startActivity(Intent(this, LoginActivity::class.java))
+                return@setOnClickListener
+            }
             val intent = Intent(this, ChatActivity::class.java)
             intent.putExtra("chat_id", order?.seller_id?.toLong())
             startActivity(intent)
         }
         binding.ivFavorite.setOnClickListener {
-            val favoriteData = AddFavoriteRequest(orderId)
-            val json = FormBody.create(
-                MediaType.parse("application/json; charset=utf-8"), Gson().toJson(favoriteData)
-            )
+            if (loggedInUser == null) {
+                ToastInfo("请先登录")
+                startActivity(Intent(this, LoginActivity::class.java))
+                return@setOnClickListener
+            }
+            val json = generateJson(AddFavoriteRequest(orderId))
             orderService.addFavorite(json).enqueue(object : Callback<BaseResponse> {
                 override fun onResponse(
                     call: Call<BaseResponse>, response: Response<BaseResponse>
@@ -280,7 +288,7 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
     }
 
     private fun deleteOrder(orderId: Int) {
-        val dialog = MaterialAlertDialogBuilder(this@OrderDetailActivity).setTitle("确认删除")
+        MaterialAlertDialogBuilder(this@OrderDetailActivity).setTitle("确认删除")
             .setMessage("确认删除此商品？").setPositiveButton("确定") { _, _ ->
                 val orderService = ServiceCreator.create<OrderService>()
 
@@ -304,8 +312,9 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
                         ToastFail(getString(R.string.toast_response_error))
                     }
                 })
-            }.setNegativeButton("取消", null).show()
-        DialogUtil.stylize(dialog)
+            }.setNegativeButton("取消", null).show().let {
+                DialogUtil.stylize(it)
+            }
     }
 
 }
