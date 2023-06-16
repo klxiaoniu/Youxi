@@ -57,7 +57,7 @@ class MeFragment : Fragment() {
             } else {
 //                val intent = Intent(context, LoginActivity::class.java)
 //                startActivity(intent)
-                ToastInfo("跳转到个人页面")
+                //TODO: 跳转到个人页面
             }
         }
         binding.icSetting.setOnLongClickListener {
@@ -134,31 +134,38 @@ class MeFragment : Fragment() {
     private fun updateUserInfo() {
         if (getToken() != "") {
             val userService = ServiceCreator.create<UserService>()
-            userService.getPersonalInfo().enqueue(object : Callback<BaseDataResponse<List<PersonalInfo>>> {
-                override fun onResponse(
-                    call: Call<BaseDataResponse<List<PersonalInfo>>>,
-                    response: Response<BaseDataResponse<List<PersonalInfo>>>
-                ) {
-                    val res = response.body()
-                    if (res?.code == 200) {
-                        val userInfo = res.data[0]
-                        binding.tvNickname.text = userInfo.name
-                        binding.tvSignature.text = "欢迎来到游兮"
-                        val options = RequestOptions()
-                            .placeholder(R.drawable.ic_default_avatar)
-                            .error(R.drawable.error)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        Glide.with(applicationContext)
-                            .load(userInfo.photo)
-                            .apply(options)
-                            .into(binding.ivAvatar)
-                    } else ToastFail(res?.message.toString())
-                }
+            userService.getPersonalInfo()
+                .enqueue(object : Callback<BaseDataResponse<List<PersonalInfo>>> {
+                    override fun onResponse(
+                        call: Call<BaseDataResponse<List<PersonalInfo>>>,
+                        response: Response<BaseDataResponse<List<PersonalInfo>>>
+                    ) {
+                        val res = response.body()
+                        if (res?.code == 200) {
+                            val userInfo = res.data[0]
+                            binding.tvNickname.text = userInfo.name
+                            binding.tvSignature.text = "欢迎来到游兮"
+                            if (userInfo.photo != "") {
+                                val options = RequestOptions()
+                                    .placeholder(R.drawable.ic_default_avatar)
+                                    .error(R.drawable.error)
+                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                Glide.with(applicationContext)
+                                    .load(userInfo.photo)
+                                    .apply(options)
+                                    .into(binding.ivAvatar)
+                            }
 
-                override fun onFailure(call: Call<BaseDataResponse<List<PersonalInfo>>>, t: Throwable) {
-                    t.printStackTrace()
-                }
-            })
+                        } else ToastFail(res?.message.toString())
+                    }
+
+                    override fun onFailure(
+                        call: Call<BaseDataResponse<List<PersonalInfo>>>,
+                        t: Throwable
+                    ) {
+                        t.printStackTrace()
+                    }
+                })
         } else {
             binding.ivAvatar.setImageResource(R.drawable.ic_default_avatar)
             binding.tvNickname.text = "请登录"

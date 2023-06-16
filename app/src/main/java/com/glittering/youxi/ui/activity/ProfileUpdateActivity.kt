@@ -129,34 +129,39 @@ class ProfileUpdateActivity : BaseActivity<ActivityProfileUpdateBinding>() {
         }
 
         val userService = ServiceCreator.create<UserService>()
-        userService.getPersonalInfo().enqueue(object : Callback<BaseDataResponse<List<PersonalInfo>>> {
-            override fun onResponse(
-                call: Call<BaseDataResponse<List<PersonalInfo>>>,
-                response: Response<BaseDataResponse<List<PersonalInfo>>>
-            ) {
-                val res = response.body()
-                if (res?.code == 200) {
-                    userInfo = res.data[0]
-                    binding.nickname.setText(userInfo.name)
-                    binding.name.setText(userInfo.real_name)
-                    binding.email.setText(userInfo.email)
-                    //binding.ivAvatar.setImageDrawable(DrawableUtil().byteToDrawable(res.data.avatar))
-                    val options = RequestOptions()
-                        .placeholder(R.drawable.ic_default_avatar)
-                        .error(R.drawable.error)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .skipMemoryCache(true)
-                    Glide.with(applicationContext)
-                        .load(userInfo.photo)
-                        .apply(options)
-                        .into(binding.ivAvatar)
-                } else ToastFail(res?.message.toString())
-            }
+        userService.getPersonalInfo()
+            .enqueue(object : Callback<BaseDataResponse<List<PersonalInfo>>> {
+                override fun onResponse(
+                    call: Call<BaseDataResponse<List<PersonalInfo>>>,
+                    response: Response<BaseDataResponse<List<PersonalInfo>>>
+                ) {
+                    val res = response.body()
+                    if (res?.code == 200) {
+                        userInfo = res.data[0]
+                        binding.nickname.setText(userInfo.name)
+                        binding.name.setText(userInfo.real_name)
+                        binding.email.setText(userInfo.email)
+                        if (userInfo.photo != "") {
+                            val options = RequestOptions()
+                                .placeholder(R.drawable.ic_default_avatar)
+                                .error(R.drawable.error)
+                                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                .skipMemoryCache(true)
+                            Glide.with(applicationContext)
+                                .load(userInfo.photo)
+                                .apply(options)
+                                .into(binding.ivAvatar)
+                        }
+                    } else ToastFail(res?.message.toString())
+                }
 
-            override fun onFailure(call: Call<BaseDataResponse<List<PersonalInfo>>>, t: Throwable) {
-                t.printStackTrace()
-                ToastFail(t.toString())
-            }
-        })
+                override fun onFailure(
+                    call: Call<BaseDataResponse<List<PersonalInfo>>>,
+                    t: Throwable
+                ) {
+                    t.printStackTrace()
+                    ToastFail(t.toString())
+                }
+            })
     }
 }
