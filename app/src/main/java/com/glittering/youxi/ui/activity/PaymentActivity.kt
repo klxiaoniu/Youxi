@@ -10,11 +10,9 @@ import com.glittering.youxi.data.RechargeData
 import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.data.UserService
 import com.glittering.youxi.databinding.ActivityPaymentBinding
+import com.glittering.youxi.utils.RequestUtil
 import com.glittering.youxi.utils.ToastFail
-import com.google.gson.Gson
 import com.gyf.immersionbar.ktx.fitsTitleBar
-import okhttp3.FormBody
-import okhttp3.MediaType
 import kotlin.properties.Delegates
 
 class PaymentActivity : BaseActivity<ActivityPaymentBinding>() {
@@ -50,11 +48,7 @@ class PaymentActivity : BaseActivity<ActivityPaymentBinding>() {
                 binding.etPrice.text.toString().toDouble(),
                 if (operationType == 0) "in" else "out"
             )
-            val json = FormBody.create(
-                MediaType.parse("application/json; charset=utf-8"),
-                Gson().toJson(data)
-            )
-            userService.operateMoney(json)
+            userService.operateMoney(RequestUtil.generateJson(data))
                 .enqueue(object : retrofit2.Callback<BaseDataResponse<RechargeData>> {
                     override fun onResponse(
                         call: retrofit2.Call<BaseDataResponse<RechargeData>>,

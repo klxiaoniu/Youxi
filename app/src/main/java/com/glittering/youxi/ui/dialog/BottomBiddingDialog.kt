@@ -10,11 +10,9 @@ import com.glittering.youxi.data.BaseResponse
 import com.glittering.youxi.data.OrderBiddingRequest
 import com.glittering.youxi.data.OrderService
 import com.glittering.youxi.data.ServiceCreator
+import com.glittering.youxi.utils.RequestUtil
 import com.glittering.youxi.utils.ToastFail
 import com.glittering.youxi.utils.ToastSuccess
-import com.google.gson.Gson
-import okhttp3.FormBody
-import okhttp3.MediaType
 import retrofit2.Call
 import retrofit2.Response
 import kotlin.properties.Delegates
@@ -44,16 +42,12 @@ class BottomBiddingDialog(context: Context, orderid: Int) : CustomBottomDialog(c
 
 
                 val orderService = ServiceCreator.create<OrderService>()
-                val orderBiddingRequest = OrderBiddingRequest(
+                val request = OrderBiddingRequest(
                     orderid,
                     et.text.toString().toDouble(),
                     "便宜点"
                 )
-                val json = FormBody.create(
-                    MediaType.parse("application/json; charset=utf-8"),
-                    Gson().toJson(orderBiddingRequest)
-                )
-                orderService.bid(json).enqueue(object : retrofit2.Callback<BaseResponse> {
+                orderService.bid(RequestUtil.generateJson(request)).enqueue(object : retrofit2.Callback<BaseResponse> {
                     override fun onResponse(
                         call: Call<BaseResponse>,
                         response: Response<BaseResponse>

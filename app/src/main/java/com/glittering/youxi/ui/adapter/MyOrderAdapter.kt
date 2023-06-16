@@ -23,15 +23,12 @@ import com.glittering.youxi.data.OrderService
 import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.ui.activity.OrderDetailActivity
 import com.glittering.youxi.utils.DialogUtil
-import com.glittering.youxi.utils.RequestUtil.Companion.generateJson
+import com.glittering.youxi.utils.RequestUtil
 import com.glittering.youxi.utils.ToastFail
 import com.glittering.youxi.utils.ToastInfo
 import com.glittering.youxi.utils.ToastSuccess
 import com.glittering.youxi.utils.applicationContext
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.gson.Gson
-import okhttp3.FormBody
-import okhttp3.MediaType
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -174,7 +171,7 @@ class MyOrderAdapter(var list: MutableList<MyOrderData>, val type: String, val a
 
     private fun reportOrder2(position: Int) {
         val orderService = ServiceCreator.create<OrderService>()
-        val json = generateJson(ExceptionOneRequest(list[position].order_id))   //参数和1一样
+        val json = RequestUtil.generateJson(ExceptionOneRequest(list[position].order_id))   //参数和1一样
         orderService.reportException2(json).enqueue(object : Callback<BaseResponse> {
             override fun onResponse(call: Call<BaseResponse>, response: Response<BaseResponse>) {
                 if (response.body() != null) {
@@ -194,7 +191,7 @@ class MyOrderAdapter(var list: MutableList<MyOrderData>, val type: String, val a
 
     private fun reportOrder1(position: Int) {
         val orderService = ServiceCreator.create<OrderService>()
-        val json = generateJson(ExceptionOneRequest(list[position].order_id))
+        val json = RequestUtil.generateJson(ExceptionOneRequest(list[position].order_id))
         orderService.reportException1(json).enqueue(object : Callback<BaseResponse> {
             override fun onResponse(call: Call<BaseResponse>, response: Response<BaseResponse>) {
                 if (response.body() != null) {
@@ -214,10 +211,7 @@ class MyOrderAdapter(var list: MutableList<MyOrderData>, val type: String, val a
     private fun confirmOrder(position: Int, status: Boolean) {
         val orderService = ServiceCreator.create<OrderService>()
         val data = ConfirmOrderRequest(list[position].order_id, if (status) "True" else "False")
-        val json = FormBody.create(
-            MediaType.parse("application/json; charset=utf-8"), Gson().toJson(data)
-        )
-        orderService.confirmOrder(json).enqueue(object : Callback<BaseDataResponse<MyOrderData>> {
+        orderService.confirmOrder(RequestUtil.generateJson(data)).enqueue(object : Callback<BaseDataResponse<MyOrderData>> {
             override fun onResponse(
                 call: Call<BaseDataResponse<MyOrderData>>,
                 response: Response<BaseDataResponse<MyOrderData>>
@@ -245,10 +239,7 @@ class MyOrderAdapter(var list: MutableList<MyOrderData>, val type: String, val a
     private fun deliverOrder(position: Int, status: Boolean) {
         val orderService = ServiceCreator.create<OrderService>()
         val data = DeliverOrderRequest(list[position].order_id, if (status) "True" else "False")
-        val json = FormBody.create(
-            MediaType.parse("application/json; charset=utf-8"), Gson().toJson(data)
-        )
-        orderService.deliverOrder(json).enqueue(object : Callback<BaseDataResponse<MyOrderData>> {
+        orderService.deliverOrder(RequestUtil.generateJson(data)).enqueue(object : Callback<BaseDataResponse<MyOrderData>> {
             override fun onResponse(
                 call: Call<BaseDataResponse<MyOrderData>>,
                 response: Response<BaseDataResponse<MyOrderData>>

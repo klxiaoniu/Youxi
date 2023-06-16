@@ -28,14 +28,11 @@ import com.glittering.youxi.ui.adapter.BidInfoAdapter
 import com.glittering.youxi.ui.dialog.BottomBiddingDialog
 import com.glittering.youxi.utils.DarkUtil.Companion.reverseColorIfDark
 import com.glittering.youxi.utils.DialogUtil
-import com.glittering.youxi.utils.RequestUtil.Companion.generateJson
+import com.glittering.youxi.utils.RequestUtil
 import com.glittering.youxi.utils.ToastFail
 import com.glittering.youxi.utils.ToastInfo
 import com.glittering.youxi.utils.ToastSuccess
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.gson.Gson
-import okhttp3.FormBody
-import okhttp3.MediaType
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -219,11 +216,7 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
                     .setMessage("确认使用钱包余额购买该商品？")
                     .setPositiveButton("确定") { dialog, which ->
                         val payData = PayRequest(orderId)
-                        val json = FormBody.create(
-                            MediaType.parse("application/json; charset=utf-8"),
-                            Gson().toJson(payData)
-                        )
-                        orderService.pay(json).enqueue(object : Callback<BaseResponse> {
+                        orderService.pay(RequestUtil.generateJson(payData)).enqueue(object : Callback<BaseResponse> {
                             override fun onResponse(
                                 call: Call<BaseResponse>, response: Response<BaseResponse>
                             ) {
@@ -263,7 +256,7 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
                 startActivity(Intent(this, LoginActivity::class.java))
                 return@setOnClickListener
             }
-            val json = generateJson(AddFavoriteRequest(orderId))
+            val json = RequestUtil.generateJson(AddFavoriteRequest(orderId))
             orderService.addFavorite(json).enqueue(object : Callback<BaseResponse> {
                 override fun onResponse(
                     call: Call<BaseResponse>, response: Response<BaseResponse>

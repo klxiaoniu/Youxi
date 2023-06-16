@@ -24,14 +24,12 @@ import com.glittering.youxi.data.ExceptionTwoHandleRequest
 import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.ui.activity.OrderDetailActivity
 import com.glittering.youxi.utils.DialogUtil
+import com.glittering.youxi.utils.RequestUtil
 import com.glittering.youxi.utils.ToastFail
 import com.glittering.youxi.utils.ToastInfo
 import com.glittering.youxi.utils.ToastSuccess
 import com.glittering.youxi.utils.applicationContext
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.gson.Gson
-import okhttp3.FormBody
-import okhttp3.MediaType
 import retrofit2.Call
 import retrofit2.Response
 
@@ -106,23 +104,17 @@ class ExceptionOrderAdapter(var list: List<ExceptionOrder>, val activity: Activi
                     .setPositiveButton("确定") { _, _ ->
                         val adminService = ServiceCreator.create<AdminService>()
 
-                        val body = FormBody.create(
-                            MediaType.parse("application/json; charset=utf-8"), Gson().toJson(
-                                ExceptionOneHandleRequest(
-                                    view.findViewById<RadioButton>(R.id.radio_pass).isChecked, id
-                                )
-                            )
+                        val body = ExceptionOneHandleRequest(
+                            view.findViewById<RadioButton>(R.id.radio_pass).isChecked, id
                         )
-                        adminService.handleException1(body)
+                        adminService.handleException1(RequestUtil.generateJson(body))
                             .enqueue(object : retrofit2.Callback<BaseResponse> {
                                 override fun onResponse(
                                     call: Call<BaseResponse>, response: Response<BaseResponse>
                                 ) {
                                     if (response.body() != null) {
-                                        if (response.body()!!.code == 200)
-                                            ToastSuccess(response.body()!!.message)
-                                        else
-                                            ToastFail(response.body()!!.message)
+                                        if (response.body()!!.code == 200) ToastSuccess(response.body()!!.message)
+                                        else ToastFail(response.body()!!.message)
                                     } else {
                                         ToastFail(response.body()!!.message)
                                     }
@@ -154,25 +146,19 @@ class ExceptionOrderAdapter(var list: List<ExceptionOrder>, val activity: Activi
                             ToastInfo("比例范围不正确，请重新输入")
                             return@setPositiveButton
                         }
-                        val body = FormBody.create(
-                            MediaType.parse("application/json; charset=utf-8"), Gson().toJson(
-                                ExceptionTwoHandleRequest(
-                                    percentage,
-                                    view.findViewById<RadioButton>(R.id.radio_pass).isChecked,
-                                    id
-                                )
-                            )
+                        val body = ExceptionTwoHandleRequest(
+                            percentage,
+                            view.findViewById<RadioButton>(R.id.radio_pass).isChecked,
+                            id
                         )
-                        adminService.handleException2(body)
+                        adminService.handleException2(RequestUtil.generateJson(body))
                             .enqueue(object : retrofit2.Callback<BaseResponse> {
                                 override fun onResponse(
                                     call: Call<BaseResponse>, response: Response<BaseResponse>
                                 ) {
                                     if (response.body() != null) {
-                                        if (response.body()!!.code == 200)
-                                            ToastSuccess(response.body()!!.message)
-                                        else
-                                            ToastFail(response.body()!!.message)
+                                        if (response.body()!!.code == 200) ToastSuccess(response.body()!!.message)
+                                        else ToastFail(response.body()!!.message)
                                     } else {
                                         ToastFail(applicationContext.getString(R.string.toast_response_error))
                                     }

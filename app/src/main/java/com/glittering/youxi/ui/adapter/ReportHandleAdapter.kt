@@ -23,7 +23,7 @@ import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.data.UserInfo
 import com.glittering.youxi.data.UserService
 import com.glittering.youxi.utils.DialogUtil
-import com.glittering.youxi.utils.RequestUtil.Companion.generateJson
+import com.glittering.youxi.utils.RequestUtil
 import com.glittering.youxi.utils.ToastFail
 import com.glittering.youxi.utils.ToastInfo
 import com.glittering.youxi.utils.ToastSuccess
@@ -142,7 +142,7 @@ class ReportHandleAdapter(var list: List<ReportUserData>, val activity: Activity
             .setPositiveButton("确定") { _, _ ->
                 val adminService = ServiceCreator.create<AdminService>()
 
-                val body = generateJson(
+                val body = RequestUtil.generateJson(
                     ReportHandleRequest(
                         id,
                         if (view.findViewById<RadioButton>(R.id.radio_pass).isChecked) "True" else "False"

@@ -22,14 +22,12 @@ import com.glittering.youxi.data.VerifyingOrder
 import com.glittering.youxi.data.VerifyingOrderRequest
 import com.glittering.youxi.ui.activity.OrderDetailActivity
 import com.glittering.youxi.utils.DialogUtil
+import com.glittering.youxi.utils.RequestUtil
 import com.glittering.youxi.utils.ToastFail
 import com.glittering.youxi.utils.ToastInfo
 import com.glittering.youxi.utils.ToastSuccess
 import com.glittering.youxi.utils.applicationContext
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.gson.Gson
-import okhttp3.FormBody
-import okhttp3.MediaType
 import retrofit2.Call
 import retrofit2.Response
 
@@ -108,16 +106,11 @@ class VerifyingOrderAdapter(var list: List<VerifyingOrder>, val activity: Activi
             .setPositiveButton("确定") { dialog, which ->
                 val adminService = ServiceCreator.create<AdminService>()
 
-                val body = FormBody.create(
-                    MediaType.parse("application/json; charset=utf-8"),
-                    Gson().toJson(
-                        VerifyingOrderRequest(
-                            id,
-                            if (view.findViewById<RadioButton>(R.id.radio_pass).isChecked) "True" else "False"
-                        )
-                    )
+                val body = VerifyingOrderRequest(
+                    id,
+                    if (view.findViewById<RadioButton>(R.id.radio_pass).isChecked) "True" else "False"
                 )
-                adminService.verify(body)
+                adminService.verify(RequestUtil.generateJson(body))
                     .enqueue(object : retrofit2.Callback<BaseResponse> {
                         override fun onResponse(
                             call: Call<BaseResponse>,

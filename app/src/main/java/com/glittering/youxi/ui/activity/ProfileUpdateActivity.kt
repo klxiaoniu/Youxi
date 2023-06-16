@@ -18,11 +18,10 @@ import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.data.UserService
 import com.glittering.youxi.databinding.ActivityProfileUpdateBinding
 import com.glittering.youxi.utils.DarkUtil.Companion.reverseColorIfDark
+import com.glittering.youxi.utils.RequestUtil
 import com.glittering.youxi.utils.ToastFail
 import com.glittering.youxi.utils.ToastSuccess
 import com.glittering.youxi.utils.URIPathHelper
-import com.google.gson.Gson
-import okhttp3.FormBody
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -64,11 +63,7 @@ class ProfileUpdateActivity : BaseActivity<ActivityProfileUpdateBinding>() {
             val emailRequest = EmailRequest(
                 binding.email.text.toString()
             )
-            val json = FormBody.create(
-                MediaType.parse("application/json; charset=utf-8"),
-                Gson().toJson(emailRequest)
-            )
-            userService.queryEmailCode(json).enqueue(object : Callback<BaseResponse> {
+            userService.queryEmailCode(RequestUtil.generateJson(emailRequest)).enqueue(object : Callback<BaseResponse> {
                 override fun onResponse(
                     call: Call<BaseResponse>,
                     response: Response<BaseResponse>

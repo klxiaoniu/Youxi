@@ -17,13 +17,11 @@ import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.data.UserService
 import com.glittering.youxi.databinding.ActivityLoginBinding
 import com.glittering.youxi.utils.DarkUtil.Companion.reverseColorIfDark
+import com.glittering.youxi.utils.RequestUtil
 import com.glittering.youxi.utils.ToastFail
 import com.glittering.youxi.utils.ToastInfo
 import com.glittering.youxi.utils.ToastSuccess
 import com.glittering.youxi.utils.setToken
-import com.google.gson.Gson
-import okhttp3.FormBody
-import okhttp3.MediaType
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -68,10 +66,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
                 ),
                 code.text.toString()
             )
-            val json = FormBody.create(
-                MediaType.parse("application/json; charset=utf-8"),
-                Gson().toJson(loginRequest)
-            )
+            val json = RequestUtil.generateJson(loginRequest)
             userService.login(json).enqueue(object : Callback<BaseDataResponse<LoginUser>> {
                 override fun onResponse(
                     call: Call<BaseDataResponse<LoginUser>>,
@@ -127,11 +122,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
                         .digest(password.text.toString().toByteArray())
                 )
             )
-            val json = FormBody.create(
-                MediaType.parse("application/json; charset=utf-8"),
-                Gson().toJson(request)
-            )
-            userService.register(json).enqueue(object : Callback<BaseResponse> {
+            userService.register(RequestUtil.generateJson(request)).enqueue(object : Callback<BaseResponse> {
                 override fun onResponse(
                     call: Call<BaseResponse>,
                     response: Response<BaseResponse>
