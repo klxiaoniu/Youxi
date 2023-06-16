@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.NotificationCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.Fragment
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager2.widget.ViewPager2
 import com.glittering.youxi.MyWebSocketClient
 import com.glittering.youxi.R
@@ -142,6 +143,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     }
 
     private fun sendNotification(record: MsgRecord) {
+        val intentBr = Intent("com.glittering.youxi.NEW_MSG")
+            .putExtra("chat_id", record.chatId)
+        val sentToActivity = LocalBroadcastManager.getInstance(this).sendBroadcast(intentBr)
+        if (sentToActivity) return
+
         val manager =
             this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

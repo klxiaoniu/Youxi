@@ -11,8 +11,8 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.glittering.youxi.data.NotificationAdapter
 import com.glittering.youxi.databinding.FragmentNotificationsBinding
+import com.glittering.youxi.ui.adapter.NotificationAdapter
 import com.glittering.youxi.utils.DialogUtil
 import com.glittering.youxi.utils.applicationContext
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -67,7 +67,7 @@ class NotificationsFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-updateNotificationList()
+        updateNotificationList()
     }
 
     private fun updateNotificationList() {

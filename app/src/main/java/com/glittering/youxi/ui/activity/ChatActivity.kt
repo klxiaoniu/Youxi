@@ -1,5 +1,7 @@
 package com.glittering.youxi.ui.activity
 
+import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.provider.MediaStore
@@ -8,6 +10,7 @@ import android.widget.EditText
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.MutableLiveData
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -15,6 +18,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.DrawableImageViewTarget
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
+import com.glittering.youxi.MyBroadcastReceiver
 import com.glittering.youxi.MyWebSocketClient
 import com.glittering.youxi.R
 import com.glittering.youxi.data.BaseDataResponse
@@ -32,7 +36,7 @@ import com.glittering.youxi.ui.adapter.MsgAdapter
 import com.glittering.youxi.ui.adapter.SysMsgAdapter
 import com.glittering.youxi.utils.DialogUtil
 import com.glittering.youxi.utils.DrawableUtil
-import com.glittering.youxi.utils.RequestUtil.Companion.generateJson
+import com.glittering.youxi.utils.RequestUtil
 import com.glittering.youxi.utils.ToastFail
 import com.glittering.youxi.utils.ToastSuccess
 import com.glittering.youxi.utils.getToken
@@ -57,6 +61,8 @@ class ChatActivity : BaseActivity<ActivityChatBinding>() {
     lateinit var client: MyWebSocketClient
     var otherAvatar: MutableLiveData<Drawable> = MutableLiveData()
     var selfAvatar: MutableLiveData<Drawable> = MutableLiveData()
+
+    private val broadcastReceiver = MyBroadcastReceiver()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -101,7 +107,7 @@ class ChatActivity : BaseActivity<ActivityChatBinding>() {
                             .setView(view)
                             .setPositiveButton("确定") { _, _ ->
                                 val userService = ServiceCreator.create<UserService>()
-                                val json = generateJson(
+                                val json = RequestUtil.generateJson(
                                     ReportUserRequest(
                                         chatId,
                                         view.findViewById<EditText>(R.id.et_info).text.toString()
@@ -151,6 +157,25 @@ class ChatActivity : BaseActivity<ActivityChatBinding>() {
         val uri: URI? = URI.create("ws://SERVER_ADDRESS:SERVER_PORT/chat/send")
         client = object : MyWebSocketClient(uri) {}
         client.connectBlocking()
+
+        val filter = IntentFilter("com.glittering.youxi.NEW_MSG")
+        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, filter)
+        val chatInteraction: MyBroadcastReceiver.ChatInteraction =
+            object : MyBroadcastReceiver.ChatInteraction {
+                override fun onNewMsg(chat_id: Long) {
+                    if (chat_id == chatId) {
+                        thread {
+                            val msgRecordDao = MsgDatabase.getDatabase().msgRecordDao()
+                            val msg = msgRecordDao.loadLastMsgRecord(chatId)!!
+                            runOnUiThread {
+                                msgAdapter?.plusAdapterList(listOf(msg))
+                                binding.recyclerview.smoothScrollToPosition(msgAdapter!!.itemCount)
+                            }
+                        }
+                    }
+                }
+            }
+        broadcastReceiver.setChatInteractionListener(chatInteraction)
 
         if (chatId == 10000L) {  //系统通知
             binding.bottomView.visibility = View.GONE
@@ -276,6 +301,25 @@ class ChatActivity : BaseActivity<ActivityChatBinding>() {
             binding.bottomImage.setOnClickListener {
                 pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
             }
+
+            binding.bottomSendButton.setOnLongClickListener {
+                thread {
+                    val record = MsgRecord(
+                        chatId,
+                        0,
+                        0,
+                        "测试消息",
+                        System.currentTimeMillis()
+                    )
+                    MsgDatabase.getDatabase().msgRecordDao().insertMsgRecord(record)
+
+                    val intentBr = Intent("com.glittering.youxi.NEW_MSG")
+                        .putExtra("chat_id", chatId)
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(intentBr)
+
+                }
+                true
+            }
 //
 //            binding.bottomSendButton.setOnLongClickListener {
 //                thread {
@@ -375,5 +419,10 @@ class ChatActivity : BaseActivity<ActivityChatBinding>() {
             }
 
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver)
     }
 }

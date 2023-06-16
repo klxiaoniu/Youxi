@@ -6,6 +6,7 @@ import android.graphics.Canvas
 import android.graphics.PixelFormat
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.util.Base64
 import java.io.ByteArrayOutputStream
 
@@ -52,7 +53,9 @@ class DrawableUtil {
         @Synchronized
         fun bitmapShrinkToBase64(bitmap: Bitmap): String {
             val byteArrayOutputStream = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
+            val format =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) Bitmap.CompressFormat.WEBP_LOSSLESS else Bitmap.CompressFormat.JPEG
+            bitmap.compress(format, 50, byteArrayOutputStream)
             var img = byteArrayOutputStream.toByteArray()
             while (img.size > 1024000) {
                 val bitmap = BitmapFactory.decodeByteArray(img, 0, img.size)
@@ -63,7 +66,7 @@ class DrawableUtil {
                     true
                 )
                 val stream = ByteArrayOutputStream()
-                resized.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                resized.compress(format, 50, stream)
                 img = stream.toByteArray()
             }
             return Base64.encodeToString(img, Base64.DEFAULT)

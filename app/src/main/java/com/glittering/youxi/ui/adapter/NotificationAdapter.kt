@@ -1,4 +1,4 @@
-package com.glittering.youxi.data
+package com.glittering.youxi.ui.adapter
 
 import android.app.Activity
 import android.content.Intent
@@ -9,18 +9,29 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.glittering.youxi.R
+import com.glittering.youxi.data.BaseDataResponse
+import com.glittering.youxi.data.ServiceCreator
+import com.glittering.youxi.data.UserInfo
+import com.glittering.youxi.data.UserService
 import com.glittering.youxi.database.MsgDatabase
 import com.glittering.youxi.ui.activity.ChatActivity
+import com.glittering.youxi.utils.applicationContext
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import kotlin.concurrent.thread
 
-class NotificationAdapter(var list: List<Notification>, val activity: Activity) :
+class NotificationAdapter(var list: List<Long>, val activity: Activity) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     val TYPE_FOOTVIEW: Int = 1 //item类型：footview
     val TYPE_ITEMVIEW: Int = 2 //item类型：itemview
     var typeItem = TYPE_ITEMVIEW
 
-    var fullList: List<Notification>
+    var fullList: List<Long>
 
     init {
         fullList = list
@@ -54,25 +65,49 @@ class NotificationAdapter(var list: List<Notification>, val activity: Activity) 
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is ItemViewHolder) {
-            holder.title.text = list[position].title
-//            holder.message.text = list[position].message
-//            holder.time.text = list[position].time.toString()
-            holder.avatar.setImageResource(list[position].avatar)   //TODO: 从网络获取头像
             holder.item.setOnClickListener {
                 val intent = Intent(it.context, ChatActivity::class.java)
-                intent.putExtra("chat_id", list[position].id)
+                intent.putExtra("chat_id", list[position])
                 it.context.startActivity(intent)
             }
+            val userService = ServiceCreator.create<UserService>()
+            userService.getUserInfo(list[position]).enqueue(object : Callback<BaseDataResponse<List<UserInfo>>> {
+                override fun onResponse(
+                    call: Call<BaseDataResponse<List<UserInfo>>>,
+                    response: Response<BaseDataResponse<List<UserInfo>>>
+                ) {
+                    val code = response.body()?.code
+                    if (code == 200) {
+                        val userInfo = response.body()!!.data[0]
+                        holder.title.text = userInfo.name
+                        val options = RequestOptions()
+                            .placeholder(R.drawable.ic_default_avatar)
+                            .error(R.drawable.ic_default_avatar)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        Glide.with(applicationContext)
+                            .load(userInfo.photo)
+                            .apply(options)
+                            .into(holder.avatar)
+                    } else {
+                        holder.title.text = "游兮用户"
+                    }
+//                    usernameList.plus(Pair(list[position], holder.title.text.toString()))
+                }
+
+                override fun onFailure(call: Call<BaseDataResponse<List<UserInfo>>>, t: Throwable) {
+                    t.printStackTrace()
+                    holder.title.text = "游兮用户"
+//                    usernameList.plus(Pair(list[position], holder.title.text.toString()))
+                }
+            })
             thread {
                 val msgRecordDao = MsgDatabase.getDatabase().msgRecordDao()
-                val msg = msgRecordDao.loadLastMsgRecord(list[position].id)
+                val msg = msgRecordDao.loadLastMsgRecord(list[position])
                 activity.runOnUiThread {
                     if (msg != null) {
-                        holder.message.text = if (msg.msgType == 0) msg.content.trim() else "[图片]"
+                        holder.message.text =
+                            if (msg.msgType == 0) msg.content.trim() else "[图片]"
                         holder.time.text = DateFormat.format("HH:mm", msg.time)
-                    } else {
-                        holder.message.text = list[position].message
-                        holder.time.text = list[position].time.toString()
                     }
                 }
             }
@@ -93,25 +128,35 @@ class NotificationAdapter(var list: List<Notification>, val activity: Activity) 
 
     }
 
-    fun setAdapterList(list2: List<Notification>) {
+    fun setAdapterList(list2: List<Long>) {
         list = list2
         fullList = list
         notifyDataSetChanged()
     }
 
-    fun plusAdapterList(list2: List<Notification>) {
+    fun plusAdapterList(list2: List<Long>) {
         list = list.plus(list2)
         fullList = list
         notifyDataSetChanged()
     }
 
     fun filter(key: String) {
-        list = fullList
-        if (key != "")
-            list = list.filter {
-                it.title.contains(key) or it.message.contains(key)
+        if (key != "") {
+            thread {
+                val msgRecordDao = MsgDatabase.getDatabase().msgRecordDao()
+                list = msgRecordDao.searchChatIdContain(key)
+//                usernameList.filter { it.second.contains(key) }.forEach {
+//                    list = list.plus(it.first)
+//                }
+//                list.distinct().sorted()
+                activity.runOnUiThread {
+                    notifyDataSetChanged()
+                }
             }
-        notifyDataSetChanged()
+        } else {
+            list = fullList
+            notifyDataSetChanged()
+        }
     }
 
     override fun getItemCount() = list.size + 1
