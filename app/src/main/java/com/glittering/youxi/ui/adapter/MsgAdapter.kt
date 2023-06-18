@@ -65,28 +65,26 @@ class MsgAdapter(
                 0 -> {
                     LayoutInflater.from(holder.item.context)
                         .inflate(R.layout.item_chat_msg_text, holder.item as ViewGroup, false)
-                        .let {
-                            it.findViewById<TextView>(R.id.msg_tv).text = list[position].content
-                            it
+                        .apply {
+                            findViewById<TextView>(R.id.msg_tv).text = list[position].content
                         }
                 }
 
                 1 -> {
                     LayoutInflater.from(holder.item.context)
-                        .inflate(R.layout.item_chat_msg_img, holder.item as ViewGroup, false).let {
-                            it.findViewById<ImageView>(R.id.msg_iv)
+                        .inflate(R.layout.item_chat_msg_img, holder.item as ViewGroup, false)
+                        .apply {
+                            findViewById<ImageView>(R.id.msg_iv)
                                 .setImageDrawable(base64ToDrawable(list[position].content))
-                            it
                         }
                 }
 
                 else -> {
                     LayoutInflater.from(holder.item.context)
                         .inflate(R.layout.item_chat_msg_text, holder.item as ViewGroup, false)
-                        .let {
-                            it.findViewById<TextView>(R.id.msg_tv).text =
+                        .apply {
+                            findViewById<TextView>(R.id.msg_tv).text =
                                 "暂不支持的消息类型，请升级APP后查看"
-                            it
                         }
                 }
             }.let {

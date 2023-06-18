@@ -18,10 +18,10 @@ import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.data.UserInfo
 import com.glittering.youxi.data.UserService
 import com.glittering.youxi.database.MsgDatabase
+import com.glittering.youxi.database.UserInfoDatabase
+import com.glittering.youxi.entity.UserInfoStored
 import com.glittering.youxi.ui.activity.ChatActivity
 import com.glittering.youxi.utils.applicationContext
-import retrofit2.Call
-import retrofit2.Callback
 import retrofit2.Response
 import kotlin.concurrent.thread
 
@@ -70,15 +70,25 @@ class NotificationAdapter(var list: List<Long>, val activity: Activity) :
                 intent.putExtra("chat_id", list[position])
                 it.context.startActivity(intent)
             }
-            val userService = ServiceCreator.create<UserService>()
-            userService.getUserInfo(list[position]).enqueue(object : Callback<BaseDataResponse<List<UserInfo>>> {
-                override fun onResponse(
-                    call: Call<BaseDataResponse<List<UserInfo>>>,
-                    response: Response<BaseDataResponse<List<UserInfo>>>
-                ) {
-                    val code = response.body()?.code
-                    if (code == 200) {
-                        val userInfo = response.body()!!.data[0]
+            if (list[position] == 10000L) {
+                holder.title.text = "游兮小助手"
+                holder.message.text = "点击查看系统通知"
+                return
+            }
+            thread {
+                val userId = list[position]
+                val userService = ServiceCreator.create<UserService>()
+                val response: Response<BaseDataResponse<List<UserInfo>>>
+                try {
+                    response = userService.getUserInfo(userId).execute()
+                } catch (e: Exception) {
+                    queryLocalUserInfo(userId, holder)
+                    return@thread
+                }
+
+                if (response.code() == 200 && response.body()?.code == 200) {
+                    val userInfo = response.body()!!.data[0]
+                    activity.runOnUiThread {
                         holder.title.text = userInfo.name
                         val options = RequestOptions()
                             .placeholder(R.drawable.ic_default_avatar)
@@ -88,18 +98,15 @@ class NotificationAdapter(var list: List<Long>, val activity: Activity) :
                             .load(userInfo.photo)
                             .apply(options)
                             .into(holder.avatar)
-                    } else {
-                        holder.title.text = "游兮用户"
                     }
-//                    usernameList.plus(Pair(list[position], holder.title.text.toString()))
+                    val userInfoStored =
+                        UserInfoStored(userId, userInfo.name, userInfo.orders, userInfo.photo)
+                    UserInfoDatabase.getDatabase().userInfoDao()
+                        .insertUserInfo(userInfoStored)
+                } else {
+                    queryLocalUserInfo(userId, holder)
                 }
-
-                override fun onFailure(call: Call<BaseDataResponse<List<UserInfo>>>, t: Throwable) {
-                    t.printStackTrace()
-                    holder.title.text = "游兮用户"
-//                    usernameList.plus(Pair(list[position], holder.title.text.toString()))
-                }
-            })
+            }
             thread {
                 val msgRecordDao = MsgDatabase.getDatabase().msgRecordDao()
                 val msg = msgRecordDao.loadLastMsgRecord(list[position])
@@ -124,8 +131,29 @@ class NotificationAdapter(var list: List<Long>, val activity: Activity) :
 //                footViewClickListener.invoke()
 //            }
         }
+    }
 
-
+    private fun queryLocalUserInfo(id: Long, holder: ItemViewHolder) {
+        thread {
+            val userInfoDao = UserInfoDatabase.getDatabase().userInfoDao()
+            val userInfoStored = userInfoDao.getUserInfo(id)
+            activity.runOnUiThread {
+                if (userInfoStored != null) {
+                    holder.title.text = userInfoStored.name
+                    val options = RequestOptions()
+                        .placeholder(R.drawable.ic_default_avatar)
+                        .error(R.drawable.ic_default_avatar)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    Glide.with(applicationContext)
+                        .load(userInfoStored.photo)
+                        .apply(options)
+                        .into(holder.avatar)
+                } else {
+                    holder.title.text = "游兮用户$id"
+                    holder.avatar.setImageResource(R.drawable.ic_default_avatar)
+                }
+            }
+        }
     }
 
     fun setAdapterList(list2: List<Long>) {

@@ -178,7 +178,9 @@ class ChatActivity : BaseActivity<ActivityChatBinding>() {
         broadcastReceiver.setChatInteractionListener(chatInteraction)
 
         if (chatId == 10000L) {  //系统通知
+            binding.titleUsername.text = "游兮小助手"
             binding.bottomView.visibility = View.GONE
+            binding.toolbar.menu.clear()
             val userService = ServiceCreator.create<UserService>()
             userService.getSysMsg(1).enqueue(object : Callback<BaseDataResponse<List<SysMsg>>> {
                 override fun onResponse(

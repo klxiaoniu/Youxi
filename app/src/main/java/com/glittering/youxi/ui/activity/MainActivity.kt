@@ -75,7 +75,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 R.id.navigation_notification -> {
                     if (UserStateUtil.getInstance().checkLogin(this)) {
                         mainViewPager.setCurrentItem(2, false)
-                        binding.navView.getOrCreateBadge(R.id.navigation_notification).number = 0
+                        binding.navView.getOrCreateBadge(R.id.navigation_notification).apply {
+                            number = 0
+                            isVisible = false
+                        }
                     }
                 }
 

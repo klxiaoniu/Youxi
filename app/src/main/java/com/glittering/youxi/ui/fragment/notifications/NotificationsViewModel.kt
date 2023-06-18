@@ -11,7 +11,7 @@ class NotificationsViewModel : ViewModel() {
 
     fun updateNotificationList() {
         thread {
-            notificationList.postValue(MsgDatabase.getDatabase().msgRecordDao().loadAllChatId())
+            notificationList.postValue(MsgDatabase.getDatabase().msgRecordDao().loadAllChatId().plus(10000L))
         }
     }
 
