@@ -5,7 +5,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.glittering.youxi.dao.MsgRecordDao
 import com.glittering.youxi.entity.MsgRecord
-import com.glittering.youxi.utils.UserStateUtil
+import com.glittering.youxi.manager.UserStateManager
 import com.glittering.youxi.utils.applicationContext
 
 @Database(entities = [MsgRecord::class], version = 1)
@@ -18,8 +18,8 @@ abstract class MsgDatabase : RoomDatabase() {
 
         @Synchronized
         fun getDatabase(): MsgDatabase {
-            if (instance == null || userId != UserStateUtil.getInstance().getUserId()) {
-                userId = UserStateUtil.getInstance().getUserId()
+            if (instance == null || userId != UserStateManager.getInstance().getUserId()) {
+                userId = UserStateManager.getInstance().getUserId()
                 instance = Room.databaseBuilder(
                     applicationContext,
                     MsgDatabase::class.java,

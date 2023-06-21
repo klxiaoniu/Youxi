@@ -15,6 +15,7 @@ import com.glittering.youxi.data.PersonalInfo
 import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.data.UserService
 import com.glittering.youxi.databinding.FragmentMeBinding
+import com.glittering.youxi.manager.UserStateManager
 import com.glittering.youxi.ui.activity.CollectionActivity
 import com.glittering.youxi.ui.activity.DebugActivity
 import com.glittering.youxi.ui.activity.LoginActivity
@@ -23,7 +24,6 @@ import com.glittering.youxi.ui.activity.SettingActivity
 import com.glittering.youxi.ui.activity.WalletActivity
 import com.glittering.youxi.utils.DarkUtil.Companion.reverseColorIfDark
 import com.glittering.youxi.utils.ToastFail
-import com.glittering.youxi.utils.UserStateUtil
 import com.glittering.youxi.utils.applicationContext
 import com.glittering.youxi.utils.getToken
 import retrofit2.Call
@@ -50,7 +50,7 @@ class MeFragment : Fragment() {
 
         reverseColorIfDark(listOf(binding.icSetting))
         binding.userinfo.setOnClickListener {
-            if (UserStateUtil.getInstance().isLogin()) {
+            if (UserStateManager.getInstance().isLogin()) {
                 //TODO: 跳转到个人页面
             } else {
                 val intent = Intent(context, LoginActivity::class.java)
@@ -67,7 +67,7 @@ class MeFragment : Fragment() {
             startActivity(intent)
         }
         binding.itemCollection.setOnClickListener {
-            if (UserStateUtil.getInstance().checkLogin(requireContext())) {
+            if (UserStateManager.getInstance().checkLogin(requireContext())) {
                 val intent = Intent(context, CollectionActivity::class.java)
                 startActivity(intent)
             }
@@ -79,7 +79,7 @@ class MeFragment : Fragment() {
             binding.itemBuyWaitRecv,
         ).forEach {
             it.setOnClickListener {
-                if (UserStateUtil.getInstance().checkLogin(requireContext())) {
+                if (UserStateManager.getInstance().checkLogin(requireContext())) {
                     val intent = Intent(context, MyOrderActivity::class.java)
                         .putExtra("type", "buying")
                     startActivity(intent)
@@ -98,7 +98,7 @@ class MeFragment : Fragment() {
             binding.itemSellUpstaged
         ).forEach {
             it.setOnClickListener {
-                if (UserStateUtil.getInstance().checkLogin(requireContext())) {
+                if (UserStateManager.getInstance().checkLogin(requireContext())) {
                     val intent = Intent(context, MyOrderActivity::class.java)
                         .putExtra("type", "selling")
                     startActivity(intent)
@@ -107,7 +107,7 @@ class MeFragment : Fragment() {
 
         }
         binding.itemWallet.setOnClickListener {
-            if (UserStateUtil.getInstance().checkLogin(requireContext())) {
+            if (UserStateManager.getInstance().checkLogin(requireContext())) {
                 val intent = Intent(context, WalletActivity::class.java)
                 startActivity(intent)
             }

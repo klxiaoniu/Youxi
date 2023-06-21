@@ -23,6 +23,8 @@ import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.data.UserInfo
 import com.glittering.youxi.data.UserService
 import com.glittering.youxi.databinding.ActivityOrderDetailBinding
+import com.glittering.youxi.manager.TaskManager
+import com.glittering.youxi.manager.UserStateManager
 import com.glittering.youxi.ui.adapter.BidInfoAdapter
 import com.glittering.youxi.ui.dialog.BottomBiddingDialog
 import com.glittering.youxi.utils.DarkUtil.Companion.reverseColorIfDark
@@ -31,7 +33,6 @@ import com.glittering.youxi.utils.RequestUtil
 import com.glittering.youxi.utils.ToastFail
 import com.glittering.youxi.utils.ToastInfo
 import com.glittering.youxi.utils.ToastSuccess
-import com.glittering.youxi.utils.UserStateUtil
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import retrofit2.Call
 import retrofit2.Callback
@@ -40,6 +41,12 @@ import retrofit2.Response
 class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
     var order: Order? = null
     var adapter: BidInfoAdapter? = null
+    val orderService = ServiceCreator.create<OrderService>()
+    val userService = ServiceCreator.create<UserService>()
+    val taskManager = TaskManager()
+    override val contentView: View
+        get() = binding.contentView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -49,8 +56,6 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
         reverseColorIfDark(
             listOf(
                 binding.back, binding.option, binding.ivFavorite,
-//                binding.ivLike,
-//                binding.ivDislike
                 binding.ivPricing
             )
         )
@@ -59,7 +64,97 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
             finish()
             return
         }
-        val orderService = ServiceCreator.create<OrderService>()
+
+
+        taskManager.setTaskListener(this,object : TaskManager.TaskListener() {
+            override fun onTaskSuccess() {
+                showContentView()
+            }
+
+            override fun onTaskFail() {
+                showErrorView()
+            }
+        })
+        getData(orderId)
+
+        binding.llPricing.setOnClickListener {
+            if (!UserStateManager.getInstance().checkLogin(this)) return@setOnClickListener
+            BottomBiddingDialog(this, orderId).show()
+        }
+
+        binding.btnBuy.setOnClickListener {
+            if (!UserStateManager.getInstance().checkLogin(this)) return@setOnClickListener
+            if (order == null) {
+                ToastInfo("正在加载商品信息，请稍候")
+            } else {
+                //BottomPayDialog(this, order!!.order_price).show()
+                val dialog = MaterialAlertDialogBuilder(this).setTitle("确认购买")
+                    .setMessage("确认使用钱包余额购买该商品？")
+                    .setPositiveButton("确定") { dialog, which ->
+                        val payData = PayRequest(orderId)
+                        orderService.pay(RequestUtil.generateJson(payData))
+                            .enqueue(object : Callback<BaseResponse> {
+                                override fun onResponse(
+                                    call: Call<BaseResponse>, response: Response<BaseResponse>
+                                ) {
+                                    if (response.body() != null) {
+                                        val code = response.body()?.code
+                                        if (code == 200) {
+                                            ToastSuccess(response.body()?.message.toString())
+                                        } else {
+                                            ToastFail(response.body()?.message.toString())
+                                        }
+                                    } else ToastFail(getString(R.string.toast_response_error))
+                                }
+
+                                override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
+                                    t.printStackTrace()
+                                    ToastFail(getString(R.string.toast_response_error))
+                                }
+                            })
+
+                    }.setNegativeButton("取消", null).show()
+                DialogUtil.stylize(dialog)
+            }
+        }
+        binding.btnChat.setOnClickListener {
+            if (!UserStateManager.getInstance().checkLogin(this)) return@setOnClickListener
+            val intent = Intent(this, ChatActivity::class.java)
+            intent.putExtra("chat_id", order?.seller_id?.toLong())
+            startActivity(intent)
+        }
+        binding.ivFavorite.setOnClickListener {
+            if (!UserStateManager.getInstance().checkLogin(this)) return@setOnClickListener
+            val json = RequestUtil.generateJson(AddFavoriteRequest(orderId))
+            orderService.addFavorite(json).enqueue(object : Callback<BaseResponse> {
+                override fun onResponse(
+                    call: Call<BaseResponse>, response: Response<BaseResponse>
+                ) {
+                    if (response.body() != null) {
+                        val code = response.body()?.code
+                        if (code == 200) {
+                            ToastSuccess(response.body()?.message.toString())
+                        } else {
+                            ToastFail(response.body()?.message.toString())
+                        }
+                    } else ToastFail(getString(R.string.toast_response_error))
+                }
+
+                override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
+                    t.printStackTrace()
+                    ToastFail(getString(R.string.toast_response_error))
+                }
+            })
+        }
+
+
+    }
+
+    private fun getData(orderId: Int) {
+
+        showLoadingView()
+
+        taskManager.add()
         orderService.getOrderInfo(orderId)
             .enqueue(object : Callback<BaseDataResponse<List<Order>>> {
                 override fun onResponse(
@@ -94,11 +189,11 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
                             binding.tvOrderPrice.text = textSpan
                             binding.tvOrderDescription.text = order!!.order_description
 
-                            if (order!!.seller_id == UserStateUtil.getInstance().getUserId()) {
+                            if (order!!.seller_id == UserStateManager.getInstance().getUserId()) {
                                 binding.bottom.visibility = View.GONE
                             }
 
-                            val userService = ServiceCreator.create<UserService>()
+                            taskManager.add()
                             userService.getUserInfo(order!!.seller_id)
                                 .enqueue(object : Callback<BaseDataResponse<List<UserInfo>>> {
                                     override fun onResponse(
@@ -118,17 +213,19 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
                                                     .into(binding.ivAvatar)
                                                 binding.tvAll.text = seller.orders.toString()
                                             } else ToastFail(response.body()!!.message)
-                                        } else ToastFail(getString(R.string.toast_response_error))
+                                            taskManager.remove()
+                                        } else taskManager.fail()
                                     }
 
                                     override fun onFailure(
                                         call: Call<BaseDataResponse<List<UserInfo>>>, t: Throwable
                                     ) {
-                                        ToastFail(getString(R.string.toast_response_error))
+                                        taskManager.fail()
                                     }
                                 })
 
 
+                            taskManager.add()
                             orderService.getBidInfo(orderId, 1)
                                 .enqueue(object : Callback<BaseDataResponse<List<BidInfo>>> {
                                     override fun onResponse(
@@ -148,13 +245,14 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
                                                     binding.rvBidinfo.adapter = adapter
                                                 }
                                             } else ToastFail(response.body()!!.message)
-                                        } else ToastFail(getString(R.string.toast_response_error))
+                                            taskManager.remove()
+                                        } else taskManager.fail()
                                     }
 
                                     override fun onFailure(
                                         call: Call<BaseDataResponse<List<BidInfo>>>, t: Throwable
                                     ) {
-                                        ToastFail(getString(R.string.toast_response_error))
+                                        taskManager.fail()
                                     }
                                 })
 
@@ -163,7 +261,9 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
                                 val popupMenu = PopupMenu(this@OrderDetailActivity, binding.option)
                                 menuInflater.inflate(R.menu.order_detail_menu, popupMenu.menu)
                                 // 权限判断，不显示一些选项
-                                if (order!!.seller_id != UserStateUtil.getInstance().getUserId() && !UserStateUtil.getInstance().isAdmin()) {
+                                if (order!!.seller_id != UserStateManager.getInstance()
+                                        .getUserId() && !UserStateManager.getInstance().isAdmin()
+                                ) {
                                     popupMenu.menu.removeItem(R.id.action_edit)
                                     popupMenu.menu.removeItem(R.id.action_delete)
                                 }
@@ -189,84 +289,15 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
                                 popupMenu.show()
                             }
                         } else ToastFail(response.message())
-                    } else ToastFail(getString(R.string.toast_response_error))
+                        taskManager.remove()
+                    } else taskManager.fail()
                 }
 
                 override fun onFailure(call: Call<BaseDataResponse<List<Order>>>, t: Throwable) {
                     t.printStackTrace()
-                    ToastFail(getString(R.string.toast_response_error))
+                    taskManager.fail()
                 }
             })
-
-        binding.llPricing.setOnClickListener {
-            if (!UserStateUtil.getInstance().checkLogin(this)) return@setOnClickListener
-            BottomBiddingDialog(this, orderId).show()
-        }
-
-        binding.btnBuy.setOnClickListener {
-            if (!UserStateUtil.getInstance().checkLogin(this)) return@setOnClickListener
-            if (order == null) {
-                ToastInfo("正在加载商品信息，请稍候")
-            } else {
-                //BottomPayDialog(this, order!!.order_price).show()
-                val dialog = MaterialAlertDialogBuilder(this).setTitle("确认购买")
-                    .setMessage("确认使用钱包余额购买该商品？")
-                    .setPositiveButton("确定") { dialog, which ->
-                        val payData = PayRequest(orderId)
-                        orderService.pay(RequestUtil.generateJson(payData)).enqueue(object : Callback<BaseResponse> {
-                            override fun onResponse(
-                                call: Call<BaseResponse>, response: Response<BaseResponse>
-                            ) {
-                                if (response.body() != null) {
-                                    val code = response.body()?.code
-                                    if (code == 200) {
-                                        ToastSuccess(response.body()?.message.toString())
-                                    } else {
-                                        ToastFail(response.body()?.message.toString())
-                                    }
-                                } else ToastFail(getString(R.string.toast_response_error))
-                            }
-
-                            override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
-                                t.printStackTrace()
-                                ToastFail(getString(R.string.toast_response_error))
-                            }
-                        })
-
-                    }.setNegativeButton("取消", null).show()
-                DialogUtil.stylize(dialog)
-            }
-        }
-        binding.btnChat.setOnClickListener {
-            if (!UserStateUtil.getInstance().checkLogin(this)) return@setOnClickListener
-            val intent = Intent(this, ChatActivity::class.java)
-            intent.putExtra("chat_id", order?.seller_id?.toLong())
-            startActivity(intent)
-        }
-        binding.ivFavorite.setOnClickListener {
-            if (!UserStateUtil.getInstance().checkLogin(this)) return@setOnClickListener
-            val json = RequestUtil.generateJson(AddFavoriteRequest(orderId))
-            orderService.addFavorite(json).enqueue(object : Callback<BaseResponse> {
-                override fun onResponse(
-                    call: Call<BaseResponse>, response: Response<BaseResponse>
-                ) {
-                    if (response.body() != null) {
-                        val code = response.body()?.code
-                        if (code == 200) {
-                            ToastSuccess(response.body()?.message.toString())
-                        } else {
-                            ToastFail(response.body()?.message.toString())
-                        }
-                    } else ToastFail(getString(R.string.toast_response_error))
-                }
-
-                override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
-                    t.printStackTrace()
-                    ToastFail(getString(R.string.toast_response_error))
-                }
-            })
-        }
-
     }
 
     private fun deleteOrder(orderId: Int) {

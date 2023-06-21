@@ -8,8 +8,8 @@ import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import com.glittering.youxi.R
 import com.glittering.youxi.databinding.ActivitySettingBinding
+import com.glittering.youxi.manager.UserStateManager
 import com.glittering.youxi.utils.DialogUtil
-import com.glittering.youxi.utils.UserStateUtil
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.gyf.immersionbar.ktx.fitsTitleBar
 
@@ -36,7 +36,7 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>() {
     class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceChangeListener {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey)
-            if (!UserStateUtil.getInstance().isLogin()) {
+            if (!UserStateManager.getInstance().isLogin()) {
                 findPreference<PreferenceCategory>("account")?.isVisible = false
             }
             findPreference<Preference>("skin")?.onPreferenceChangeListener = this
@@ -64,7 +64,7 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>() {
                     .setTitle("退出登录")
                     .setMessage("确定要退出登录吗？")
                     .setPositiveButton("确定") { _, _ ->
-                        UserStateUtil.getInstance().logout()
+                        UserStateManager.getInstance().logout()
                         requireActivity().finish()
                     }
                     .setNegativeButton("取消", null)
@@ -72,7 +72,7 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>() {
                 DialogUtil.stylize(dialog)
                 true
             }
-            if (UserStateUtil.getInstance().isAdmin()) {
+            if (UserStateManager.getInstance().isAdmin()) {
                 findPreference<PreferenceCategory>("management")?.isVisible = true
                 findPreference<Preference>("verify")?.setOnPreferenceClickListener {
                     val intent = Intent(requireContext(), VerifyActivity::class.java)

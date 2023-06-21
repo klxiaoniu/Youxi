@@ -1,21 +1,24 @@
-package com.glittering.youxi.utils
+package com.glittering.youxi.manager
 
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import com.glittering.youxi.data.LoginUser
 import com.glittering.youxi.ui.activity.LoginActivity
+import com.glittering.youxi.utils.ToastInfo
+import com.glittering.youxi.utils.applicationContext
+import com.glittering.youxi.utils.rmToken
 import com.google.gson.Gson
 
-class UserStateUtil {
+class UserStateManager {
 
     private var loggedInUser: LoginUser? = null
 
     companion object {
-        private var instance: UserStateUtil? = null
-        fun getInstance(): UserStateUtil {
+        private var instance: UserStateManager? = null
+        fun getInstance(): UserStateManager {
             if (instance == null) {
-                instance = UserStateUtil()
+                instance = UserStateManager()
                 instance!!.loadLoggedInUser()
             }
             return instance!!

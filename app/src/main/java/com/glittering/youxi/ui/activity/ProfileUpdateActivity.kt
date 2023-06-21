@@ -3,6 +3,7 @@ package com.glittering.youxi.ui.activity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.view.View
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
@@ -17,6 +18,7 @@ import com.glittering.youxi.data.PersonalInfo
 import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.data.UserService
 import com.glittering.youxi.databinding.ActivityProfileUpdateBinding
+import com.glittering.youxi.manager.TaskManager
 import com.glittering.youxi.utils.DarkUtil.Companion.reverseColorIfDark
 import com.glittering.youxi.utils.RequestUtil
 import com.glittering.youxi.utils.ToastFail
@@ -33,6 +35,9 @@ import java.io.File
 class ProfileUpdateActivity : BaseActivity<ActivityProfileUpdateBinding>() {
     lateinit var viewModel: ProfileUpdateViewModel
     lateinit var userInfo: PersonalInfo
+    val taskManager = TaskManager()
+    override val contentView: View
+        get() = binding.contentView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         reverseColorIfDark(listOf(binding.back))
@@ -63,20 +68,21 @@ class ProfileUpdateActivity : BaseActivity<ActivityProfileUpdateBinding>() {
             val emailRequest = EmailRequest(
                 binding.email.text.toString()
             )
-            userService.queryEmailCode(RequestUtil.generateJson(emailRequest)).enqueue(object : Callback<BaseResponse> {
-                override fun onResponse(
-                    call: Call<BaseResponse>,
-                    response: Response<BaseResponse>
-                ) {
-                    val res = response.body()
-                    ToastSuccess(res?.message.toString())
-                }
+            userService.queryEmailCode(RequestUtil.generateJson(emailRequest))
+                .enqueue(object : Callback<BaseResponse> {
+                    override fun onResponse(
+                        call: Call<BaseResponse>,
+                        response: Response<BaseResponse>
+                    ) {
+                        val res = response.body()
+                        ToastSuccess(res?.message.toString())
+                    }
 
-                override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
-                    t.printStackTrace()
-                    ToastFail(t.toString())
-                }
-            })
+                    override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
+                        t.printStackTrace()
+                        ToastFail(t.toString())
+                    }
+                })
         }
         binding.submit.setOnClickListener {
             val userService = ServiceCreator.create<UserService>()
@@ -123,7 +129,23 @@ class ProfileUpdateActivity : BaseActivity<ActivityProfileUpdateBinding>() {
             })
         }
 
+        taskManager.setTaskListener(this, object : TaskManager.TaskListener() {
+            override fun onTaskSuccess() {
+                showContentView()
+            }
+
+            override fun onTaskFail() {
+                showErrorView()
+            }
+        })
+
+        getData()
+    }
+
+    private fun getData() {
+        showLoadingView()
         val userService = ServiceCreator.create<UserService>()
+        taskManager.add()
         userService.getPersonalInfo()
             .enqueue(object : Callback<BaseDataResponse<List<PersonalInfo>>> {
                 override fun onResponse(
@@ -147,7 +169,8 @@ class ProfileUpdateActivity : BaseActivity<ActivityProfileUpdateBinding>() {
                                 .apply(options)
                                 .into(binding.ivAvatar)
                         }
-                    } else ToastFail(res?.message.toString())
+                        taskManager.remove()
+                    } else taskManager.fail()
                 }
 
                 override fun onFailure(
@@ -155,8 +178,9 @@ class ProfileUpdateActivity : BaseActivity<ActivityProfileUpdateBinding>() {
                     t: Throwable
                 ) {
                     t.printStackTrace()
-                    ToastFail(t.toString())
+                    taskManager.fail()
                 }
             })
     }
+
 }

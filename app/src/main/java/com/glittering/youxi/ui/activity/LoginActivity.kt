@@ -15,12 +15,12 @@ import com.glittering.youxi.data.RegisterRequest
 import com.glittering.youxi.data.ServiceCreator
 import com.glittering.youxi.data.UserService
 import com.glittering.youxi.databinding.ActivityLoginBinding
+import com.glittering.youxi.manager.UserStateManager
 import com.glittering.youxi.utils.DarkUtil.Companion.reverseColorIfDark
 import com.glittering.youxi.utils.RequestUtil
 import com.glittering.youxi.utils.ToastFail
 import com.glittering.youxi.utils.ToastInfo
 import com.glittering.youxi.utils.ToastSuccess
-import com.glittering.youxi.utils.UserStateUtil
 import com.glittering.youxi.utils.setToken
 import retrofit2.Call
 import retrofit2.Callback
@@ -77,7 +77,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
                         val data = response.body()?.data
                         val token = data?.token!!
                         setToken(token)
-                        UserStateUtil.getInstance().setLoggedInUser(data)
+                        UserStateManager.getInstance().setLoggedInUser(data)
                         ToastSuccess("登录成功")
                         finish()
                     } else {

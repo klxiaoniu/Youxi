@@ -23,6 +23,7 @@ import com.glittering.youxi.data.UserService
 import com.glittering.youxi.database.MsgDatabase
 import com.glittering.youxi.databinding.ActivityMainBinding
 import com.glittering.youxi.entity.MsgRecord
+import com.glittering.youxi.manager.UserStateManager
 import com.glittering.youxi.ui.adapter.PagerAdapter
 import com.glittering.youxi.ui.fragment.buy.BuyFragment
 import com.glittering.youxi.ui.fragment.home.HomeFragment
@@ -32,7 +33,6 @@ import com.glittering.youxi.utils.DarkUtil.Companion.addMaskIfDark
 import com.glittering.youxi.utils.DarkUtil.Companion.isFollowSystem
 import com.glittering.youxi.utils.DarkUtil.Companion.isForceDark
 import com.glittering.youxi.utils.ToastFail
-import com.glittering.youxi.utils.UserStateUtil
 import com.glittering.youxi.utils.getToken
 import com.glittering.youxi.utils.rmToken
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -73,7 +73,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 }
 
                 R.id.navigation_notification -> {
-                    if (UserStateUtil.getInstance().checkLogin(this)) {
+                    if (UserStateManager.getInstance().checkLogin(this)) {
                         mainViewPager.setCurrentItem(2, false)
                         binding.navView.getOrCreateBadge(R.id.navigation_notification).apply {
                             number = 0
@@ -98,7 +98,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         binding.space.layoutParams.height = ImmersionBar.getNavigationBarHeight(this)
         binding.fab.imageTintList = null
         binding.fab.setOnClickListener {
-            if (UserStateUtil.getInstance().checkLogin(this)) {
+            if (UserStateManager.getInstance().checkLogin(this)) {
                 startActivity(
                     Intent(this, NewOrderActivity::class.java),
                     ActivityOptions.makeSceneTransitionAnimation(this).toBundle()
@@ -117,7 +117,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                         ToastFail("登录失败，请稍后重试")
                     } else {
                         if (response.body()!!.code == 200) {
-                            UserStateUtil.getInstance().setLoggedInUser(response.body()!!.data)
+                            UserStateManager.getInstance().setLoggedInUser(response.body()!!.data)
                             configureWebsocket()
                         } else {
                             ToastFail("登录过期，请您重新登录")
