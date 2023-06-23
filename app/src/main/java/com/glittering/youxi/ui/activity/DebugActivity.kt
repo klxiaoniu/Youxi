@@ -16,6 +16,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.content.PermissionChecker
 import com.alipay.sdk.app.PayTask
+import com.flyjingfish.openimagelib.OpenImage
+import com.flyjingfish.openimagelib.enums.MediaType
 import com.glittering.youxi.R
 import com.glittering.youxi.databinding.ActivityDebugBinding
 import com.glittering.youxi.utils.DialogUtil
@@ -23,6 +25,7 @@ import com.glittering.youxi.utils.ToastInfo
 import com.glittering.youxi.utils.setToken
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hjq.toast.Toaster
+import com.zhpan.bannerview.transform.ScaleInTransformer
 
 
 class DebugActivity : BaseActivity<ActivityDebugBinding>() {
@@ -178,5 +181,14 @@ class DebugActivity : BaseActivity<ActivityDebugBinding>() {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse("youxi://123.com"))
             startActivity(intent)
         }
+        binding.iv.setOnClickListener {
+            OpenImage.with(this)
+                .setClickImageView(binding.iv)
+                .setSrcImageViewScaleType(binding.iv.scaleType,true)
+                .setImageUrl("https://github.com/FlyJingFish/OpenImage/raw/master/screenshot/SVID_20220731_203923_1.gif",MediaType.IMAGE)
+                .addPageTransformer(ScaleInTransformer(0.85f))
+                .show()
+        }
+
     }
 }

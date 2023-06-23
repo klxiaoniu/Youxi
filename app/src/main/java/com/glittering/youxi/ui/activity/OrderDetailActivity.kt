@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
+import com.flyjingfish.openimagelib.OpenImage
+import com.flyjingfish.openimagelib.enums.MediaType
 import com.glittering.youxi.R
 import com.glittering.youxi.data.AddFavoriteRequest
 import com.glittering.youxi.data.BaseDataResponse
@@ -34,6 +36,7 @@ import com.glittering.youxi.utils.ToastFail
 import com.glittering.youxi.utils.ToastInfo
 import com.glittering.youxi.utils.ToastSuccess
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.zhpan.bannerview.transform.ScaleInTransformer
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -69,6 +72,75 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
         taskManager.setTaskListener(this,object : TaskManager.TaskListener() {
             override fun onTaskSuccess() {
                 showContentView()
+                binding.llPricing.setOnClickListener {
+                    if (!UserStateManager.getInstance().checkLogin(this@OrderDetailActivity)) return@setOnClickListener
+                    BottomBiddingDialog(this@OrderDetailActivity, orderId).show()
+                }
+
+                binding.btnBuy.setOnClickListener {
+                    if (!UserStateManager.getInstance().checkLogin(this@OrderDetailActivity)) return@setOnClickListener
+                    if (order == null) {
+                        ToastInfo("正在加载商品信息，请稍候")
+                    } else {
+                        //BottomPayDialog(this, order!!.order_price).show()
+                        val dialog = MaterialAlertDialogBuilder(this@OrderDetailActivity).setTitle("确认购买")
+                            .setMessage("确认使用钱包余额购买该商品？")
+                            .setPositiveButton("确定") { dialog, which ->
+                                val payData = PayRequest(orderId)
+                                orderService.pay(RequestUtil.generateJson(payData))
+                                    .enqueue(object : Callback<BaseResponse> {
+                                        override fun onResponse(
+                                            call: Call<BaseResponse>, response: Response<BaseResponse>
+                                        ) {
+                                            if (response.body() != null) {
+                                                val code = response.body()?.code
+                                                if (code == 200) {
+                                                    ToastSuccess(response.body()?.message.toString())
+                                                } else {
+                                                    ToastFail(response.body()?.message.toString())
+                                                }
+                                            } else ToastFail(getString(R.string.toast_response_error))
+                                        }
+
+                                        override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
+                                            t.printStackTrace()
+                                            ToastFail(getString(R.string.toast_response_error))
+                                        }
+                                    })
+
+                            }.setNegativeButton("取消", null).show()
+                        DialogUtil.stylize(dialog)
+                    }
+                }
+                binding.btnChat.setOnClickListener {
+                    if (!UserStateManager.getInstance().checkLogin(this@OrderDetailActivity)) return@setOnClickListener
+                    val intent = Intent(this@OrderDetailActivity, ChatActivity::class.java)
+                    intent.putExtra("chat_id", order?.seller_id?.toLong())
+                    startActivity(intent)
+                }
+                binding.ivFavorite.setOnClickListener {
+                    if (!UserStateManager.getInstance().checkLogin(this@OrderDetailActivity)) return@setOnClickListener
+                    val json = RequestUtil.generateJson(AddFavoriteRequest(orderId))
+                    orderService.addFavorite(json).enqueue(object : Callback<BaseResponse> {
+                        override fun onResponse(
+                            call: Call<BaseResponse>, response: Response<BaseResponse>
+                        ) {
+                            if (response.body() != null) {
+                                val code = response.body()?.code
+                                if (code == 200) {
+                                    ToastSuccess(response.body()?.message.toString())
+                                } else {
+                                    ToastFail(response.body()?.message.toString())
+                                }
+                            } else ToastFail(getString(R.string.toast_response_error))
+                        }
+
+                        override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
+                            t.printStackTrace()
+                            ToastFail(getString(R.string.toast_response_error))
+                        }
+                    })
+                }
             }
 
             override fun onTaskFail() {
@@ -76,76 +148,6 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
             }
         })
         getData(orderId)
-
-        binding.llPricing.setOnClickListener {
-            if (!UserStateManager.getInstance().checkLogin(this)) return@setOnClickListener
-            BottomBiddingDialog(this, orderId).show()
-        }
-
-        binding.btnBuy.setOnClickListener {
-            if (!UserStateManager.getInstance().checkLogin(this)) return@setOnClickListener
-            if (order == null) {
-                ToastInfo("正在加载商品信息，请稍候")
-            } else {
-                //BottomPayDialog(this, order!!.order_price).show()
-                val dialog = MaterialAlertDialogBuilder(this).setTitle("确认购买")
-                    .setMessage("确认使用钱包余额购买该商品？")
-                    .setPositiveButton("确定") { dialog, which ->
-                        val payData = PayRequest(orderId)
-                        orderService.pay(RequestUtil.generateJson(payData))
-                            .enqueue(object : Callback<BaseResponse> {
-                                override fun onResponse(
-                                    call: Call<BaseResponse>, response: Response<BaseResponse>
-                                ) {
-                                    if (response.body() != null) {
-                                        val code = response.body()?.code
-                                        if (code == 200) {
-                                            ToastSuccess(response.body()?.message.toString())
-                                        } else {
-                                            ToastFail(response.body()?.message.toString())
-                                        }
-                                    } else ToastFail(getString(R.string.toast_response_error))
-                                }
-
-                                override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
-                                    t.printStackTrace()
-                                    ToastFail(getString(R.string.toast_response_error))
-                                }
-                            })
-
-                    }.setNegativeButton("取消", null).show()
-                DialogUtil.stylize(dialog)
-            }
-        }
-        binding.btnChat.setOnClickListener {
-            if (!UserStateManager.getInstance().checkLogin(this)) return@setOnClickListener
-            val intent = Intent(this, ChatActivity::class.java)
-            intent.putExtra("chat_id", order?.seller_id?.toLong())
-            startActivity(intent)
-        }
-        binding.ivFavorite.setOnClickListener {
-            if (!UserStateManager.getInstance().checkLogin(this)) return@setOnClickListener
-            val json = RequestUtil.generateJson(AddFavoriteRequest(orderId))
-            orderService.addFavorite(json).enqueue(object : Callback<BaseResponse> {
-                override fun onResponse(
-                    call: Call<BaseResponse>, response: Response<BaseResponse>
-                ) {
-                    if (response.body() != null) {
-                        val code = response.body()?.code
-                        if (code == 200) {
-                            ToastSuccess(response.body()?.message.toString())
-                        } else {
-                            ToastFail(response.body()?.message.toString())
-                        }
-                    } else ToastFail(getString(R.string.toast_response_error))
-                }
-
-                override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
-                    t.printStackTrace()
-                    ToastFail(getString(R.string.toast_response_error))
-                }
-            })
-        }
 
 
     }
@@ -168,6 +170,14 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
                                 .error(R.drawable.error).diskCacheStrategy(DiskCacheStrategy.NONE)
                             Glide.with(this@OrderDetailActivity).load(order!!.order_picture)
                                 .apply(option).into(binding.ivOrderPicture)
+                            binding.ivOrderPicture.setOnClickListener {
+                                OpenImage.with(this@OrderDetailActivity)
+                                    .setClickImageView(binding.ivOrderPicture)
+                                    .setSrcImageViewScaleType(binding.ivOrderPicture.scaleType,true)
+                                    .setImageUrl(order!!.order_picture,MediaType.IMAGE)
+                                    .addPageTransformer(ScaleInTransformer(0.85f))
+                                    .show()
+                            }
                             binding.tvOrderTitle.text = order!!.order_title
                             val text = "￥" + order!!.order_price.toString()
                             val textSpan = SpannableStringBuilder(text)
