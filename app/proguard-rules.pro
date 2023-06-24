@@ -20,6 +20,11 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+
+-obfuscationdictionary ./proguard-dict.txt
+-classobfuscationdictionary ./proguard-dict.txt
+-packageobfuscationdictionary ./proguard-dict.txt
+
 #retrofit2  混淆
 -dontwarn javax.annotation.**
 -dontwarn javax.inject.**

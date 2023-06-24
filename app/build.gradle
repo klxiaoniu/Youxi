@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'org.jetbrains.kotlin.kapt'
+    id 'top.niunaijun.blackobfuscator'
 }
 
 def keystorePropsFile = rootProject.file("keystore.properties")
@@ -18,14 +19,16 @@ android {
         }
     }
     namespace 'com.glittering.youxi'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.glittering.youxi"
         minSdk 24
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
+
+        resConfigs "zh-rCN", "xxhdpi"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -33,8 +36,15 @@ android {
     buildTypes {
         release {
             minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.debug
+
+            BlackObfuscator {
+                enabled true
+                depth 2
+                obfClass = ["com.glittering.youxi.ui"]
+            }
         }
         debug {
             signingConfig signingConfigs.debug
