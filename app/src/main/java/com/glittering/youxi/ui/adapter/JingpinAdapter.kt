@@ -11,7 +11,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.glittering.youxi.R
-import com.glittering.youxi.data.Jingpin
+import com.glittering.youxi.data.bean.Jingpin
 import com.glittering.youxi.ui.activity.SearchActivity
 import com.glittering.youxi.ui.view.IconTextItem
 import com.glittering.youxi.utils.ToastInfo

@@ -6,10 +6,10 @@ import android.view.inputmethod.EditorInfo.IME_ACTION_DONE
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import com.glittering.youxi.R
-import com.glittering.youxi.data.BaseResponse
-import com.glittering.youxi.data.OrderBiddingRequest
-import com.glittering.youxi.data.OrderService
-import com.glittering.youxi.data.ServiceCreator
+import com.glittering.youxi.data.request.OrderBiddingRequest
+import com.glittering.youxi.data.response.BaseResponse
+import com.glittering.youxi.data.service.OrderService
+import com.glittering.youxi.data.service.ServiceCreator
 import com.glittering.youxi.utils.RequestUtil
 import com.glittering.youxi.utils.ToastFail
 import com.glittering.youxi.utils.ToastSuccess

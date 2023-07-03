@@ -4,10 +4,10 @@ import android.os.Bundle
 import android.view.inputmethod.EditorInfo
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.glittering.youxi.R
-import com.glittering.youxi.data.BaseDataResponse
-import com.glittering.youxi.data.OrderService
-import com.glittering.youxi.data.SearchOrder
-import com.glittering.youxi.data.ServiceCreator
+import com.glittering.youxi.data.bean.SearchOrder
+import com.glittering.youxi.data.response.BaseDataResponse
+import com.glittering.youxi.data.service.OrderService
+import com.glittering.youxi.data.service.ServiceCreator
 import com.glittering.youxi.databinding.ActivitySearchBinding
 import com.glittering.youxi.ui.adapter.SearchResultAdapter
 import com.glittering.youxi.utils.DarkUtil.Companion.reverseColorIfDark

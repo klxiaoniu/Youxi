@@ -10,10 +10,10 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.glittering.youxi.R
-import com.glittering.youxi.data.BaseDataResponse
-import com.glittering.youxi.data.PersonalInfo
-import com.glittering.youxi.data.ServiceCreator
-import com.glittering.youxi.data.UserService
+import com.glittering.youxi.data.bean.PersonalInfo
+import com.glittering.youxi.data.response.BaseDataResponse
+import com.glittering.youxi.data.service.ServiceCreator
+import com.glittering.youxi.data.service.UserService
 import com.glittering.youxi.databinding.FragmentMeBinding
 import com.glittering.youxi.manager.UserStateManager
 import com.glittering.youxi.ui.activity.CollectionActivity

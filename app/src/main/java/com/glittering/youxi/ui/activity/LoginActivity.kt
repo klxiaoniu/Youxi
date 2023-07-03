@@ -6,14 +6,14 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.glittering.youxi.R
-import com.glittering.youxi.data.BaseDataResponse
-import com.glittering.youxi.data.BaseResponse
-import com.glittering.youxi.data.CodeResponse
-import com.glittering.youxi.data.LoginRequest
-import com.glittering.youxi.data.LoginUser
-import com.glittering.youxi.data.RegisterRequest
-import com.glittering.youxi.data.ServiceCreator
-import com.glittering.youxi.data.UserService
+import com.glittering.youxi.data.bean.Code
+import com.glittering.youxi.data.bean.LoginUser
+import com.glittering.youxi.data.request.LoginRequest
+import com.glittering.youxi.data.request.RegisterRequest
+import com.glittering.youxi.data.response.BaseDataResponse
+import com.glittering.youxi.data.response.BaseResponse
+import com.glittering.youxi.data.service.ServiceCreator
+import com.glittering.youxi.data.service.UserService
 import com.glittering.youxi.databinding.ActivityLoginBinding
 import com.glittering.youxi.manager.UserStateManager
 import com.glittering.youxi.utils.DarkUtil.Companion.reverseColorIfDark
@@ -152,10 +152,10 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
     fun getCode() {
         binding.ivCode.setImageResource(R.drawable.loading)
         val userService = ServiceCreator.create<UserService>()
-        userService.queryCode().enqueue(object : Callback<CodeResponse> {
+        userService.queryCode().enqueue(object : Callback<Code> {
             override fun onResponse(
-                call: Call<CodeResponse>,
-                response: Response<CodeResponse>
+                call: Call<Code>,
+                response: Response<Code>
             ) {
 //                try {
 //                    val img = DrawableUtil().byteToDrawable(response.body()?.image!!)
@@ -179,7 +179,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
                 viewModel.codeImg = binding.ivCode.drawable
             }
 
-            override fun onFailure(call: Call<CodeResponse>, t: Throwable) {
+            override fun onFailure(call: Call<Code>, t: Throwable) {
                 t.printStackTrace()
                 ToastFail(t.toString())
                 binding.ivCode.setImageResource(R.drawable.error)

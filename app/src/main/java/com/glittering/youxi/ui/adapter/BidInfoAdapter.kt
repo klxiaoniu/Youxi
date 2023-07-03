@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.glittering.youxi.R
-import com.glittering.youxi.data.BidInfo
+import com.glittering.youxi.data.bean.BidInfo
 import com.glittering.youxi.utils.ToastInfo
 
 class BidInfoAdapter(var list: List<BidInfo>) :

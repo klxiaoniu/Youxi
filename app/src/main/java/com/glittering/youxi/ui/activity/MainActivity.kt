@@ -16,10 +16,10 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager2.widget.ViewPager2
 import com.glittering.youxi.MyWebSocketClient
 import com.glittering.youxi.R
-import com.glittering.youxi.data.BaseDataResponse
-import com.glittering.youxi.data.LoginUser
-import com.glittering.youxi.data.ServiceCreator
-import com.glittering.youxi.data.UserService
+import com.glittering.youxi.data.bean.LoginUser
+import com.glittering.youxi.data.response.BaseDataResponse
+import com.glittering.youxi.data.service.ServiceCreator
+import com.glittering.youxi.data.service.UserService
 import com.glittering.youxi.database.MsgDatabase
 import com.glittering.youxi.databinding.ActivityMainBinding
 import com.glittering.youxi.entity.MsgRecord

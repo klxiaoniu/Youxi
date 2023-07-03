@@ -3,10 +3,10 @@ package com.glittering.youxi.ui.activity
 import android.content.Intent
 import android.os.Bundle
 import com.glittering.youxi.R
-import com.glittering.youxi.data.BaseDataResponse
-import com.glittering.youxi.data.MoneyData
-import com.glittering.youxi.data.ServiceCreator
-import com.glittering.youxi.data.UserService
+import com.glittering.youxi.data.bean.MoneyData
+import com.glittering.youxi.data.response.BaseDataResponse
+import com.glittering.youxi.data.service.ServiceCreator
+import com.glittering.youxi.data.service.UserService
 import com.glittering.youxi.databinding.ActivityWalletBinding
 import com.glittering.youxi.utils.ToastFail
 import com.gyf.immersionbar.ktx.fitsTitleBar

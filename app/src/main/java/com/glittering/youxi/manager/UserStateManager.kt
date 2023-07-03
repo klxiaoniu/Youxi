@@ -3,7 +3,7 @@ package com.glittering.youxi.manager
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
-import com.glittering.youxi.data.LoginUser
+import com.glittering.youxi.data.bean.LoginUser
 import com.glittering.youxi.ui.activity.LoginActivity
 import com.glittering.youxi.utils.ToastInfo
 import com.glittering.youxi.utils.applicationContext

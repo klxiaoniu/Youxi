@@ -13,11 +13,11 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.glittering.youxi.R
-import com.glittering.youxi.data.BaseDataResponse
-import com.glittering.youxi.data.BaseResponse
-import com.glittering.youxi.data.Order
-import com.glittering.youxi.data.OrderService
-import com.glittering.youxi.data.ServiceCreator
+import com.glittering.youxi.data.bean.Order
+import com.glittering.youxi.data.response.BaseDataResponse
+import com.glittering.youxi.data.response.BaseResponse
+import com.glittering.youxi.data.service.OrderService
+import com.glittering.youxi.data.service.ServiceCreator
 import com.glittering.youxi.databinding.ActivityNewOrderBinding
 import com.glittering.youxi.utils.ToastFail
 import com.glittering.youxi.utils.ToastSuccess

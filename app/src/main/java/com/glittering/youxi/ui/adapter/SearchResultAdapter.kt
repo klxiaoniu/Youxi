@@ -12,7 +12,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.glittering.youxi.R
-import com.glittering.youxi.data.SearchOrder
+import com.glittering.youxi.data.bean.SearchOrder
 import com.glittering.youxi.ui.activity.OrderDetailActivity
 import com.glittering.youxi.utils.ToastInfo
 import com.glittering.youxi.utils.applicationContext

@@ -3,10 +3,10 @@ package com.glittering.youxi.ui.activity
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.glittering.youxi.R
-import com.glittering.youxi.data.AdminService
-import com.glittering.youxi.data.BaseDataResponse
-import com.glittering.youxi.data.ExceptionOrder
-import com.glittering.youxi.data.ServiceCreator
+import com.glittering.youxi.data.bean.ExceptionOrder
+import com.glittering.youxi.data.response.BaseDataResponse
+import com.glittering.youxi.data.service.AdminService
+import com.glittering.youxi.data.service.ServiceCreator
 import com.glittering.youxi.databinding.ActivityExceptionBinding
 import com.glittering.youxi.ui.adapter.ExceptionOrderAdapter
 import com.glittering.youxi.utils.ToastFail

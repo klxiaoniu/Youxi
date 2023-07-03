@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.glittering.youxi.R
-import com.glittering.youxi.data.SysMsg
+import com.glittering.youxi.data.bean.SysMsg
 import com.glittering.youxi.utils.ToastInfo
 
 class SysMsgAdapter(var list: List<SysMsg>) :

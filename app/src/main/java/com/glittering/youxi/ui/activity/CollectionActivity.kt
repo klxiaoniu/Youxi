@@ -2,10 +2,10 @@ package com.glittering.youxi.ui.activity
 
 import android.os.Bundle
 import com.glittering.youxi.R
-import com.glittering.youxi.data.BaseDataResponse
-import com.glittering.youxi.data.CollectionData
-import com.glittering.youxi.data.ServiceCreator
-import com.glittering.youxi.data.UserService
+import com.glittering.youxi.data.bean.CollectionData
+import com.glittering.youxi.data.response.BaseDataResponse
+import com.glittering.youxi.data.service.ServiceCreator
+import com.glittering.youxi.data.service.UserService
 import com.glittering.youxi.databinding.ActivityCollectionBinding
 import com.glittering.youxi.ui.adapter.CollectionAdapter
 import com.glittering.youxi.utils.ToastFail
