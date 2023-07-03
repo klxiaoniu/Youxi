@@ -186,13 +186,13 @@ class OrderDetailActivity : BaseActivity<ActivityOrderDetailBinding>() {
                             )
                             textSpan.setSpan(
                                 AbsoluteSizeSpan(50),
+                                2,
                                 text.indexOf(".") + 1,
-                                text.length - 1,
                                 Spannable.SPAN_INCLUSIVE_INCLUSIVE
                             )
                             textSpan.setSpan(
                                 AbsoluteSizeSpan(30),
-                                text.length - 1,
+                                text.indexOf(".") + 1,
                                 text.length,
                                 Spannable.SPAN_INCLUSIVE_INCLUSIVE
                             )
