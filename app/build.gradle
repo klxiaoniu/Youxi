@@ -102,7 +102,7 @@ dependencies {
 
     implementation 'com.github.getActivity:Toaster:12.0'
 
-    implementation 'io.github.FlyJingFish.OpenImage:OpenImageGlideLib:2.0.2'
+    implementation 'io.github.FlyJingFish.OpenImage:OpenImageGlideLib:2.0.4'
 
     implementation 'androidx.room:room-runtime:2.5.1'
     kapt 'androidx.room:room-compiler:2.5.1'
