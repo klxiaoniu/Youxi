@@ -3,6 +3,8 @@ package com.glittering.youxi.ui.activity
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -22,6 +24,8 @@ import com.glittering.youxi.R
 import com.glittering.youxi.databinding.ActivityDebugBinding
 import com.glittering.youxi.utils.DialogUtil
 import com.glittering.youxi.utils.ToastInfo
+import com.glittering.youxi.utils.ToastSuccess
+import com.glittering.youxi.utils.getToken
 import com.glittering.youxi.utils.setToken
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hjq.toast.Toaster
@@ -123,6 +127,13 @@ class DebugActivity : BaseActivity<ActivityDebugBinding>() {
 //    MaterialAlertDialogBuilder(this)
 //        .setView()
             setToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhc2Rhc2QiLCJ1aWQiOjEsImFjY2VzcyI6ImFkbWluIn0.2JvH_dyg1_3dFjfz4vUpWMl-vpImrgH9yxXSPciidi4")
+        }
+        binding.copyToken.setOnClickListener {
+            val token = getToken()
+            val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clip = ClipData.newPlainText("token", token)
+            clipboard.setPrimaryClip(clip)
+            ToastSuccess("已复制到剪贴板")
         }
         binding.orderDetail.setOnClickListener {
             val intent = Intent(this, OrderDetailActivity::class.java)

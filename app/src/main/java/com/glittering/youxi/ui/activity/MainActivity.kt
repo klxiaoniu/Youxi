@@ -34,7 +34,6 @@ import com.glittering.youxi.utils.DarkUtil.Companion.isFollowSystem
 import com.glittering.youxi.utils.DarkUtil.Companion.isForceDark
 import com.glittering.youxi.utils.ToastFail
 import com.glittering.youxi.utils.getToken
-import com.glittering.youxi.utils.rmToken
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.gson.Gson
 import com.gyf.immersionbar.ImmersionBar
@@ -44,6 +43,8 @@ import retrofit2.Response
 import java.net.URI
 
 class MainActivity : BaseActivity<ActivityMainBinding>() {
+
+    var client: MyWebSocketClient? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -106,31 +107,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             }
         }
 
-        if (getToken() != "") {
-            val userService = ServiceCreator.create<UserService>()
-            userService.loginWithToken().enqueue(object : Callback<BaseDataResponse<LoginUser>> {
-                override fun onResponse(
-                    call: Call<BaseDataResponse<LoginUser>>,
-                    response: Response<BaseDataResponse<LoginUser>>
-                ) {
-                    if (response.body() == null) {
-                        ToastFail("登录失败，请稍后重试")
-                    } else {
-                        if (response.body()!!.code == 200) {
-                            UserStateManager.getInstance().setLoggedInUser(response.body()!!.data)
-                            configureWebsocket()
-                        } else {
-                            ToastFail("登录过期，请您重新登录")
-                            rmToken()
-                        }
-                    }
-                }
-
-                override fun onFailure(call: Call<BaseDataResponse<LoginUser>>, t: Throwable) {
-                    t.printStackTrace()
-                }
-            })
-        }
 
 //        binding.fab.setOnLongClickListener {
 //            thread {
@@ -152,17 +128,61 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 //        }
     }
 
-    private fun configureWebsocket() {
-        val uri: URI? = URI.create("ws://121.40.165.18:8800")
-        val client: MyWebSocketClient = object : MyWebSocketClient(uri) {
-            override fun onMessage(message: String?) {
-                super.onMessage(message)
-                val record = Gson().fromJson(message, MsgRecord::class.java)
-                MsgDatabase.getDatabase().msgRecordDao().insertMsgRecord(record)
-                sendNotification(record)
+    override fun onStart() {
+        super.onStart()
+        loginWithToken()
+    }
+
+    private fun loginWithToken() {
+        if (getToken() != "") {
+            val userService = ServiceCreator.create<UserService>()
+            userService.loginWithToken().enqueue(object : Callback<BaseDataResponse<LoginUser>> {
+                override fun onResponse(
+                    call: Call<BaseDataResponse<LoginUser>>,
+                    response: Response<BaseDataResponse<LoginUser>>
+                ) {
+                    if (response.body() == null) {
+                        ToastFail("登录失败，请稍后重试")
+                    } else {
+                        if (response.body()!!.code == 200) {
+                            UserStateManager.getInstance().setLoggedInUser(response.body()!!.data)
+                            configureWebsocket()
+                        } else {
+                            ToastFail("登录过期，请您重新登录")
+                            UserStateManager.getInstance().logout()
+                            configureWebsocket(true)
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<BaseDataResponse<LoginUser>>, t: Throwable) {
+                    t.printStackTrace()
+                    //无网状态
+                }
+            })
+        }
+    }
+
+    private fun configureWebsocket(close: Boolean = false) {
+        if (close) {
+            client?.close()
+            client = null
+            return
+        }
+        if (client == null) {
+            val uri: URI? = URI.create("ws://121.40.165.18:8800")
+            client = object : MyWebSocketClient(uri) {
+                override fun onMessage(message: String?) {
+                    super.onMessage(message)
+                    val record = Gson().fromJson(message, MsgRecord::class.java)
+                    MsgDatabase.getDatabase().msgRecordDao().insertMsgRecord(record)
+                    sendNotification(record)
+                }
             }
         }
-        client.connectBlocking()
+        if (!client!!.isOpen) {
+            client!!.connectBlocking()
+        }
     }
 
     private fun sendNotification(record: MsgRecord) {
