@@ -44,7 +44,7 @@ class ExceptionOrderAdapter(var list: List<ExceptionOrder>, val activity: Activi
         val tvTitle = view.findViewById<TextView>(R.id.tv_title)
 
         //        val tvPrice = view.findViewById<TextView>(R.id.tv_price)
-//        val tvDesc = view.findViewById<TextView>(R.id.tv_desc)
+        val tvDesc = view.findViewById<TextView>(R.id.tv_desc)
         val btnHandle = view.findViewById<Button>(R.id.btn_handle)
     }
 
@@ -72,7 +72,7 @@ class ExceptionOrderAdapter(var list: List<ExceptionOrder>, val activity: Activi
             Glide.with(applicationContext).load(list[position].picture).apply(options)
                 .into(holder.iv)
             holder.tvTitle.text = list[position].title
-//            holder.tvDesc.text = list[position].description
+            holder.tvDesc.text = list[position].type
 //            holder.tvPrice.text = "￥" + list[position].price
             holder.itemView.setOnClickListener {
                 val intent = Intent(it.context, OrderDetailActivity::class.java)
@@ -80,7 +80,7 @@ class ExceptionOrderAdapter(var list: List<ExceptionOrder>, val activity: Activi
                 it.context.startActivity(intent)
             }
             holder.btnHandle.setOnClickListener {
-                handle(list[position].order_id)
+                handle(position)
             }
         } else if (holder is FootViewHolder) {
             holder.tv_info.visibility = if (itemCount == 1) View.GONE else View.VISIBLE
@@ -105,7 +105,7 @@ class ExceptionOrderAdapter(var list: List<ExceptionOrder>, val activity: Activi
                         val adminService = ServiceCreator.create<AdminService>()
 
                         val body = ExceptionOneHandleRequest(
-                            view.findViewById<RadioButton>(R.id.radio_pass).isChecked, id
+                            view.findViewById<RadioButton>(R.id.radio_pass).isChecked, list[id].order_id
                         )
                         adminService.handleException1(RequestUtil.generateJson(body))
                             .enqueue(object : retrofit2.Callback<BaseResponse> {
@@ -116,12 +116,12 @@ class ExceptionOrderAdapter(var list: List<ExceptionOrder>, val activity: Activi
                                         if (response.body()!!.code == 200) ToastSuccess(response.body()!!.message)
                                         else ToastFail(response.body()!!.message)
                                     } else {
-                                        ToastFail(response.body()!!.message)
+                                        ToastFail(activity.getString(R.string.toast_response_error))
                                     }
                                 }
 
                                 override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
-                                    ToastFail(applicationContext.getString(R.string.toast_response_error))
+                                    ToastFail(activity.getString(R.string.toast_response_error))
                                 }
                             })
                     }.setNegativeButton("取消", null).show().let {
@@ -133,15 +133,19 @@ class ExceptionOrderAdapter(var list: List<ExceptionOrder>, val activity: Activi
                 val view = activity.layoutInflater.inflate(R.layout.dialog_exception_2, null)
                 val etPercent = view.findViewById<EditText>(R.id.et_percent)
                 view.findViewById<RadioButton>(R.id.radio_pass).setOnClickListener {
-                    etPercent.isEnabled = true
+                    etPercent.isEnabled = false
                 }
                 view.findViewById<RadioButton>(R.id.radio_fail).setOnClickListener {
-                    etPercent.isEnabled = false
+                    etPercent.isEnabled = true
                 }
                 MaterialAlertDialogBuilder(activity).setTitle("事故处理").setView(view)
                     .setPositiveButton("确定") { _, _ ->
                         val adminService = ServiceCreator.create<AdminService>()
-                        val percentage = etPercent.text.toString().toDouble() / 100.0
+                        val percentage: Double = try {
+                            etPercent.text.toString().toDouble() / 100.0
+                        } catch (_: NumberFormatException) {
+                            -1.0
+                        }
                         if (etPercent.isEnabled && (percentage < 0 || percentage > 1)) {
                             ToastInfo("比例范围不正确，请重新输入")
                             return@setPositiveButton
@@ -149,7 +153,7 @@ class ExceptionOrderAdapter(var list: List<ExceptionOrder>, val activity: Activi
                         val body = ExceptionTwoHandleRequest(
                             percentage,
                             view.findViewById<RadioButton>(R.id.radio_pass).isChecked,
-                            id
+                            list[id].order_id
                         )
                         adminService.handleException2(RequestUtil.generateJson(body))
                             .enqueue(object : retrofit2.Callback<BaseResponse> {
@@ -160,12 +164,12 @@ class ExceptionOrderAdapter(var list: List<ExceptionOrder>, val activity: Activi
                                         if (response.body()!!.code == 200) ToastSuccess(response.body()!!.message)
                                         else ToastFail(response.body()!!.message)
                                     } else {
-                                        ToastFail(applicationContext.getString(R.string.toast_response_error))
+                                        ToastFail(activity.getString(R.string.toast_response_error))
                                     }
                                 }
 
                                 override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
-                                    ToastFail(applicationContext.getString(R.string.toast_response_error))
+                                    ToastFail(activity.getString(R.string.toast_response_error))
                                 }
                             })
                     }.setNegativeButton("取消", null).show().let {
