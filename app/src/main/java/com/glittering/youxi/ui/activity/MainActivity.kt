@@ -37,6 +37,7 @@ import com.glittering.youxi.utils.getToken
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.gson.Gson
 import com.gyf.immersionbar.ImmersionBar
+import org.java_websocket.enums.ReadyState
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -181,7 +182,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             }
         }
         if (!client!!.isOpen) {
-            client!!.connectBlocking()
+            if (client!!.readyState == ReadyState.NOT_YET_CONNECTED) {
+                try {
+                    client!!.connectBlocking()
+                } catch (_: IllegalStateException) {
+                }
+            } else if (client!!.readyState == ReadyState.CLOSING || client!!.readyState == ReadyState.CLOSED) {
+                client!!.reconnectBlocking()
+            }
         }
     }
 
