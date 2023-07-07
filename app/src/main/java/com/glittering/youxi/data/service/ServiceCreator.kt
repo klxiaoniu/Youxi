@@ -46,7 +46,7 @@ object ServiceCreator {
         val cacheSize = 30 * 1024 * 1024
         val cache = Cache(httpCacheDirectory, cacheSize.toLong())
         return OkHttpClient.Builder()
-            .connectTimeout(10, TimeUnit.SECONDS)
+            .connectTimeout(20, TimeUnit.SECONDS)
             .addNetworkInterceptor(HeaderInterceptor())
             .cache(cache)
     }
